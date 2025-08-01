@@ -99,6 +99,57 @@
   }
 }
 
+/* Mobile touch optimization */
+@media (max-width: 640px) {
+  /* Prevent iOS zoom on form inputs */
+  input, select, textarea {
+    font-size: 16px !important;
+  }
+  
+  /* Prevent text selection on interactive elements */
+  button, .touchable, .draggable {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+  }
+  
+  /* Smooth scrolling for mobile */
+  .overflow-y-auto, .overflow-scroll {
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+  }
+  
+  /* Prevent pull-to-refresh on body */
+  body {
+    overscroll-behavior-y: contain;
+    overscroll-behavior-x: none;
+  }
+  
+  /* Ensure touch targets meet minimum size */
+  button, .btn, [role="button"], .touch-target {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+/* Bottom sheet specific styles */
+.mobile-bottom-sheet {
+  transform: translate3d(0, 0, 0);
+  -webkit-transform: translate3d(0, 0, 0);
+  will-change: height, transform;
+}
+
+.mobile-bottom-sheet .drag-handle {
+  touch-action: none;
+  cursor: grab;
+}
+
+.mobile-bottom-sheet .drag-handle:active {
+  cursor: grabbing;
+}
+
 /* Smooth transitions for mobile interactions */
 @media (prefers-reduced-motion: no-preference) {
   .transform {

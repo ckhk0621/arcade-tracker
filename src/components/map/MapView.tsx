@@ -594,31 +594,31 @@ export default function MapView({ stores, selectedStore, onStoreSelect, userLoca
       <div className="absolute top-4 right-4 z-[1000] flex flex-col space-y-2">
         <button
           onClick={() => mapRef.current?.zoomIn()}
-          className="w-10 h-10 bg-white/95 backdrop-blur-sm rounded-lg shadow-lg flex items-center justify-center text-gray-700 hover:bg-gray-50 active:bg-gray-100 border border-gray-200/50 transition-all duration-200 hover:shadow-xl active:scale-95"
+          className="min-w-[48px] min-h-[48px] bg-white/95 backdrop-blur-sm rounded-lg shadow-lg flex items-center justify-center text-gray-700 hover:bg-gray-50 active:bg-gray-100 border border-gray-200/50 transition-all duration-200 hover:shadow-xl active:scale-95 touch-none"
           aria-label="放大地圖"
         >
-          <span className="text-lg font-bold">+</span>
+          <span className="text-xl font-bold select-none">+</span>
         </button>
         <button
           onClick={() => mapRef.current?.zoomOut()}
-          className="w-10 h-10 bg-white/95 backdrop-blur-sm rounded-lg shadow-lg flex items-center justify-center text-gray-700 hover:bg-gray-50 active:bg-gray-100 border border-gray-200/50 transition-all duration-200 hover:shadow-xl active:scale-95"
+          className="min-w-[48px] min-h-[48px] bg-white/95 backdrop-blur-sm rounded-lg shadow-lg flex items-center justify-center text-gray-700 hover:bg-gray-50 active:bg-gray-100 border border-gray-200/50 transition-all duration-200 hover:shadow-xl active:scale-95 touch-none"
           aria-label="縮小地圖"
         >
-          <span className="text-lg font-bold">−</span>
+          <span className="text-xl font-bold select-none">−</span>
         </button>
         
         {/* Collapse/Expand Button - Positioned under zoom controls */}
         {onToggleStoreList && (
           <button
             onClick={onToggleStoreList}
-            className="w-10 h-10 bg-white/95 backdrop-blur-sm rounded-lg shadow-lg flex items-center justify-center text-gray-700 hover:bg-gray-50 active:bg-gray-100 border border-gray-200/50 transition-all duration-200 hover:shadow-xl active:scale-95"
+            className="min-w-[48px] min-h-[48px] bg-white/95 backdrop-blur-sm rounded-lg shadow-lg flex items-center justify-center text-gray-700 hover:bg-gray-50 active:bg-gray-100 border border-gray-200/50 transition-all duration-200 hover:shadow-xl active:scale-95 touch-none"
             title={isStoreListCollapsed ? "展開店舖列表" : "收起店舖列表"}
             aria-label={isStoreListCollapsed ? "展開店舖列表" : "收起店舖列表"}
           >
             {isStoreListCollapsed ? (
-              <ChevronLeft className="h-4 w-4" />
+              <ChevronLeft className="h-5 w-5" />
             ) : (
-              <ChevronRight className="h-4 w-4" />
+              <ChevronRight className="h-5 w-5" />
             )}
           </button>
         )}
@@ -643,11 +643,11 @@ export default function MapView({ stores, selectedStore, onStoreSelect, userLoca
                 }, 1150) // Adjusted timing to match new flyTo animation
               }
             }}
-            className="w-10 h-10 bg-white/95 backdrop-blur-sm rounded-lg shadow-lg flex items-center justify-center text-gray-700 hover:bg-gray-50 active:bg-gray-100 border border-gray-200/50 transition-all duration-200 hover:shadow-xl active:scale-95"
+            className="min-w-[48px] min-h-[48px] bg-white/95 backdrop-blur-sm rounded-lg shadow-lg flex items-center justify-center text-gray-700 hover:bg-gray-50 active:bg-gray-100 border border-gray-200/50 transition-all duration-200 hover:shadow-xl active:scale-95 touch-none"
             title="定位到您的位置"
             aria-label="定位到您的位置"
           >
-            <Navigation className="w-4 h-4" />
+            <Navigation className="w-5 h-5" />
           </button>
         )}
       </div>
@@ -677,7 +677,7 @@ export default function MapView({ stores, selectedStore, onStoreSelect, userLoca
         <div className="md:hidden">
           <button
             onClick={() => setLegendExpanded(!legendExpanded)}
-            className="bg-white rounded-lg shadow-lg p-2 flex items-center justify-center w-10 h-10"
+            className="bg-white rounded-lg shadow-lg p-2 flex items-center justify-center min-w-[48px] min-h-[48px] touch-none"
             aria-label="Toggle region legend"
           >
             <div className="w-3 h-3 rounded-full border border-gray-300" style={{ 

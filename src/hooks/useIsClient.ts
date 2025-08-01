@@ -19,6 +19,45 @@ export function useIsClient(): boolean {
 }
 
 /**
+ * Hook to detect mobile device based on screen width
+ * Uses Tailwind breakpoints: mobile (640px), tablet (768px), desktop (1024px)
+ * 
+ * @returns Object with responsive breakpoint states
+ */
+export function useResponsive() {
+  const [breakpoints, setBreakpoints] = useState({
+    isMobile: false,
+    isTablet: false,
+    isDesktop: false,
+    width: 0
+  })
+
+  useEffect(() => {
+    const checkBreakpoints = () => {
+      const width = window.innerWidth
+      setBreakpoints({
+        isMobile: width < 640,
+        isTablet: width >= 640 && width < 1024,
+        isDesktop: width >= 1024,
+        width
+      })
+    }
+
+    // Check on mount
+    checkBreakpoints()
+
+    // Add event listener
+    window.addEventListener('resize', checkBreakpoints)
+
+    return () => {
+      window.removeEventListener('resize', checkBreakpoints)
+    }
+  }, [])
+
+  return breakpoints
+}
+
+/**
  * Hook to safely access localStorage/sessionStorage
  * Returns null during SSR and initial render to prevent hydration mismatches
  * 

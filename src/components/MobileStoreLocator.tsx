@@ -2,7 +2,10 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { MapView, StoreList, LocationDetail } from './map'
-import { useClientStorage } from '@/hooks/useIsClient'
+import MobileStoreList from './map/MobileStoreList'
+import MobileLocationDetail from './map/MobileLocationDetail'
+import { MobileBottomSheet, BottomSheetState } from './ui/mobile-bottom-sheet'
+import { useClientStorage, useResponsive, useIsClient } from '@/hooks/useIsClient'
 
 interface Store {
   id: string
@@ -63,6 +66,12 @@ export default function MobileStoreLocator({ initialStores, onRefresh }: MobileS
   const [isStoreListCollapsed, setIsStoreListCollapsed] = useClientStorage('storeListCollapsed', false, 'session')
   const [_lastSelectedFromList, setLastSelectedFromList] = useState<string | null>(null)
   const [showLocationDetail, setShowLocationDetail] = useState(false)
+  
+  // Mobile-specific state
+  const { isMobile, isTablet, isDesktop } = useResponsive()
+  const isClient = useIsClient()
+  const [mobileSheetState, setMobileSheetState] = useState<BottomSheetState>('collapsed')
+  const [showMobileDetail, setShowMobileDetail] = useState(false)
 
   // Request user location
   const requestLocation = useCallback(() => {
@@ -130,40 +139,60 @@ export default function MobileStoreLocator({ initialStores, onRefresh }: MobileS
     setSelectedStore(store)
     
     if (store) {
-      // Show location detail panel when a store is selected AND store list is visible
-      setShowLocationDetail(!isStoreListCollapsed)
-      
-      // Trigger map resize after the panel animation completes
-      setTimeout(() => {
-        if (typeof window !== 'undefined') {
-          window.dispatchEvent(new Event('resize'))
-        }
-      }, 350) // After 300ms transition completes
-      
-      if (fromList) {
-        // When selected from list, center and show detail panel
-        setLastSelectedFromList(store.id)
-        
-        // Auto-collapse store list on mobile for better map visibility
-        if (typeof window !== 'undefined' && window.innerWidth <= 768) {
-          setTimeout(() => {
-            setIsStoreListCollapsed(true)
-            // Also hide the detail panel when auto-collapsing on mobile
-            setShowLocationDetail(false)
-          }, 800) // After centering animation
-        }
+      if (isClient && isMobile) {
+        // Mobile behavior - show detail in bottom sheet
+        setShowMobileDetail(true)
+        setMobileSheetState('full')
       } else {
-        // When selected from map
-        setLastSelectedFromList(null)
+        // Desktop behavior - show location detail panel when a store is selected AND store list is visible
+        setShowLocationDetail(!isStoreListCollapsed)
+        
+        // Trigger map resize after the panel animation completes
+        setTimeout(() => {
+          if (typeof window !== 'undefined') {
+            window.dispatchEvent(new Event('resize'))
+          }
+        }, 350) // After 300ms transition completes
+        
+        if (fromList) {
+          // When selected from list, center and show detail panel
+          setLastSelectedFromList(store.id)
+          
+          // Auto-collapse store list on tablet for better map visibility
+          if (typeof window !== 'undefined' && window.innerWidth <= 1024 && window.innerWidth > 640) {
+            setTimeout(() => {
+              setIsStoreListCollapsed(true)
+              // Also hide the detail panel when auto-collapsing on tablet
+              setShowLocationDetail(false)
+            }, 800) // After centering animation
+          }
+        } else {
+          // When selected from map
+          setLastSelectedFromList(null)
+        }
       }
     } else {
       // Hide location detail panel when no store is selected
       setShowLocationDetail(false)
+      setShowMobileDetail(false)
     }
   }
 
 
   const toggleStoreListCollapse = () => {
+    if (isClient && isMobile) {
+      // Mobile behavior - toggle bottom sheet
+      if (mobileSheetState === 'collapsed') {
+        setMobileSheetState('peek')
+      } else {
+        setMobileSheetState('collapsed')
+        setShowMobileDetail(false)
+        setSelectedStore(null)
+      }
+      return
+    }
+    
+    // Desktop behavior
     const newCollapsed = !isStoreListCollapsed
     setIsStoreListCollapsed(newCollapsed)
     
@@ -197,6 +226,108 @@ export default function MobileStoreLocator({ initialStores, onRefresh }: MobileS
     }, 350) // After 300ms transition completes
   }
 
+  // Mobile-specific handlers
+  const handleMobileSheetStateChange = (state: BottomSheetState) => {
+    setMobileSheetState(state)
+    if (state === 'collapsed') {
+      setShowMobileDetail(false)
+      setSelectedStore(null)
+    }
+  }
+
+  const handleBackToMobileList = () => {
+    setShowMobileDetail(false)
+    setMobileSheetState('half')
+  }
+
+  // Initialize mobile sheet on first load
+  useEffect(() => {
+    if (isClient && isMobile && stores.length > 0) {
+      // Start with peek mode to show some stores
+      setMobileSheetState('peek')
+    }
+  }, [isClient, isMobile, stores.length])
+
+  // Don't render until we know if we're on mobile
+  if (!isClient) {
+    return (
+      <div className="h-screen bg-background flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      </div>
+    )
+  }
+
+  // Mobile Layout
+  if (isMobile) {
+    return (
+      <div className="h-screen bg-background relative overflow-hidden">
+        {/* Location Error Banner - Fixed position */}
+        {locationError && (
+          <div className="fixed top-0 left-0 right-0 z-50 bg-amber-50 border-b border-amber-200 px-4 py-2 flex items-center justify-between shadow-sm">
+            <div className="flex items-center">
+              <span className="text-sm text-amber-800">{locationError}</span>
+            </div>
+            <button
+              onClick={requestLocation}
+              className="text-sm text-amber-600 hover:text-amber-800 font-medium min-h-[44px] px-4"
+              disabled={isLoadingLocation}
+            >
+              {isLoadingLocation ? '請求中...' : '重試'}
+            </button>
+          </div>
+        )}
+
+        {/* Full Screen Map */}
+        <div className="h-full w-full">
+          <MapView
+            stores={stores}
+            selectedStore={selectedStore}
+            onStoreSelect={(store) => handleStoreSelect(store, false)}
+            userLocation={userLocation}
+            className="h-full"
+            isStoreListCollapsed={true}
+            onToggleStoreList={toggleStoreListCollapse}
+          />
+        </div>
+
+        {/* Mobile Bottom Sheet */}
+        <MobileBottomSheet
+          state={mobileSheetState}
+          onStateChange={handleMobileSheetStateChange}
+          snapPoints={{
+            peek: 200,
+            half: 50,
+            full: 90
+          }}
+        >
+          {showMobileDetail ? (
+            <MobileLocationDetail
+              store={selectedStore}
+              userLocation={userLocation}
+              onClose={() => {
+                setShowMobileDetail(false)
+                setMobileSheetState('collapsed')
+                setSelectedStore(null)
+              }}
+              onBackToList={handleBackToMobileList}
+            />
+          ) : (
+            <MobileStoreList
+              stores={stores}
+              selectedStore={selectedStore}
+              onStoreSelect={(store) => handleStoreSelect(store, true)}
+              userLocation={userLocation}
+              onRefresh={handleRefresh}
+              isRefreshing={isRefreshing}
+              sheetState={mobileSheetState}
+            />
+          )}
+        </MobileBottomSheet>
+      </div>
+    )
+  }
+
+  // Desktop Layout (existing)
   return (
     <div className="h-screen bg-background flex relative overflow-hidden">
       {/* Ensure full background coverage during transitions */}

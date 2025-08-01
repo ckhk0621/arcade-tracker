@@ -1,3 +1,5 @@
 export { default as MapView } from './DynamicMapView'
 export { default as StoreList } from './StoreList'
 export { default as LocationDetail } from './LocationDetail'
+export { default as MobileStoreList } from './MobileStoreList'
+export { default as MobileLocationDetail } from './MobileLocationDetail'
