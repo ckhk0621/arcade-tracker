@@ -158,7 +158,7 @@ export async function POST(req: NextRequest) {
             collection: 'stores',
             id: store.id,
             data: {
-              region: detectedRegion,
+              region: detectedRegion as 'hong-kong-island' | 'kowloon' | 'new-territories',
               country: 'HK', // Ensure Hong Kong country code
               state: detectedRegion === 'hong-kong-island' ? 'Hong Kong Island' :
                      detectedRegion === 'kowloon' ? 'Kowloon' : 'New Territories'

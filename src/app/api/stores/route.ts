@@ -3,6 +3,47 @@ import { NextRequest, NextResponse } from 'next/server'
 
 import config from '@/payload.config'
 
+// Type for the region mapping keys
+type RegionMappingKey = keyof typeof REGION_MAPPING
+
+// Region mapping with proper typing
+const REGION_MAPPING = {
+  '太古': 'hong-kong-island',
+  '北角': 'hong-kong-island', 
+  '小西灣': 'hong-kong-island',
+  '銅鑼灣': 'hong-kong-island',
+  '黃竹坑': 'hong-kong-island',
+  '黃埔': 'kowloon',
+  '尖沙咀': 'kowloon',
+  '旺角': 'kowloon',
+  '長沙灣': 'kowloon',
+  '觀塘': 'kowloon',
+  '九龍灣': 'kowloon',
+  '將軍澳': 'new-territories',
+  '荃灣': 'new-territories',
+  '屯門': 'new-territories',
+  '沙田': 'new-territories',
+  '元朗': 'new-territories',
+  '大埔': 'new-territories',
+  '上水': 'new-territories',
+  '粉嶺': 'new-territories',
+  '東涌': 'new-territories'
+} as const
+
+// Type for imported store data from JSON
+interface ImportedStoreData {
+  name: string
+  city?: string | null
+  region?: string
+  status?: 'active' | 'temp_closed' | 'closed' | 'coming_soon'
+  [key: string]: any // Allow other properties from JSON
+}
+
+// Type guard to check if a string is a valid region mapping key
+function isValidRegionKey(key: string): key is RegionMappingKey {
+  return key in REGION_MAPPING
+}
+
 export async function GET(request: NextRequest) {
   try {
     const payloadConfig = await config
@@ -14,7 +55,7 @@ export async function GET(request: NextRequest) {
     const search = searchParams.get('search')
     
     // Build where clause
-    const where: any = {
+    const where: Record<string, any> = {
       status: {
         equals: 'active'
       }
@@ -89,31 +130,7 @@ export async function POST(request: NextRequest) {
       
       console.log(`Found ${storeData.length} stores to import`)
       
-      // Region mapping
-      const REGION_MAPPING = {
-        '太古': 'hong-kong-island',
-        '北角': 'hong-kong-island', 
-        '小西灣': 'hong-kong-island',
-        '銅鑼灣': 'hong-kong-island',
-        '黃竹坑': 'hong-kong-island',
-        '黃埔': 'kowloon',
-        '尖沙咀': 'kowloon',
-        '旺角': 'kowloon',
-        '長沙灣': 'kowloon',
-        '觀塘': 'kowloon',
-        '九龍灣': 'kowloon',
-        '將軍澳': 'new-territories',
-        '荃灣': 'new-territories',
-        '屯門': 'new-territories',
-        '沙田': 'new-territories',
-        '元朗': 'new-territories',
-        '大埔': 'new-territories',
-        '上水': 'new-territories',
-        '粉嶺': 'new-territories',
-        '東涌': 'new-territories'
-      }
-      
-      const regionCounts = {
+      const regionCounts: Record<'hong-kong-island' | 'kowloon' | 'new-territories', number> = {
         'hong-kong-island': 0,
         'kowloon': 0,
         'new-territories': 0
@@ -121,17 +138,33 @@ export async function POST(request: NextRequest) {
       
       const results = []
       
-      for (const store of storeData) {
+      for (const store of storeData as ImportedStoreData[]) {
         try {
-          // Assign region
-          const region = REGION_MAPPING[store.city] || 'new-territories'
+          // Assign region with proper type checking
+          let region: 'hong-kong-island' | 'kowloon' | 'new-territories' = 'new-territories'
+          
+          if (store.city && typeof store.city === 'string' && isValidRegionKey(store.city)) {
+            region = REGION_MAPPING[store.city]
+          }
+          
           store.region = region
           regionCounts[region]++
           
-          // Create the store
+          // Set default status if not provided
+          if (!store.status) {
+            store.status = 'active'
+          }
+          
+          // Create the store with proper typing
+          const storeData = {
+            ...store,
+            status: store.status as 'active' | 'temp_closed' | 'closed' | 'coming_soon',
+            region: region as 'hong-kong-island' | 'kowloon' | 'new-territories'
+          }
+          
           const createdStore = await payload.create({
             collection: 'stores',
-            data: store
+            data: storeData
           })
           
           results.push({
@@ -147,7 +180,7 @@ export async function POST(request: NextRequest) {
           results.push({
             status: 'error',
             name: store.name,
-            error: error.message
+            error: error instanceof Error ? error.message : 'Unknown error'
           })
         }
       }
@@ -163,7 +196,10 @@ export async function POST(request: NextRequest) {
     
     if (action === 'fix-regions') {
       // Fix specific region assignments
-      const fixes = [
+      const fixes: Array<{
+        name: string
+        correctRegion: 'hong-kong-island' | 'kowloon' | 'new-territories'
+      }> = [
         {
           name: '黃竹坑The Southside',
           correctRegion: 'hong-kong-island'
@@ -219,7 +255,7 @@ export async function POST(request: NextRequest) {
           fixResults.push({
             status: 'error',
             name: fix.name,
-            error: error.message
+            error: error instanceof Error ? error.message : 'Unknown error'
           })
         }
       }
@@ -258,7 +294,7 @@ export async function POST(request: NextRequest) {
           deleteResults.push({
             status: 'error',
             name: store.name,
-            error: error.message
+            error: error instanceof Error ? error.message : 'Unknown error'
           })
         }
       }

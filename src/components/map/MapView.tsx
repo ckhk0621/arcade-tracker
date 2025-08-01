@@ -381,7 +381,7 @@ export default function MapView({
         map.scrollWheelZoom.disable()
         map.boxZoom.disable()
         map.keyboard.disable()
-        if (map.tap) map.tap.disable()
+        if ('tap' in map && (map as any).tap) (map as any).tap.disable()
       } else {
         // Re-enable all map interactions
         map.dragging.enable()
@@ -390,7 +390,7 @@ export default function MapView({
         map.scrollWheelZoom.enable()
         map.boxZoom.enable()
         map.keyboard.enable()
-        if (map.tap) map.tap.enable()
+        if ('tap' in map && (map as any).tap) (map as any).tap.enable()
       }
     }
   }, [isDisabled, mapReady])

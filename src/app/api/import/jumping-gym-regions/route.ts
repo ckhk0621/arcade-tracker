@@ -399,6 +399,10 @@ export async function POST(req: NextRequest) {
             id: existingStore.id,
             data: {
               ...storeInfo,
+              // Ensure all enum fields are properly typed as one of the allowed values
+              status: (storeInfo.status as 'active' | 'temp_closed' | 'closed' | 'coming_soon') || 'active',
+              region: storeInfo.region as 'hong-kong-island' | 'kowloon' | 'new-territories' | null,
+              category: storeInfo.category as 'arcade' | 'restaurant' | 'entertainment' | 'bowling' | 'family' | 'bar' | 'mall' | null,
               // Preserve existing analytics and user-generated content
               analytics: existingStore.analytics || {
                 views: 0,
@@ -427,6 +431,10 @@ export async function POST(req: NextRequest) {
             collection: 'stores',
             data: {
               ...storeInfo,
+              // Ensure all enum fields are properly typed as one of the allowed values
+              status: (storeInfo.status as 'active' | 'temp_closed' | 'closed' | 'coming_soon') || 'active',
+              region: storeInfo.region as 'hong-kong-island' | 'kowloon' | 'new-territories' | null,
+              category: storeInfo.category as 'arcade' | 'restaurant' | 'entertainment' | 'bowling' | 'family' | 'bar' | 'mall' | null,
               analytics: {
                 views: 0,
                 photoCount: 0,

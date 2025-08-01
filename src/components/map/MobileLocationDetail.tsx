@@ -41,7 +41,9 @@ interface Store {
 
 interface MobileLocationDetailProps {
   store: Store | null
+  userLocation?: [number, number] | null
   onBackToList: () => void
+  onClose?: () => void
   className?: string
 }
 
@@ -53,7 +55,9 @@ const formatAddress = (store: Store) => {
 
 export default function MobileLocationDetail({
   store,
+  userLocation,
   onBackToList,
+  onClose,
   className,
 }: MobileLocationDetailProps) {
   if (!store) {

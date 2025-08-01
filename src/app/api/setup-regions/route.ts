@@ -462,7 +462,7 @@ export async function POST(request: NextRequest) {
       const currentRegion = store.region
       
       // If region is already set, skip unless it's obviously wrong
-      if (currentRegion && currentRegion !== '') {
+      if (currentRegion) {
         console.log(`Store "${store.name}" already has region: ${currentRegion}`)
         regionCounts[currentRegion] = (regionCounts[currentRegion] || 0) + 1
         continue
@@ -479,7 +479,7 @@ export async function POST(request: NextRequest) {
           collection: 'stores',
           id: store.id,
           data: {
-            region: detectedRegion,
+            region: detectedRegion as 'hong-kong-island' | 'kowloon' | 'new-territories',
           },
         })
         
@@ -513,9 +513,27 @@ export async function POST(request: NextRequest) {
           collection: 'stores',
           id: existingStore.id,
           data: {
-            ...jumpingGymStore,
+            name: jumpingGymStore.name,
+            address: jumpingGymStore.address,
+            city: jumpingGymStore.city,
+            state: jumpingGymStore.state,
+            country: jumpingGymStore.country,
+            contact: jumpingGymStore.contact,
+            openingHours: jumpingGymStore.openingHours,
+            amenities: jumpingGymStore.amenities.map(a => ({
+              amenity: a.amenity as 'parties' | 'groups' | 'redemption' | 'food' | 'parking' | 'wifi' | 'tournaments' | 'atm' | 'restrooms' | 'accessible'
+            })),
+            pricing: {
+              ...jumpingGymStore.pricing,
+              priceRange: jumpingGymStore.pricing.priceRange as 'budget' | 'moderate' | 'premium'
+            },
+            tags: jumpingGymStore.tags,
+            // Cast enum fields to proper types
+            status: jumpingGymStore.status as 'active' | 'temp_closed' | 'closed' | 'coming_soon',
+            region: jumpingGymStore.region as 'hong-kong-island' | 'kowloon' | 'new-territories',
+            category: jumpingGymStore.category as 'arcade' | 'restaurant' | 'entertainment' | 'bowling' | 'family' | 'bar' | 'mall',
             // Preserve existing analytics data
-            analytics: existingStore.analytics || jumpingGymStore.analytics || {},
+            analytics: existingStore.analytics || {},
             // Preserve existing images
             images: existingStore.images || [],
           },
@@ -529,7 +547,25 @@ export async function POST(request: NextRequest) {
         await payload.create({
           collection: 'stores',
           data: {
-            ...jumpingGymStore,
+            name: jumpingGymStore.name,
+            address: jumpingGymStore.address,
+            city: jumpingGymStore.city,
+            state: jumpingGymStore.state,
+            country: jumpingGymStore.country,
+            contact: jumpingGymStore.contact,
+            openingHours: jumpingGymStore.openingHours,
+            amenities: jumpingGymStore.amenities.map(a => ({
+              amenity: a.amenity as 'parties' | 'groups' | 'redemption' | 'food' | 'parking' | 'wifi' | 'tournaments' | 'atm' | 'restrooms' | 'accessible'
+            })),
+            pricing: {
+              ...jumpingGymStore.pricing,
+              priceRange: jumpingGymStore.pricing.priceRange as 'budget' | 'moderate' | 'premium'
+            },
+            tags: jumpingGymStore.tags,
+            // Cast enum fields to proper types
+            status: jumpingGymStore.status as 'active' | 'temp_closed' | 'closed' | 'coming_soon',
+            region: jumpingGymStore.region as 'hong-kong-island' | 'kowloon' | 'new-territories',
+            category: jumpingGymStore.category as 'arcade' | 'restaurant' | 'entertainment' | 'bowling' | 'family' | 'bar' | 'mall',
             analytics: {
               views: 0,
               photoCount: 0,
@@ -570,7 +606,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('Error during regional store setup:', error)
     return NextResponse.json(
-      { error: 'Failed to setup regional stores', details: error.message },
+      { error: 'Failed to setup regional stores', details: (error as Error).message },
       { status: 500 }
     )
   }

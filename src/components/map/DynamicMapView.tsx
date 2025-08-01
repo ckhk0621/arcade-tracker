@@ -56,6 +56,9 @@ interface MapViewProps {
   onStoreSelect: (store: Store) => void
   userLocation?: [number, number] | null
   className?: string
+  isStoreListCollapsed?: boolean
+  onToggleStoreList?: () => void
+  isDisabled?: boolean
 }
 
 // Map loading skeleton component
