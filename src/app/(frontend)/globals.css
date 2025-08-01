@@ -306,3 +306,178 @@ svg {
     }
   }
 }
+
+/* Message Bubble Styles */
+.message-bubble {
+  z-index: 1001;
+  pointer-events: auto;
+}
+
+/* Enhanced message bubble animations */
+@keyframes bubbleIn {
+  0% {
+    opacity: 0;
+    scale: 0.9;
+    transform: translateY(12px);
+  }
+  60% {
+    opacity: 0.8;
+    scale: 1.02;
+    transform: translateY(-2px);
+  }
+  100% {
+    opacity: 1;
+    scale: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes bubbleOut {
+  0% {
+    opacity: 1;
+    scale: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    scale: 0.9;
+    transform: translateY(12px);
+  }
+}
+
+/* Enhanced pin animations */
+@keyframes pinGlow {
+  0% { 
+    opacity: 0.2; 
+    transform: translateX(-50%) rotate(-45deg) scale(1); 
+  }
+  100% { 
+    opacity: 0.4; 
+    transform: translateX(-50%) rotate(-45deg) scale(1.05); 
+  }
+}
+
+@keyframes pinPulse {
+  0% { 
+    transform: translateX(-50%) rotate(-45deg) scale(1); 
+    filter: brightness(1.1) saturate(1.1);
+  }
+  50% { 
+    transform: translateX(-50%) rotate(-45deg) scale(1.08); 
+    filter: brightness(1.2) saturate(1.2);
+  }
+  100% { 
+    transform: translateX(-50%) rotate(-45deg) scale(1); 
+    filter: brightness(1.1) saturate(1.1);
+  }
+}
+
+/* Smooth pin transitions */
+@keyframes pinSelect {
+  0% { 
+    transform: translateX(-50%) rotate(-45deg) scale(1); 
+  }
+  50% { 
+    transform: translateX(-50%) rotate(-45deg) scale(1.15); 
+  }
+  100% { 
+    transform: translateX(-50%) rotate(-45deg) scale(1.08); 
+  }
+}
+
+/* Ensure message bubble appears above all map elements */
+.message-bubble {
+  position: fixed;
+  will-change: transform, opacity, scale;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* Enhanced pin styles for better visual feedback */
+.custom-pin-icon {
+  will-change: transform, filter;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.custom-pin-icon .pin-main,
+.custom-pin-icon .pin-shadow {
+  will-change: transform, filter, box-shadow;
+}
+
+/* Smooth hover effects for pins */
+.custom-pin-icon:hover .pin-main {
+  animation: none !important; /* Stop pulse during hover */
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* Enhanced bubble visual effects */
+.message-bubble .bg-gradient-to-br {
+  background-image: linear-gradient(to bottom right, 
+    rgba(255, 255, 255, 1) 0%, 
+    rgba(255, 255, 255, 0.98) 50%, 
+    rgba(249, 250, 251, 0.95) 100%);
+}
+
+/* Better visual hierarchy for bubble content */
+.message-bubble h3 {
+  background: linear-gradient(135deg, #1f2937 0%, #374151 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Enhanced button hover effects */
+.message-bubble button[class*="bg-gradient-to-r"] {
+  position: relative;
+  overflow: hidden;
+}
+
+.message-bubble button[class*="bg-gradient-to-r"]:before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  transition: left 0.5s;
+}
+
+.message-bubble button[class*="bg-gradient-to-r"]:hover:before {
+  left: 100%;
+}
+
+/* Responsive message bubble sizing */
+@media (max-width: 640px) {
+  .message-bubble {
+    left: 1rem !important;
+    right: 1rem !important;
+    width: calc(100vw - 2rem) !important;
+    max-width: none !important;
+  }
+  
+  .message-bubble > div {
+    max-width: none !important;
+    min-width: auto !important;
+  }
+}
+
+/* Performance optimizations */
+.pin-container,
+.pin-main,
+.pin-shadow {
+  transform-style: preserve-3d;
+  -webkit-transform-style: preserve-3d;
+}
+
+/* Reduce motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .custom-pin-icon,
+  .message-bubble,
+  .pin-main,
+  .pin-shadow {
+    animation: none !important;
+    transition: none !important;
+  }
+}

@@ -61,6 +61,8 @@ export default function MobileStoreLocator({ initialStores, onRefresh }: MobileS
   const [isRefreshing, setIsRefreshing] = useState(false)
   const [isLoadingLocation, setIsLoadingLocation] = useState(false)
   const [isStoreListCollapsed, setIsStoreListCollapsed] = useClientStorage('storeListCollapsed', false, 'session')
+  const [showMessageBubble, setShowMessageBubble] = useState(false)
+  const [_lastSelectedFromList, setLastSelectedFromList] = useState<string | null>(null)
 
   // Request user location
   const requestLocation = useCallback(() => {
@@ -124,8 +126,37 @@ export default function MobileStoreLocator({ initialStores, onRefresh }: MobileS
     }
   }, [onRefresh, isRefreshing])
 
-  const handleStoreSelect = (store: Store) => {
+  const handleStoreSelect = (store: Store, fromList: boolean = false) => {
     setSelectedStore(store)
+    
+    if (fromList) {
+      // When selected from list, center first then show message bubble
+      setLastSelectedFromList(store.id)
+      setShowMessageBubble(true)
+      
+      // Auto-collapse store list on mobile for better map visibility
+      if (typeof window !== 'undefined' && window.innerWidth <= 768) {
+        setTimeout(() => {
+          setIsStoreListCollapsed(true)
+        }, 800) // After centering animation
+      }
+    } else {
+      // When selected from map, don't show bubble (regular popup will show)
+      setLastSelectedFromList(null)
+      setShowMessageBubble(false)
+    }
+  }
+
+  const handleMessageBubbleClose = () => {
+    setShowMessageBubble(false)
+    setLastSelectedFromList(null)
+    
+    // On mobile, restore store list visibility after bubble closes
+    if (typeof window !== 'undefined' && window.innerWidth <= 768 && isStoreListCollapsed) {
+      setTimeout(() => {
+        setIsStoreListCollapsed(false)
+      }, 300)
+    }
   }
 
   const toggleStoreListCollapse = () => {
@@ -165,11 +196,13 @@ export default function MobileStoreLocator({ initialStores, onRefresh }: MobileS
         <MapView
           stores={stores}
           selectedStore={selectedStore}
-          onStoreSelect={handleStoreSelect}
+          onStoreSelect={(store) => handleStoreSelect(store, false)}
           userLocation={userLocation}
           className="h-full"
           isStoreListCollapsed={isStoreListCollapsed}
           onToggleStoreList={toggleStoreListCollapse}
+          showMessageBubble={showMessageBubble}
+          onMessageBubbleClose={handleMessageBubbleClose}
         />
       </div>
 
@@ -190,7 +223,7 @@ export default function MobileStoreLocator({ initialStores, onRefresh }: MobileS
           <StoreList
             stores={stores}
             selectedStore={selectedStore}
-            onStoreSelect={handleStoreSelect}
+            onStoreSelect={(store) => handleStoreSelect(store, true)}
             userLocation={userLocation}
             onRefresh={handleRefresh}
             isRefreshing={isRefreshing}

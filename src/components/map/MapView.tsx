@@ -1,10 +1,11 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, useCallback } from 'react'
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet'
 import L from 'leaflet'
 import { MapPin, Navigation, ChevronLeft, ChevronRight } from 'lucide-react'
 import { isLeafletReady } from '@/utils/client'
+import MessageBubble from './MessageBubble'
 import 'leaflet/dist/leaflet.css'
 
 // Fix for default markers in React Leaflet - only run on client side
@@ -73,9 +74,11 @@ interface MapViewProps {
   className?: string
   isStoreListCollapsed?: boolean
   onToggleStoreList?: () => void
+  showMessageBubble?: boolean
+  onMessageBubbleClose?: () => void
 }
 
-// Custom pin icon for arcade locations with region-based colors
+// Enhanced custom pin icon with improved visual design and animations
 const createCustomPinIcon = (region?: string | null, category: string = 'arcade', isSelected: boolean = false) => {
   // Ensure we're on the client side and Leaflet is available
   if (!isLeafletReady()) {
@@ -92,72 +95,112 @@ const createCustomPinIcon = (region?: string | null, category: string = 'arcade'
 
   const getCategoryAccent = (cat: string) => {
     switch (cat) {
-      case 'arcade': return 'rgba(255,255,255,0.9)'
-      case 'restaurant': return 'rgba(251,191,36,0.9)' // Amber
-      case 'entertainment': return 'rgba(168,85,247,0.9)' // Purple
-      case 'bowling': return 'rgba(34,197,94,0.9)' // Green
-      case 'bar': return 'rgba(239,68,68,0.9)' // Red
-      default: return 'rgba(255,255,255,0.9)'
+      case 'arcade': return 'rgba(255,255,255,0.95)'
+      case 'restaurant': return 'rgba(251,191,36,0.95)' // Amber
+      case 'entertainment': return 'rgba(168,85,247,0.95)' // Purple
+      case 'bowling': return 'rgba(34,197,94,0.95)' // Green
+      case 'bar': return 'rgba(239,68,68,0.95)' // Red
+      default: return 'rgba(255,255,255,0.95)'
     }
   }
+
+  const pinSize = isSelected ? 44 : 36
+  const pinHeight = isSelected ? 54 : 46
+  const shadowSize = isSelected ? 28 : 22
+  const dotSize = isSelected ? 14 : 12
 
   return L.divIcon({
     html: `
       <div class="pin-container ${isSelected ? 'selected-pin' : ''}" style="
         position: relative;
-        width: 40px;
-        height: 50px;
+        width: ${pinSize + 8}px;
+        height: ${pinHeight + 4}px;
         transform: translateX(-50%);
+        z-index: ${isSelected ? '1000' : '100'};
       ">
-        <!-- Pin shadow -->
-        <div style="
+        <!-- Enhanced pin shadow with gradient -->
+        <div class="pin-shadow" style="
           position: absolute;
-          bottom: 0;
+          bottom: 2px;
           left: 50%;
           transform: translateX(-50%);
-          width: ${isSelected ? '24px' : '20px'};
-          height: ${isSelected ? '10px' : '8px'};
-          background: rgba(0,0,0,${isSelected ? '0.3' : '0.2'});
+          width: ${shadowSize}px;
+          height: ${isSelected ? '12px' : '10px'};
+          background: radial-gradient(ellipse, rgba(0,0,0,${isSelected ? '0.4' : '0.3'}) 0%, rgba(0,0,0,0.1) 70%, transparent 100%);
           border-radius: 50%;
-          filter: blur(2px);
-          transition: all 0.2s ease;
+          filter: blur(${isSelected ? '3px' : '2px'});
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         "></div>
         
-        <!-- Main pin -->
+        <!-- Outer glow for selected pin -->
+        ${isSelected ? `
+        <div style="
+          position: absolute;
+          top: 2px;
+          left: 50%;
+          transform: translateX(-50%) rotate(-45deg);
+          width: ${pinSize + 4}px;
+          height: ${pinHeight - 8}px;
+          background: ${getRegionColor(region)};
+          border-radius: 50% 50% 50% 0;
+          opacity: 0.3;
+          filter: blur(4px);
+          animation: pinGlow 2s ease-in-out infinite alternate;
+        "></div>
+        ` : ''}
+        
+        <!-- Main pin with enhanced styling -->
         <div class="pin-main" style="
           position: absolute;
-          top: 0;
+          top: 2px;
           left: 50%;
-          transform: translateX(-50%);
-          width: 32px;
-          height: 40px;
-          background: ${getRegionColor(region)};
-          border: 3px solid white;
-          border-radius: 50% 50% 50% 0;
           transform: translateX(-50%) rotate(-45deg);
-          box-shadow: 0 4px 12px rgba(0,0,0,${isSelected ? '0.35' : '0.25'});
-          transition: all 0.2s ease;
-          ${isSelected ? 'filter: brightness(1.1);' : ''}
+          width: ${pinSize}px;
+          height: ${pinHeight - 8}px;
+          background: linear-gradient(135deg, ${getRegionColor(region)} 0%, ${getRegionColor(region)}dd 100%);
+          border: ${isSelected ? '4px' : '3px'} solid white;
+          border-radius: 50% 50% 50% 0;
+          box-shadow: 
+            0 ${isSelected ? '8px' : '6px'} ${isSelected ? '24px' : '16px'} rgba(0,0,0,${isSelected ? '0.35' : '0.25'}),
+            0 ${isSelected ? '4px' : '2px'} ${isSelected ? '12px' : '8px'} rgba(0,0,0,0.15),
+            inset 0 1px 2px rgba(255,255,255,0.2);
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          ${isSelected ? 'filter: brightness(1.1) saturate(1.1);' : ''}
         ">
-          <!-- Pin center dot -->
+          <!-- Enhanced pin center dot with ring -->
           <div style="
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%) rotate(45deg);
-            width: 12px;
-            height: 12px;
+            width: ${dotSize + 4}px;
+            height: ${dotSize + 4}px;
             background: ${getCategoryAccent(category)};
+            border: 2px solid rgba(255,255,255,0.8);
             border-radius: 50%;
-            box-shadow: inset 0 1px 2px rgba(0,0,0,0.2);
-          "></div>
+            box-shadow: 
+              inset 0 1px 3px rgba(0,0,0,0.2),
+              0 0 0 1px rgba(0,0,0,0.1);
+          ">
+            <div style="
+              position: absolute;
+              top: 50%;
+              left: 50%;
+              transform: translate(-50%, -50%);
+              width: ${dotSize}px;
+              height: ${dotSize}px;
+              background: ${getCategoryAccent(category)};
+              border-radius: 50%;
+              opacity: 0.9;
+            "></div>
+          </div>
         </div>
       </div>
     `,
     className: `custom-pin-icon ${isSelected ? 'selected-pin' : ''}`,
-    iconSize: [40, 50],
-    iconAnchor: [20, 45],
-    popupAnchor: [0, -45],
+    iconSize: [pinSize + 8, pinHeight + 4],
+    iconAnchor: [(pinSize + 8) / 2, pinHeight - 2],
+    popupAnchor: [0, -(pinHeight - 10)],
   })
 }
 
@@ -192,8 +235,12 @@ const getUserLocationIcon = () => {
   })
 }
 
-// Component to handle map centering
-function MapController({ center, selectedStore }: { center?: [number, number], selectedStore?: Store | null }) {
+// Component to handle map centering with callback support
+function MapController({ center, selectedStore, onCenteringComplete }: { 
+  center?: [number, number], 
+  selectedStore?: Store | null,
+  onCenteringComplete?: () => void 
+}) {
   const map = useMap()
 
   useEffect(() => {
@@ -209,20 +256,30 @@ function MapController({ center, selectedStore }: { center?: [number, number], s
       if (coords) {
         map.flyTo(coords, 16, {
           animate: true,
-          duration: 1.0
+          duration: 1.2 // Slightly longer for smoother animation
         })
+        
+        // Call completion callback after animation completes
+        if (onCenteringComplete) {
+          setTimeout(() => {
+            onCenteringComplete()
+          }, 1300) // Wait for animation to complete + small buffer
+        }
       }
     } else if (center) {
       map.setView(center, map.getZoom())
     }
-  }, [map, center, selectedStore])
+  }, [map, center, selectedStore, onCenteringComplete])
 
   return null
 }
 
-export default function MapView({ stores, selectedStore, onStoreSelect, userLocation, className, isStoreListCollapsed, onToggleStoreList }: MapViewProps) {
+export default function MapView({ stores, selectedStore, onStoreSelect, userLocation, className, isStoreListCollapsed, onToggleStoreList, showMessageBubble = false, onMessageBubbleClose }: MapViewProps) {
   const [mapReady, setMapReady] = useState(false)
   const [legendExpanded, setLegendExpanded] = useState(false)
+  const [bubblePosition, setBubblePosition] = useState<{ x: number; y: number } | null>(null)
+  const [isCentering, setIsCentering] = useState(false)
+  const [delayedBubbleShow, setDelayedBubbleShow] = useState(false)
   const mapRef = useRef<L.Map | null>(null)
   
   // Default center (Hong Kong - Central area between all regions)
@@ -240,6 +297,86 @@ export default function MapView({ stores, selectedStore, onStoreSelect, userLoca
       return () => clearTimeout(timer)
     }
   }, [isStoreListCollapsed])
+
+  // Function to calculate bubble position
+  const calculateBubblePosition = useCallback(() => {
+    if (selectedStore && mapRef.current && showMessageBubble) {
+      // Get store coordinates
+      let coords: [number, number] | null = null
+      
+      if (Array.isArray(selectedStore.location)) {
+        coords = [selectedStore.location[1], selectedStore.location[0]] // [lat, lng]
+      } else if (selectedStore.location?.coordinates) {
+        coords = [selectedStore.location.coordinates[1], selectedStore.location.coordinates[0]] // [lat, lng]
+      }
+      
+      if (coords) {
+        const point = mapRef.current.latLngToContainerPoint(coords)
+        const mapContainer = mapRef.current.getContainer()
+        const rect = mapContainer.getBoundingClientRect()
+        
+        setBubblePosition({
+          x: rect.left + point.x,
+          y: rect.top + point.y - 10 // Offset above the pin
+        })
+      }
+    } else {
+      setBubblePosition(null)
+    }
+  }, [selectedStore, showMessageBubble])
+
+  // Handle centering completion and delayed bubble show
+  const handleCenteringComplete = useCallback(() => {
+    setIsCentering(false)
+    if (showMessageBubble) {
+      // Small delay after centering completes for better UX
+      setTimeout(() => {
+        setDelayedBubbleShow(true)
+        calculateBubblePosition()
+      }, 200)
+    }
+  }, [showMessageBubble, calculateBubblePosition])
+
+  // Calculate bubble position when selected store changes or centering completes
+  useEffect(() => {
+    if (showMessageBubble && selectedStore && !isCentering) {
+      calculateBubblePosition()
+    } else {
+      setBubblePosition(null)
+      setDelayedBubbleShow(false)
+    }
+  }, [calculateBubblePosition, showMessageBubble, selectedStore, isCentering])
+
+  // Reset bubble visibility when selected store changes
+  useEffect(() => {
+    if (selectedStore && showMessageBubble) {
+      setIsCentering(true)
+      setDelayedBubbleShow(false)
+      setBubblePosition(null)
+    }
+  }, [selectedStore, showMessageBubble])
+
+  // Update bubble position on map events
+  useEffect(() => {
+    if (mapRef.current && showMessageBubble && selectedStore) {
+      const map = mapRef.current
+      
+      const handleMapEvent = () => {
+        // Small delay to ensure the map has finished updating
+        setTimeout(calculateBubblePosition, 10)
+      }
+      
+      map.on('zoom', handleMapEvent)
+      map.on('move', handleMapEvent)
+      map.on('resize', handleMapEvent)
+      
+      return () => {
+        map.off('zoom', handleMapEvent)
+        map.off('move', handleMapEvent)
+        map.off('resize', handleMapEvent)
+      }
+    }
+  }, [showMessageBubble, selectedStore, calculateBubblePosition])
 
   const handleStoreClick = (store: Store) => {
     onStoreSelect(store)
@@ -273,15 +410,25 @@ export default function MapView({ stores, selectedStore, onStoreSelect, userLoca
 
   return (
     <div className={`relative w-full h-full ${className}`}>
-      {/* Custom styles for pin interactions */}
+      {/* Enhanced custom styles for pin interactions and animations */}
       <style jsx>{`
         :global(.custom-pin-icon) {
-          transition: all 0.2s ease;
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          will-change: transform;
         }
         
         :global(.custom-pin-icon:hover .pin-main) {
-          transform: translateX(-50%) rotate(-45deg) scale(1.1) !important;
-          box-shadow: 0 6px 20px rgba(0,0,0,0.35) !important;
+          transform: translateX(-50%) rotate(-45deg) scale(1.15) !important;
+          box-shadow: 
+            0 12px 32px rgba(0,0,0,0.4) !important,
+            0 6px 16px rgba(0,0,0,0.2) !important;
+          filter: brightness(1.2) saturate(1.2) !important;
+        }
+        
+        :global(.custom-pin-icon:hover .pin-shadow) {
+          width: 32px !important;
+          height: 14px !important;
+          filter: blur(4px) !important;
         }
         
         :global(.custom-pin-icon:hover) {
@@ -296,19 +443,45 @@ export default function MapView({ stores, selectedStore, onStoreSelect, userLoca
         /* Responsive pin scaling */
         @media (max-width: 768px) {
           :global(.custom-pin-icon .pin-container) {
-            transform: translateX(-50%) scale(0.9);
+            transform: translateX(-50%) scale(0.85);
           }
         }
         
-        /* Pin pulse animation for selected store */
+        /* Enhanced pin pulse animation for selected store */
         :global(.selected-pin .pin-main) {
-          animation: pinPulse 2s infinite;
+          animation: pinPulse 2.5s ease-in-out infinite;
         }
         
         @keyframes pinPulse {
-          0% { transform: translateX(-50%) rotate(-45deg) scale(1); }
-          50% { transform: translateX(-50%) rotate(-45deg) scale(1.05); }
-          100% { transform: translateX(-50%) rotate(-45deg) scale(1); }
+          0% { 
+            transform: translateX(-50%) rotate(-45deg) scale(1); 
+            filter: brightness(1.1) saturate(1.1);
+          }
+          50% { 
+            transform: translateX(-50%) rotate(-45deg) scale(1.08); 
+            filter: brightness(1.2) saturate(1.2);
+          }
+          100% { 
+            transform: translateX(-50%) rotate(-45deg) scale(1); 
+            filter: brightness(1.1) saturate(1.1);
+          }
+        }
+
+        /* Pin glow animation */
+        @keyframes pinGlow {
+          0% { opacity: 0.2; transform: translateX(-50%) rotate(-45deg) scale(1); }
+          100% { opacity: 0.4; transform: translateX(-50%) rotate(-45deg) scale(1.05); }
+        }
+
+        /* Smooth transitions for pin interactions */
+        :global(.pin-main),
+        :global(.pin-shadow) {
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Enhanced hover effects */
+        :global(.custom-pin-icon:active .pin-main) {
+          transform: translateX(-50%) rotate(-45deg) scale(0.95) !important;
         }
       `}</style>
       
@@ -331,7 +504,11 @@ export default function MapView({ stores, selectedStore, onStoreSelect, userLoca
           maxZoom={19}
         />
         
-        <MapController center={mapCenter} selectedStore={selectedStore} />
+        <MapController 
+          center={mapCenter} 
+          selectedStore={selectedStore} 
+          onCenteringComplete={handleCenteringComplete}
+        />
 
         {/* User location marker */}
         {userLocation && getUserLocationIcon() && (
@@ -462,6 +639,22 @@ export default function MapView({ stores, selectedStore, onStoreSelect, userLoca
             )}
           </button>
         )}
+
+        {/* Center on location button - Positioned under toggle button */}
+        {userLocation && (
+          <button
+            onClick={() => {
+              if (mapRef.current) {
+                mapRef.current.flyTo(userLocation, 15)
+              }
+            }}
+            className="w-10 h-10 bg-white/95 backdrop-blur-sm rounded-lg shadow-lg flex items-center justify-center text-gray-700 hover:bg-gray-50 active:bg-gray-100 border border-gray-200/50 transition-all duration-200 hover:shadow-xl active:scale-95"
+            title="定位到您的位置"
+            aria-label="定位到您的位置"
+          >
+            <Navigation className="w-4 h-4" />
+          </button>
+        )}
       </div>
 
       {/* Region Legend - Responsive */}
@@ -519,19 +712,26 @@ export default function MapView({ stores, selectedStore, onStoreSelect, userLoca
         </div>
       </div>
 
-      {/* Location button */}
-      {userLocation && (
-        <button
-          onClick={() => {
-            if (mapRef.current) {
-              mapRef.current.flyTo(userLocation, 15)
-            }
-          }}
-          className="absolute bottom-4 right-4 z-[1000] w-12 h-12 bg-blue-600 text-white rounded-full shadow-lg flex items-center justify-center hover:bg-blue-700 active:bg-blue-800"
-          aria-label="Center on your location"
-        >
-          <Navigation className="w-5 h-5" />
-        </button>
+
+      {/* Message Bubble - Only show after centering is complete */}
+      {selectedStore && bubblePosition && delayedBubbleShow && showMessageBubble && onMessageBubbleClose && (
+        <MessageBubble
+          store={selectedStore}
+          position={bubblePosition}
+          isVisible={delayedBubbleShow}
+          onClose={onMessageBubbleClose}
+          userLocation={userLocation}
+        />
+      )}
+
+      {/* Centering indicator */}
+      {isCentering && selectedStore && (
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-[1002] pointer-events-none">
+          <div className="bg-white/90 backdrop-blur-sm rounded-full px-4 py-2 shadow-lg border border-gray-200/50 flex items-center space-x-2">
+            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
+            <span className="text-sm text-gray-700 font-medium">定位中...</span>
+          </div>
+        </div>
       )}
     </div>
   )
