@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useMemo } from 'react'
-import { Search, MapPin, Star, Navigation, MessageSquare } from 'lucide-react'
+import { MapPin, Star, Navigation, MessageSquare, ChevronDown, Search } from 'lucide-react'
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -178,105 +178,100 @@ export default function MobileStoreList({
 
   return (
     <div className={cn("flex flex-col h-full bg-background", className)}>
-      {/* Filters - only show in half/full modes */}
-      {showFilters && (
-        <div className="sticky top-0 z-10 bg-background/95 backdrop-blur-sm border-b border-border/50 p-4 space-y-4">
-          {/* Title */}
-          <h2 className="text-lg font-semibold text-foreground">遊戲機中心搜尋</h2>
-          
-          {/* Hong Kong Regions */}
-          <div className="flex flex-wrap gap-2">
-            <button
-              onClick={() => setSelectedRegion('all')}
-              className={cn(
-                "px-4 py-2 text-sm font-medium rounded-full transition-all duration-200 min-h-[44px]",
-                selectedRegion === 'all'
-                  ? "bg-primary text-primary-foreground shadow-sm"
-                  : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
-              )}
-            >
-              全部
-            </button>
-            <button
-              onClick={() => setSelectedRegion('hong-kong-island')}
-              className={cn(
-                "px-4 py-2 text-sm font-medium rounded-full transition-all duration-200 min-h-[44px]",
-                selectedRegion === 'hong-kong-island'
-                  ? "bg-rose-500 text-white shadow-sm"
-                  : "bg-rose-50 text-rose-700 hover:bg-rose-100 border border-rose-200"
-              )}
-            >
-              香港島
-            </button>
-            <button
-              onClick={() => setSelectedRegion('kowloon')}
-              className={cn(
-                "px-4 py-2 text-sm font-medium rounded-full transition-all duration-200 min-h-[44px]",
-                selectedRegion === 'kowloon'
-                  ? "bg-blue-500 text-white shadow-sm"
-                  : "bg-blue-50 text-blue-700 hover:bg-blue-100 border border-blue-200"
-              )}
-            >
-              九龍
-            </button>
-            <button
-              onClick={() => setSelectedRegion('new-territories')}
-              className={cn(
-                "px-4 py-2 text-sm font-medium rounded-full transition-all duration-200 min-h-[44px]",
-                selectedRegion === 'new-territories'
-                  ? "bg-emerald-500 text-white shadow-sm"
-                  : "bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200"
-              )}
-            >
-              新界
-            </button>
-          </div>
-
-          {/* Search Bar */}
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
-            <Input
-              type="text"
-              placeholder="搜尋店舖..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 h-12 text-base bg-muted/30 border-muted-foreground/20 focus:bg-background"
-              style={{ fontSize: '16px' }} // Prevent zoom on iOS
-            />
-          </div>
-
-          {/* Results Count & Sort */}
-          <div className="flex items-center justify-between">
-            <span className="text-sm text-muted-foreground">
-              {filteredAndSortedStores.length} 個店舖
-            </span>
-            <Select value={sortBy} onValueChange={(value: 'distance' | 'rating' | 'name') => setSortBy(value)}>
-              <SelectTrigger className="w-32 h-12 text-sm border-muted-foreground/20">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {userLocation && (
-                  <SelectItem value="distance">距離</SelectItem>
-                )}
-                <SelectItem value="rating">評分</SelectItem>
-                <SelectItem value="name">名稱</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-        </div>
-      )}
-
-      {/* Peek Mode Header */}
-      {!showFilters && (
-        <div className="p-4 pb-2">
-          <div className="flex items-center justify-between">
+      {/* Compact Header */}
+      <div className="sticky top-0 z-10 bg-background/95 backdrop-blur-sm border-b border-border/50 p-3 space-y-3">
+        {/* Title and Count */}
+        <div className="flex items-center justify-between">
+          {showFilters ? (
+            <h2 className="text-sm font-medium text-foreground">遊戲機中心搜尋</h2>
+          ) : (
             <h3 className="text-base font-medium text-foreground">附近店舖</h3>
-            <span className="text-sm text-muted-foreground">
-              {filteredAndSortedStores.length} 個店舖
-            </span>
-          </div>
+          )}
+          <span className="text-sm text-muted-foreground">
+            {filteredAndSortedStores.length} 個店舖
+          </span>
         </div>
-      )}
+        
+        {showFilters && (
+          <>
+            {/* Hong Kong Regions - Compact Pills */}
+            <div className="flex flex-wrap gap-1.5">
+              <button
+                onClick={() => setSelectedRegion('all')}
+                className={cn(
+                  "px-2.5 py-1 text-xs font-medium rounded-full transition-all duration-200",
+                  selectedRegion === 'all'
+                    ? "bg-primary text-primary-foreground shadow-sm"
+                    : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
+                )}
+              >
+                全部
+              </button>
+              <button
+                onClick={() => setSelectedRegion('hong-kong-island')}
+                className={cn(
+                  "px-2.5 py-1 text-xs font-medium rounded-full transition-all duration-200",
+                  selectedRegion === 'hong-kong-island'
+                    ? "bg-rose-500 text-white shadow-sm"
+                    : "bg-rose-50 text-rose-700 hover:bg-rose-100 border border-rose-200"
+                )}
+              >
+                香港島
+              </button>
+              <button
+                onClick={() => setSelectedRegion('kowloon')}
+                className={cn(
+                  "px-2.5 py-1 text-xs font-medium rounded-full transition-all duration-200",
+                  selectedRegion === 'kowloon'
+                    ? "bg-blue-500 text-white shadow-sm"
+                    : "bg-blue-50 text-blue-700 hover:bg-blue-100 border border-blue-200"
+                )}
+              >
+                九龍
+              </button>
+              <button
+                onClick={() => setSelectedRegion('new-territories')}
+                className={cn(
+                  "px-2.5 py-1 text-xs font-medium rounded-full transition-all duration-200",
+                  selectedRegion === 'new-territories'
+                    ? "bg-emerald-500 text-white shadow-sm"
+                    : "bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200"
+                )}
+              >
+                新界
+              </button>
+            </div>
+
+            {/* Search Bar - Compact */}
+            <div className="relative">
+              <Search className="absolute left-2.5 top-1/2 transform -translate-y-1/2 text-muted-foreground w-3.5 h-3.5" />
+              <Input
+                type="text"
+                placeholder="搜尋店舖..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-8 h-8 text-sm bg-muted/30 border-muted-foreground/20 focus:bg-background"
+              />
+            </div>
+
+            {/* Sort - Inline */}
+            <div className="flex items-center justify-end">
+              <Select value={sortBy} onValueChange={(value: 'distance' | 'rating' | 'name') => setSortBy(value)}>
+                <SelectTrigger className="w-24 h-7 text-xs border-muted-foreground/20">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {userLocation && (
+                    <SelectItem value="distance">距離</SelectItem>
+                  )}
+                  <SelectItem value="rating">評分</SelectItem>
+                  <SelectItem value="name">名稱</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </>
+        )}
+      </div>
 
       {/* Store List */}
       <div className="flex-1 overflow-y-auto">
@@ -289,19 +284,19 @@ export default function MobileStoreList({
 
         {isLoading ? (
           // Loading skeleton
-          <div className="space-y-2 p-4">
+          <div className="space-y-1 p-2">
             {Array.from({ length: 6 }, (_, i) => (
               <Card key={i} className="border-border/30">
-                <CardContent className="p-4">
-                  <div className="space-y-2">
+                <CardContent className="p-2.5">
+                  <div className="space-y-1">
                     <div className="flex items-start justify-between gap-2">
-                      <Skeleton className="h-5 w-40" />
-                      <Skeleton className="h-4 w-16" />
+                      <Skeleton className="h-4 w-32" />
+                      <Skeleton className="h-3 w-12" />
                     </div>
-                    <Skeleton className="h-4 w-full" />
+                    <Skeleton className="h-3 w-full" />
                     <div className="flex items-center justify-between">
-                      <Skeleton className="h-4 w-20" />
-                      <Skeleton className="h-5 w-16" />
+                      <Skeleton className="h-3 w-16" />
+                      <Skeleton className="h-4 w-12" />
                     </div>
                   </div>
                 </CardContent>
@@ -315,7 +310,7 @@ export default function MobileStoreList({
             <p className="text-sm">請嘗試調整搜索條件或篩選器</p>
           </div>
         ) : (
-          <div className="space-y-2 p-4">
+          <div className="space-y-1 p-2">
             {displayStores.map((store) => {
               const isSelected = selectedStore?.id === store.id
               let distance: number | null = null
@@ -334,12 +329,12 @@ export default function MobileStoreList({
                   onClick={() => onStoreSelect(store)}
                   className={cn(
                     "cursor-pointer transition-all duration-200 hover:shadow-md hover:bg-accent/50 border-border/30 hover:border-border/50 group",
-                    "min-h-[56px]", // Touch-friendly minimum height
-                    isSelected && "ring-1 ring-primary bg-accent/30 border-primary/30 shadow-sm"
+                    "min-h-[56px] active:scale-[0.98] active:shadow-sm transform mobile-touch-feedback", // Touch-friendly minimum height with press animation
+                    isSelected && "ring-1 ring-primary bg-accent/30 border-primary/30 shadow-sm scale-[1.02]"
                   )}
                 >
-                  <CardContent className="p-4">
-                    <div className="space-y-2">
+                  <CardContent className="p-2.5">
+                    <div className="space-y-1">
                       {/* Header Row */}
                       <div className="flex items-start justify-between gap-2">
                         <h3 className="font-medium text-base leading-tight truncate flex-1 text-foreground">
@@ -360,7 +355,7 @@ export default function MobileStoreList({
                       
                       {/* Address Row */}
                       {formatAddress(store) && (
-                        <p className="text-sm text-muted-foreground truncate leading-tight">
+                        <p className="text-xs text-muted-foreground truncate leading-tight">
                           {formatAddress(store)}
                         </p>
                       )}
@@ -369,33 +364,33 @@ export default function MobileStoreList({
                       <div className="flex items-center justify-between">
                         {store.analytics?.averageRating && store.analytics.averageRating > 0 ? (
                           <div className="flex items-center gap-1">
-                            <Star className="w-4 h-4 text-yellow-400 fill-current" />
-                            <span className="text-sm font-medium text-foreground">
+                            <Star className="w-3 h-3 text-yellow-400 fill-current" />
+                            <span className="text-xs font-medium text-foreground">
                               {store.analytics.averageRating.toFixed(1)}
                             </span>
                             {store.analytics.totalRatings && (
-                              <span className="text-sm text-muted-foreground">
+                              <span className="text-xs text-muted-foreground">
                                 ({store.analytics.totalRatings})
                               </span>
                             )}
                           </div>
                         ) : (
-                          <div className="text-sm text-muted-foreground">沒有評分</div>
+                          <div className="text-xs text-muted-foreground">沒有評分</div>
                         )}
                         
                         {store.category && (
                           store.category === 'family' ? (
                             <div 
-                              className="p-2 rounded-md hover:bg-muted/80 transition-colors cursor-pointer group-hover:bg-muted min-h-[44px] min-w-[44px] flex items-center justify-center" 
+                              className="p-1 rounded-md hover:bg-muted/80 transition-colors cursor-pointer group-hover:bg-muted" 
                               onClick={(e) => {
                                 e.stopPropagation()
                                 onStoreSelect(store)
                               }}
                             >
-                              <MessageSquare className="w-5 h-5 text-muted-foreground hover:text-foreground transition-colors" />
+                              <MessageSquare className="w-4 h-4 text-muted-foreground hover:text-foreground transition-colors" />
                             </div>
                           ) : (
-                            <Badge variant={getCategoryVariant(store.category)} className="text-sm">
+                            <Badge variant={getCategoryVariant(store.category)} className="text-xs">
                               {getCategoryLabel(store.category)}
                             </Badge>
                           )
@@ -409,10 +404,13 @@ export default function MobileStoreList({
             
             {/* Show more indicator in peek mode */}
             {sheetState === 'peek' && filteredAndSortedStores.length > 3 && (
-              <div className="text-center py-2">
-                <p className="text-sm text-muted-foreground">
-                  還有 {filteredAndSortedStores.length - 3} 個店舖...
-                </p>
+              <div className="text-center py-4">
+                <div className="inline-flex items-center gap-2 px-4 py-2 bg-muted/30 rounded-full">
+                  <p className="text-sm text-muted-foreground font-medium">
+                    還有 {filteredAndSortedStores.length - 3} 個店舖
+                  </p>
+                  <ChevronDown className="w-4 h-4 text-muted-foreground animate-bounce" />
+                </div>
               </div>
             )}
           </div>

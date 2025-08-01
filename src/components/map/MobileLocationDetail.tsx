@@ -1,11 +1,11 @@
 'use client'
 
 import { useState } from 'react'
-import { Star, MapPin, Clock, Phone, ExternalLink, Navigation, ChevronLeft } from 'lucide-react'
-import { Card, CardContent } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { cn } from "@/lib/utils"
+import { Clock, ChevronLeft } from 'lucide-react'
+import { Card, CardContent } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
+import HorizontalImageList from '@/components/ui/HorizontalImageList'
 
 interface Store {
   id: string
@@ -14,10 +14,6 @@ interface Store {
   city?: string | null
   state?: string | null
   region?: 'hong-kong-island' | 'kowloon' | 'new-territories' | null
-  location?: {
-    coordinates: [number, number]
-  } | [number, number] | null
-  category?: string | null
   status: string
   analytics?: {
     averageRating?: number | null
@@ -43,66 +39,12 @@ interface Store {
     saturday?: string
     sunday?: string
   }
-  contact?: {
-    phone?: string
-  }
-  pricing?: {
-    priceRange?: 'budget' | 'moderate' | 'premium'
-  }
 }
 
 interface MobileLocationDetailProps {
   store: Store | null
-  userLocation?: [number, number] | null
-  onClose: () => void
   onBackToList: () => void
   className?: string
-}
-
-const calculateDistance = (
-  point1: [number, number],
-  point2: [number, number]
-): number => {
-  const [lat1, lon1] = point1
-  const [lat2, lon2] = point2
-  
-  const R = 6371 // Earth's radius in kilometers
-  const dLat = (lat2 - lat1) * Math.PI / 180
-  const dLon = (lon2 - lon1) * Math.PI / 180
-  
-  const a = 
-    Math.sin(dLat/2) * Math.sin(dLat/2) +
-    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
-    Math.sin(dLon/2) * Math.sin(dLon/2)
-  
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a))
-  return R * c
-}
-
-const getCategoryLabel = (category?: string) => {
-  const labels: Record<string, string> = {
-    arcade: '遊戲機中心',
-    restaurant: '餐廳',
-    entertainment: '娛樂中心',
-    bowling: '保齡球館',
-    family: 'family',
-    bar: '酒廊/遊戲酒吧',
-    mall: '商場遊戲區',
-  }
-  return labels[category || 'arcade'] || '遊戲機中心'
-}
-
-const getCategoryVariant = (category?: string): "arcade" | "restaurant" | "entertainment" | "bowling" | "family" | "bar" | "mall" => {
-  const variants: Record<string, "arcade" | "restaurant" | "entertainment" | "bowling" | "family" | "bar" | "mall"> = {
-    arcade: 'arcade',
-    restaurant: 'restaurant',
-    entertainment: 'entertainment',
-    bowling: 'bowling',
-    family: 'family',
-    bar: 'bar',
-    mall: 'mall',
-  }
-  return variants[category || 'arcade'] || 'arcade'
 }
 
 const formatAddress = (store: Store) => {
@@ -118,17 +60,15 @@ const getDayName = (day: string) => {
     thursday: '星期四',
     friday: '星期五',
     saturday: '星期六',
-    sunday: '星期日'
+    sunday: '星期日',
   }
   return days[day] || day
 }
 
 export default function MobileLocationDetail({
   store,
-  userLocation,
-  onClose,
   onBackToList,
-  className
+  className,
 }: MobileLocationDetailProps) {
   const [showAllHours, setShowAllHours] = useState(false)
 
@@ -136,155 +76,67 @@ export default function MobileLocationDetail({
     return null
   }
 
-  let distance: number | null = null
-  let storeCoords: [number, number] | null = null
-
-  if (userLocation) {
-    if (Array.isArray(store.location)) {
-      storeCoords = [store.location[1], store.location[0]]
-    } else if (store.location?.coordinates) {
-      storeCoords = [store.location.coordinates[1], store.location.coordinates[0]]
-    }
-    
-    if (storeCoords) {
-      distance = calculateDistance(userLocation, storeCoords)
-    }
-  }
-
-  const primaryImage = store.images?.find(img => img.isPrimary)?.image?.url || 
-                      store.images?.[0]?.image?.url
-
   const openingHours = store.openingHours
   const hasOpeningHours = openingHours && Object.values(openingHours).some(Boolean)
 
-  const handleDirections = () => {
-    if (!storeCoords) return
-    
-    const [lat, lng] = storeCoords
-    const url = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`
-    window.open(url, '_blank')
-  }
-
-  const handleCall = () => {
-    if (store.contact?.phone) {
-      window.location.href = `tel:${store.contact.phone}`
-    }
-  }
-
   return (
-    <div className={cn("flex flex-col h-full bg-background", className)}>
+    <div className={cn('flex flex-col h-full bg-background', className)}>
       {/* Header */}
-      <div className="sticky top-0 z-10 bg-background/95 backdrop-blur-sm border-b border-border/50 p-4">
-        <div className="flex items-center gap-3">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={onBackToList}
-            className="p-2 h-10 w-10"
-          >
+      <div className="sticky top-0 z-10 bg-background/95 backdrop-blur-sm border-b border-border/50 px-4">
+        <div className="flex items-center gap-2 pb-2">
+          <Button variant="ghost" size="sm" onClick={onBackToList} className="px-2 h-6 w-6">
             <ChevronLeft className="h-5 w-5" />
           </Button>
           <div className="flex-1 min-w-0">
-            <h1 className="text-lg font-semibold truncate">{store.name}</h1>
-            {distance !== null && (
-              <div className="flex items-center text-sm text-muted-foreground">
-                <Navigation className="w-4 h-4 mr-1" />
-                <span>
-                  {distance < 1 
-                    ? `${Math.round(distance * 1000)}m 外`  
-                    : `${distance.toFixed(1)}km 外`
-                  }
-                </span>
-              </div>
-            )}
+            <h3 className="text-lg font-semibold truncate">{store.name} 店舖詳情</h3>
           </div>
         </div>
       </div>
 
       {/* Content */}
       <div className="flex-1 overflow-y-auto">
-        {/* Hero Image */}
-        {primaryImage && (
-          <div className="aspect-video w-full bg-muted">
-            <img
-              src={primaryImage}
-              alt={store.name}
-              className="w-full h-full object-cover"
-            />
-          </div>
-        )}
-
-        <div className="p-4 space-y-6">
-          {/* Basic Info */}
+        <div className="p-4 space-y-4">
+          {/* Store Info - matching desktop structure */}
           <div className="space-y-3">
-            {/* Rating */}
-            {store.analytics?.averageRating && store.analytics.averageRating > 0 && (
-              <div className="flex items-center gap-2">
-                <div className="flex items-center gap-1">
-                  <Star className="w-5 h-5 text-yellow-400 fill-current" />
-                  <span className="text-lg font-semibold">
-                    {store.analytics.averageRating.toFixed(1)}
-                  </span>
-                </div>
-                {store.analytics.totalRatings && (
-                  <span className="text-muted-foreground">
-                    ({store.analytics.totalRatings} 個評分)
-                  </span>
-                )}
-              </div>
-            )}
-
-            {/* Category */}
-            {store.category && (
-              <div>
-                <Badge variant={getCategoryVariant(store.category)} className="text-sm">
-                  {getCategoryLabel(store.category)}
-                </Badge>
-              </div>
-            )}
-
             {/* Address */}
             {formatAddress(store) && (
-              <div className="flex items-start gap-3">
-                <MapPin className="w-5 h-5 text-muted-foreground mt-0.5 flex-shrink-0" />
-                <p className="text-base leading-relaxed">{formatAddress(store)}</p>
-              </div>
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                地址: {formatAddress(store)}
+              </p>
             )}
+
+            {/* Operating Hours */}
+            <p className="text-sm text-foreground">營業時間: 10:00 - 22:00</p>
+
+            {/* Rating */}
+            <p className="text-sm text-foreground">
+              評分: {(store.analytics?.averageRating || 4.5).toFixed(1)}/5 ⭐⭐⭐⭐⭐
+            </p>
           </div>
 
-          {/* Action Buttons */}
-          <div className="flex gap-3">
-            {storeCoords && (
-              <Button 
-                onClick={handleDirections}
-                className="flex-1 h-12"
-                size="lg"
-              >
-                <Navigation className="w-5 h-5 mr-2" />
-                導航
-              </Button>
-            )}
-            {store.contact?.phone && (
-              <Button 
-                onClick={handleCall}
-                variant="outline"
-                className="flex-1 h-12"
-                size="lg"
-              >
-                <Phone className="w-5 h-5 mr-2" />
-                致電
-              </Button>
-            )}
+          {/* Horizontal Image List - matching desktop image functionality */}
+          <div className="space-y-3">
+            <h3 className="text-sm font-medium text-foreground">店舖圖片</h3>
+            <HorizontalImageList
+              images={
+                store.images?.map((img) => ({
+                  url: img.image.url || '',
+                  caption: img.caption,
+                  isPrimary: img.isPrimary,
+                })) || []
+              }
+              className=""
+            />
           </div>
 
-          {/* Opening Hours */}
-          {hasOpeningHours && (
+          {/* Detailed Opening Hours */}
+          {/* {hasOpeningHours && (
             <Card>
               <CardContent className="p-4">
                 <div className="flex items-center justify-between mb-3">
                   <h3 className="font-semibold flex items-center gap-2">
                     <Clock className="w-5 h-5" />
-                    營業時間
+                    詳細營業時間
                   </h3>
                   <Button
                     variant="ghost"
@@ -308,22 +160,23 @@ export default function MobileLocationDetail({
                       </div>
                     )
                   })}
-                  
-                  {!showAllHours && Object.values(openingHours || {}).filter(Boolean).length > 2 && (
-                    <div className="text-sm text-muted-foreground text-center pt-2">
-                      還有 {Object.values(openingHours || {}).filter(Boolean).length - 2} 天...
-                    </div>
-                  )}
+
+                  {!showAllHours &&
+                    Object.values(openingHours || {}).filter(Boolean).length > 2 && (
+                      <div className="text-sm text-muted-foreground text-center pt-2">
+                        還有 {Object.values(openingHours || {}).filter(Boolean).length - 2} 天...
+                      </div>
+                    )}
                 </div>
               </CardContent>
             </Card>
-          )}
+          )} */}
 
-          {/* Analytics */}
-          {store.analytics && (
+          {/* Analytics - matching desktop style */}
+          {/* {store.analytics && (
             <Card>
               <CardContent className="p-4">
-                <h3 className="font-semibold mb-3">店舖資訊</h3>
+                <h3 className="font-semibold mb-3">店舖統計</h3>
                 <div className="grid grid-cols-2 gap-4">
                   {store.analytics.views && (
                     <div className="text-center">
@@ -360,32 +213,7 @@ export default function MobileLocationDetail({
                 </div>
               </CardContent>
             </Card>
-          )}
-
-          {/* Additional Images */}
-          {store.images && store.images.length > 1 && (
-            <div>
-              <h3 className="font-semibold mb-3">更多照片</h3>
-              <div className="grid grid-cols-3 gap-2">
-                {store.images.slice(1, 7).map((image, index) => (
-                  <div key={index} className="aspect-square bg-muted rounded-lg overflow-hidden">
-                    {image.image?.url && (
-                      <img
-                        src={image.image.url}
-                        alt={image.caption || `${store.name} 照片 ${index + 1}`}
-                        className="w-full h-full object-cover"
-                      />
-                    )}
-                  </div>
-                ))}
-              </div>
-              {store.images.length > 7 && (
-                <p className="text-sm text-muted-foreground text-center mt-2">
-                  還有 {store.images.length - 7} 張照片...
-                </p>
-              )}
-            </div>
-          )}
+          )} */}
         </div>
       </div>
     </div>

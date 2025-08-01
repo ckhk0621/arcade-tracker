@@ -129,7 +129,7 @@ const createCustomPinIcon = (region?: string | null, category: string = 'arcade'
           background: radial-gradient(ellipse, rgba(0,0,0,${isSelected ? '0.4' : '0.3'}) 0%, rgba(0,0,0,0.1) 70%, transparent 100%);
           border-radius: 50%;
           filter: blur(${isSelected ? '3px' : '2px'});
-          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          transition: all 0.3s ease-out;
         "></div>
         
         <!-- Outer glow for selected pin -->
@@ -164,7 +164,7 @@ const createCustomPinIcon = (region?: string | null, category: string = 'arcade'
             0 ${isSelected ? '8px' : '6px'} ${isSelected ? '24px' : '16px'} rgba(0,0,0,${isSelected ? '0.35' : '0.25'}),
             0 ${isSelected ? '4px' : '2px'} ${isSelected ? '12px' : '8px'} rgba(0,0,0,0.15),
             inset 0 1px 2px rgba(255,255,255,0.2);
-          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          transition: all 0.3s ease-out;
           ${isSelected ? 'filter: brightness(1.1) saturate(1.1);' : ''}
         ">
           <!-- Enhanced pin center dot with ring -->
@@ -411,8 +411,7 @@ export default function MapView({ stores, selectedStore, onStoreSelect, userLoca
       {/* Enhanced custom styles for pin interactions, animations, and popup styling */}
       <style jsx>{`
         :global(.custom-pin-icon) {
-          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-          will-change: transform;
+          transition: all 0.3s ease-out;
         }
         
         /* Pin visibility animation for centering */
@@ -502,7 +501,7 @@ export default function MapView({ stores, selectedStore, onStoreSelect, userLoca
         /* Smooth transitions for pin interactions */
         :global(.pin-main),
         :global(.pin-shadow) {
-          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          transition: all 0.3s ease-out;
         }
 
         /* Enhanced hover effects */
@@ -590,8 +589,8 @@ export default function MapView({ stores, selectedStore, onStoreSelect, userLoca
           })}
       </MapContainer>
 
-      {/* Custom zoom controls and collapse button positioned for mobile */}
-      <div className="absolute top-4 right-4 z-[1000] flex flex-col space-y-2">
+      {/* Custom zoom controls and collapse button - horizontal on mobile (top), vertical on desktop (top-right) */}
+      <div className="absolute md:top-4 md:right-4 top-4 left-1/2 md:left-auto md:transform-none transform -translate-x-1/2 z-[1000] flex md:flex-col flex-row md:space-y-2 space-x-2 md:space-x-0">
         <button
           onClick={() => mapRef.current?.zoomIn()}
           className="min-w-[48px] min-h-[48px] bg-white/95 backdrop-blur-sm rounded-lg shadow-lg flex items-center justify-center text-gray-700 hover:bg-gray-50 active:bg-gray-100 border border-gray-200/50 transition-all duration-200 hover:shadow-xl active:scale-95 touch-none"

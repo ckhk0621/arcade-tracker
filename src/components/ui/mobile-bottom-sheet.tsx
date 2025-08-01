@@ -73,7 +73,7 @@ export function MobileBottomSheet({
     e.preventDefault()
   }, [state, getSheetHeight])
 
-  // Handle touch move
+  // Handle touch move with simple position tracking
   const handleTouchMove = useCallback((e: TouchEvent) => {
     if (!isDragging || !sheetRef.current) return
     
@@ -93,13 +93,13 @@ export function MobileBottomSheet({
     e.preventDefault()
   }, [isDragging, dragStartY, sheetStartY])
 
-  // Handle touch end
+  // Handle touch end with simple position-based snapping
   const handleTouchEnd = useCallback(() => {
     if (!isDragging || !sheetRef.current) return
     
     setIsDragging(false)
     
-    // Determine which snap point to go to based on current position
+    // Determine which snap point to go to based on current position only
     const vh = window.innerHeight
     const currentHeight = currentTranslateY
     const peekHeight = snapPoints.peek
@@ -108,20 +108,14 @@ export function MobileBottomSheet({
     
     let newState: BottomSheetState = state
     
-    // If dragged down significantly, collapse
+    // Simple position-based snapping logic
     if (currentHeight < peekHeight / 2) {
       newState = 'collapsed'
-    }
-    // If close to peek height
-    else if (currentHeight < (peekHeight + halfHeight) / 2) {
+    } else if (currentHeight < (peekHeight + halfHeight) / 2) {
       newState = 'peek'
-    }
-    // If close to half height
-    else if (currentHeight < (halfHeight + fullHeight) / 2) {
+    } else if (currentHeight < (halfHeight + fullHeight) / 2) {
       newState = 'half'
-    }
-    // If close to full height
-    else {
+    } else {
       newState = 'full'
     }
     
@@ -130,8 +124,8 @@ export function MobileBottomSheet({
       onStateChange(newState)
     }
     
-    // Reset transition
-    sheetRef.current.style.transition = `height ${animationDuration}ms cubic-bezier(0.32, 0.72, 0, 1)`
+    // Use simple ease-out transition
+    sheetRef.current.style.transition = `height ${animationDuration}ms ease-out`
   }, [isDragging, currentTranslateY, snapPoints, state, onStateChange, animationDuration])
 
   // Handle drag handle click
@@ -169,7 +163,7 @@ export function MobileBottomSheet({
     
     const height = getSheetHeight(state)
     sheetRef.current.style.height = `${height}px`
-    sheetRef.current.style.transition = `height ${animationDuration}ms cubic-bezier(0.32, 0.72, 0, 1)`
+    sheetRef.current.style.transition = `height ${animationDuration}ms ease-out`
   }, [state, getSheetHeight, animationDuration, isDragging])
 
   return (
@@ -191,20 +185,20 @@ export function MobileBottomSheet({
         className={cn(
           "fixed bottom-0 left-0 right-0 z-50 bg-background shadow-2xl",
           "border-t border-border/20",
-          "rounded-t-xl overflow-hidden",
+          "rounded-t-xl overflow-hidden mobile-bottom-sheet",
           "transform transition-all duration-300 ease-out",
           state === 'collapsed' && 'translate-y-full',
           className
         )}
         style={{
           height: state === 'collapsed' ? 0 : getSheetHeight(state),
-          transition: isDragging ? 'none' : `height ${animationDuration}ms cubic-bezier(0.32, 0.72, 0, 1)`
+          transition: isDragging ? 'none' : `height ${animationDuration}ms ease-out`
         }}
       >
         {/* Drag Handle */}
         <div
           ref={dragHandleRef}
-          className="flex justify-center items-center py-4 cursor-grab active:cursor-grabbing transition-colors hover:bg-muted/30"
+          className="flex justify-center items-center py-4 cursor-grab active:cursor-grabbing transition-colors duration-200 hover:bg-muted/30 mobile-touch-feedback drag-handle"
           onClick={handleDragHandleClick}
           style={{
             touchAction: 'none',
@@ -212,7 +206,7 @@ export function MobileBottomSheet({
             width: '100%'
           }}
         >
-          <div className="w-20 h-2 bg-muted-foreground/40 rounded-full transition-colors hover:bg-muted-foreground/60" />
+          <div className="w-20 h-2 bg-muted-foreground/40 rounded-full transition-colors duration-200 hover:bg-muted-foreground/60" />
         </div>
 
         {/* Sheet Content */}
