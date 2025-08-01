@@ -130,8 +130,8 @@ export default function MobileStoreLocator({ initialStores, onRefresh }: MobileS
     setSelectedStore(store)
     
     if (store) {
-      // Show location detail panel when a store is selected
-      setShowLocationDetail(true)
+      // Show location detail panel when a store is selected AND store list is visible
+      setShowLocationDetail(!isStoreListCollapsed)
       
       // Trigger map resize after the panel animation completes
       setTimeout(() => {
@@ -148,6 +148,8 @@ export default function MobileStoreLocator({ initialStores, onRefresh }: MobileS
         if (typeof window !== 'undefined' && window.innerWidth <= 768) {
           setTimeout(() => {
             setIsStoreListCollapsed(true)
+            // Also hide the detail panel when auto-collapsing on mobile
+            setShowLocationDetail(false)
           }, 800) // After centering animation
         }
       } else {
@@ -164,6 +166,16 @@ export default function MobileStoreLocator({ initialStores, onRefresh }: MobileS
   const toggleStoreListCollapse = () => {
     const newCollapsed = !isStoreListCollapsed
     setIsStoreListCollapsed(newCollapsed)
+    
+    // When collapsing the store list, also clear the selected store and hide the detail panel
+    if (newCollapsed) {
+      setSelectedStore(null)
+      setShowLocationDetail(false)
+      setLastSelectedFromList(null)
+    } else {
+      // When expanding the store list, keep detail panel hidden until a new location is selected
+      setShowLocationDetail(false)
+    }
     
     // Trigger map resize after animation completes to ensure proper rendering
     setTimeout(() => {
@@ -205,8 +217,8 @@ export default function MobileStoreLocator({ initialStores, onRefresh }: MobileS
         </div>
       )}
 
-      {/* Left Column - Map with dynamic width based on detail panel visibility */}
-      <div className={`relative map-container transition-all duration-300 ${showLocationDetail ? 'flex-1' : 'flex-1'}`}>
+      {/* Left Column - Map with dynamic width based on panel visibility */}
+      <div className="relative map-container transition-all duration-300 flex-1">
         <MapView
           stores={stores}
           selectedStore={selectedStore}
@@ -221,16 +233,16 @@ export default function MobileStoreLocator({ initialStores, onRefresh }: MobileS
       {/* Middle Column - Location Detail Panel (slides in from right) */}
       <div 
         className={`location-detail-container transition-all duration-300 ease-out overflow-hidden ${
-          showLocationDetail 
+          showLocationDetail && !isStoreListCollapsed
             ? 'w-96 opacity-100' 
             : 'w-0 opacity-0'
         }`}
       >
-        {showLocationDetail && (
+        {showLocationDetail && !isStoreListCollapsed && (
           <LocationDetail
             store={selectedStore}
             userLocation={userLocation}
-            isVisible={showLocationDetail}
+            isVisible={showLocationDetail && !isStoreListCollapsed}
             onClose={handleCloseLocationDetail}
           />
         )}

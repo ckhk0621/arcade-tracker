@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useMemo } from 'react'
-import { Search, MapPin, Star, Navigation } from 'lucide-react'
+import { Search, MapPin, Star, Navigation, MessageSquare } from 'lucide-react'
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -91,7 +91,7 @@ const getCategoryLabel = (category?: string) => {
     restaurant: '餐廳',
     entertainment: '娛樂中心',
     bowling: '保齡球館',
-    family: '詳細',
+    family: 'family', // This will be handled as an icon instead
     bar: '酒廊/遊戲酒吧',
     mall: '商場遊戲區',
   }
@@ -403,9 +403,21 @@ export default function StoreList({
                         )}
                         
                         {store.category && (
-                          <Badge variant={getCategoryVariant(store.category)} className="text-xs">
-                            {getCategoryLabel(store.category)}
-                          </Badge>
+                          store.category === 'family' ? (
+                            <div 
+                              className="p-1 rounded-md hover:bg-muted/80 transition-colors cursor-pointer group-hover:bg-muted" 
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                onStoreSelect(store)
+                              }}
+                            >
+                              <MessageSquare className="w-4 h-4 text-muted-foreground hover:text-foreground transition-colors" />
+                            </div>
+                          ) : (
+                            <Badge variant={getCategoryVariant(store.category)} className="text-xs">
+                              {getCategoryLabel(store.category)}
+                            </Badge>
+                          )
                         )}
                       </div>
                     </div>
