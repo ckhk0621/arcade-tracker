@@ -1,5 +1,6 @@
 export { default as SkeletonLoader } from './SkeletonLoader'
 export { ThemeProvider, ThemeToggle, useTheme } from './ThemeProvider'
+export { default as VerticalImageSlider } from './VerticalImageSlider'
 export { Badge } from './badge'
 export { Button } from './button'
 export { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from './card'

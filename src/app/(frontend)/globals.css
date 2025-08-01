@@ -471,6 +471,52 @@ svg {
   -webkit-transform-style: preserve-3d;
 }
 
+/* Custom scrollbar styles for vertical image list */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: hsl(var(--muted-foreground) / 0.3) transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: hsl(var(--muted-foreground) / 0.3);
+  border-radius: 3px;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--muted-foreground) / 0.5);
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:active {
+  background: hsl(var(--muted-foreground) / 0.7);
+}
+
+/* Dark mode scrollbar adjustments */
+.dark .custom-scrollbar {
+  scrollbar-color: hsl(var(--muted-foreground) / 0.4) transparent;
+}
+
+.dark .custom-scrollbar::-webkit-scrollbar-thumb {
+  background: hsl(var(--muted-foreground) / 0.4);
+}
+
+.dark .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--muted-foreground) / 0.6);
+}
+
+.dark .custom-scrollbar::-webkit-scrollbar-thumb:active {
+  background: hsl(var(--muted-foreground) / 0.8);
+}
+
 /* Reduce motion for accessibility */
 @media (prefers-reduced-motion: reduce) {
   .custom-pin-icon,
@@ -478,6 +524,10 @@ svg {
   .pin-main,
   .pin-shadow {
     animation: none !important;
+    transition: none !important;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-thumb {
     transition: none !important;
   }
 }

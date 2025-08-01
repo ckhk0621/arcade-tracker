@@ -2,6 +2,7 @@
 
 import { X } from 'lucide-react'
 import { Button } from "@/components/ui/button"
+import VerticalImageList from "@/components/ui/VerticalImageList"
 
 interface Store {
   id: string
@@ -89,25 +90,14 @@ export default function LocationDetail({ store, userLocation, isVisible, onClose
         </div>
 
         {/* Content */}
-        <div className="flex-1 overflow-y-auto">
-          <div className="p-4 space-y-4">
-            {/* Store Image */}
-            {store.images?.find(img => img.isPrimary)?.image?.url && (
-              <div className="w-full h-48 rounded-lg overflow-hidden bg-muted">
-                <img
-                  src={store.images.find(img => img.isPrimary)!.image.url}
-                  alt={store.name}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-            )}
-
+        <div className="flex-1 overflow-hidden flex flex-col">
+          <div className="p-4 flex flex-col flex-1">
             {/* Store Info */}
-            <div className="space-y-3">
+            <div className="space-y-3 flex-shrink-0">
               {/* Address */}
               {formatAddress(store) && (
                 <p className="text-sm text-muted-foreground leading-relaxed">
-                  {formatAddress(store)}
+                  地址: {formatAddress(store)}
                 </p>
               )}
               
@@ -122,12 +112,15 @@ export default function LocationDetail({ store, userLocation, isVisible, onClose
               </p>
             </div>
 
-            {/* Description */}
-            <div className="pt-2">
-              <p className="text-sm text-foreground leading-relaxed">
-                熱門的蹦床公園，適合全家大小一起玩樂。提供多種娛樂設施和遊戲體驗，是週末休閒的好去處。
-              </p>
-            </div>
+            {/* Vertical Image List - takes remaining space */}
+            <VerticalImageList 
+              images={store.images?.map(img => ({
+                url: img.image.url || '',
+                caption: img.caption,
+                isPrimary: img.isPrimary
+              })) || []}
+              className="mt-4"
+            />
 
           </div>
         </div>
