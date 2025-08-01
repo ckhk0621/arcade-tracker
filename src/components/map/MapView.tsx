@@ -256,7 +256,7 @@ export default function MapView({ stores, selectedStore, onStoreSelect, userLoca
       restaurant: '餐廳',
       entertainment: '娛樂中心',
       bowling: '保齡球館',
-      family: '親子遊樂場',
+      family: '詳細',
       bar: '酒廊/遊戲酒吧',
       mall: '商場遊戲區',
     }

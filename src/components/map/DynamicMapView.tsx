@@ -247,7 +247,9 @@ export default function DynamicMapView(props: MapViewProps) {
   useEffect(() => {
     // Double-check client-side environment
     if (isClient() && typeof document !== 'undefined') {
-      setClientReady(true)
+      // Add a small delay to ensure DOM is fully ready
+      const timer = setTimeout(() => setClientReady(true), 0)
+      return () => clearTimeout(timer)
     }
   }, [])
 

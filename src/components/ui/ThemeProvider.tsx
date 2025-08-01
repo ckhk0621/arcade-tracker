@@ -1,6 +1,7 @@
 'use client'
 
 import React, { createContext, useContext, useEffect, useState } from 'react'
+import { useIsClient, useClientStorage } from '@/hooks/useIsClient'
 
 type Theme = 'light' | 'dark' | 'system'
 
@@ -24,19 +25,17 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
   defaultTheme = 'system',
   storageKey = 'arcade-tracker-theme',
 }) => {
-  const [theme, setThemeState] = useState<Theme>(defaultTheme)
+  const isClient = useIsClient()
+  const [storedTheme, setStoredTheme] = useClientStorage<Theme>(storageKey, defaultTheme)
   const [resolvedTheme, setResolvedTheme] = useState<'light' | 'dark'>('light')
 
-  // Initialize theme from localStorage or system preference
-  useEffect(() => {
-    const stored = localStorage.getItem(storageKey) as Theme
-    if (stored && ['light', 'dark', 'system'].includes(stored)) {
-      setThemeState(stored)
-    }
-  }, [storageKey])
+  // Use stored theme if available, otherwise use default
+  const theme = isClient ? storedTheme : defaultTheme
 
   // Update resolved theme based on current theme setting
   useEffect(() => {
+    if (!isClient) return
+
     const updateResolvedTheme = () => {
       let resolved: 'light' | 'dark'
 
@@ -68,11 +67,10 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
       mediaQuery.addEventListener('change', updateResolvedTheme)
       return () => mediaQuery.removeEventListener('change', updateResolvedTheme)
     }
-  }, [theme])
+  }, [theme, isClient])
 
   const setTheme = (newTheme: Theme) => {
-    setThemeState(newTheme)
-    localStorage.setItem(storageKey, newTheme)
+    setStoredTheme(newTheme)
   }
 
   const toggleTheme = () => {

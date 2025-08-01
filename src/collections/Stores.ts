@@ -172,7 +172,7 @@ export const Stores: CollectionConfig = {
           value: 'bowling',
         },
         {
-          label: '親子遊樂場',
+          label: '詳細',
           value: 'family',
         },
         {

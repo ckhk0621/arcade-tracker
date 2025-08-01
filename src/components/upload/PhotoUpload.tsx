@@ -99,7 +99,7 @@ export function PhotoUpload({
         errors.push(`${file.name}: ${validationError}`)
       } else {
         const photoFile: PhotoUploadFile = Object.assign(file, {
-          id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+          id: `file-${file.name}-${file.size}-${file.lastModified}`,
           preview: createPreviewUrl(file),
         })
         validFiles.push(photoFile)

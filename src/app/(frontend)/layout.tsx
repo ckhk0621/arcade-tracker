@@ -2,6 +2,7 @@ import React from 'react'
 import './globals.css'
 import 'leaflet/dist/leaflet.css'
 import { Toaster } from "@/components/ui/toaster"
+import { ThemeProvider } from "@/components/ui/ThemeProvider"
 
 export const metadata = {
   description: '遊戲機中心搜尋器 - 尋找及追蹤遊戲機中心位置，並提供照片集。',
@@ -42,9 +43,9 @@ export default async function RootLayout(props: { children: React.ReactNode }) {
   const { children } = props
 
   return (
-    <html lang="zh-HK" className="h-full">
+    <html lang="zh-HK" className="h-full" suppressHydrationWarning>
       <head>
-        <meta name="theme-color" content="#3B82F6" />
+        <meta name="theme-color" content="#3B82F6" suppressHydrationWarning />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
         <meta name="apple-mobile-web-app-title" content="遊戲機中心搜尋器" />
@@ -52,8 +53,10 @@ export default async function RootLayout(props: { children: React.ReactNode }) {
         <link rel="apple-touch-icon" href="/icon-192.png" />
       </head>
       <body className="h-full antialiased">
-        {children}
-        <Toaster />
+        <ThemeProvider defaultTheme="system" storageKey="arcade-tracker-theme">
+          {children}
+          <Toaster />
+        </ThemeProvider>
       </body>
     </html>
   )

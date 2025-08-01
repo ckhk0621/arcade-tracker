@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { MapView, StoreList } from './map'
+import { useClientStorage } from '@/hooks/useIsClient'
 
 interface Store {
   id: string
@@ -59,18 +60,11 @@ export default function MobileStoreLocator({ initialStores, onRefresh }: MobileS
   const [locationError, setLocationError] = useState<string | null>(null)
   const [isRefreshing, setIsRefreshing] = useState(false)
   const [isLoadingLocation, setIsLoadingLocation] = useState(false)
-  const [isStoreListCollapsed, setIsStoreListCollapsed] = useState(() => {
-    // Restore collapse state from session storage
-    if (typeof window !== 'undefined') {
-      const saved = sessionStorage.getItem('storeListCollapsed')
-      return saved === 'true'
-    }
-    return false
-  })
+  const [isStoreListCollapsed, setIsStoreListCollapsed] = useClientStorage('storeListCollapsed', false, 'session')
 
   // Request user location
   const requestLocation = useCallback(() => {
-    if (!navigator.geolocation) {
+    if (typeof window === 'undefined' || !navigator.geolocation) {
       setLocationError('此瀏覽器不支援地理位置功能')
       return
     }
@@ -108,9 +102,11 @@ export default function MobileStoreLocator({ initialStores, onRefresh }: MobileS
     )
   }, [])
 
-  // Request location on mount
+  // Request location on mount (only on client)
   useEffect(() => {
-    requestLocation()
+    if (typeof window !== 'undefined') {
+      requestLocation()
+    }
   }, [requestLocation])
 
   // Handle store refresh
@@ -135,14 +131,12 @@ export default function MobileStoreLocator({ initialStores, onRefresh }: MobileS
   const toggleStoreListCollapse = () => {
     const newCollapsed = !isStoreListCollapsed
     setIsStoreListCollapsed(newCollapsed)
-    // Persist collapse state to session storage
-    if (typeof window !== 'undefined') {
-      sessionStorage.setItem('storeListCollapsed', newCollapsed.toString())
-    }
     
     // Trigger map resize after animation completes to ensure proper rendering
     setTimeout(() => {
-      window.dispatchEvent(new Event('resize'))
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new Event('resize'))
+      }
     }, 350) // Slightly after the 300ms transition
   }
 
