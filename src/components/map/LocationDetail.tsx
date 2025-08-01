@@ -91,9 +91,9 @@ export default function LocationDetail({ store, userLocation, isVisible, onClose
 
         {/* Content */}
         <div className="flex-1 overflow-hidden flex flex-col">
-          <div className="p-4 flex flex-col flex-1">
-            {/* Store Info */}
-            <div className="space-y-3 flex-shrink-0">
+          {/* Store Info */}
+          <div className="p-4 flex-shrink-0">
+            <div className="space-y-3">
               {/* Address */}
               {formatAddress(store) && (
                 <p className="text-sm text-muted-foreground leading-relaxed">
@@ -111,17 +111,18 @@ export default function LocationDetail({ store, userLocation, isVisible, onClose
                 評分: {rating.toFixed(1)}/5 ⭐⭐⭐⭐⭐
               </p>
             </div>
+          </div>
 
-            {/* Vertical Image List - takes remaining space */}
+          {/* Vertical Image List - takes remaining space with proper height constraint */}
+          <div className="flex-1 overflow-hidden px-4 pb-4">
             <VerticalImageList 
               images={store.images?.map(img => ({
                 url: img.image.url || '',
                 caption: img.caption,
                 isPrimary: img.isPrimary
               })) || []}
-              className="mt-4"
+              className=""
             />
-
           </div>
         </div>
       </div>

@@ -40,16 +40,16 @@ export default function VerticalImageList({
 
   if (displayImages.length === 0) {
     return (
-      <div className={`w-full flex-1 bg-muted rounded-lg flex items-center justify-center border ${className}`}>
+      <div className={`w-full h-full bg-muted rounded-lg flex items-center justify-center border ${className}`}>
         <p className="text-muted-foreground text-sm">暫無圖片</p>
       </div>
     )
   }
 
   return (
-    <div className={`w-full flex-1 flex flex-col ${className}`}>
-      {/* Dynamic height container with custom scrollbar */}
-      <div className="flex-1 overflow-y-auto bg-background border border-border rounded-lg custom-scrollbar">
+    <div className={`w-full h-full flex flex-col ${className}`}>
+      {/* Scrollable container with defined height */}
+      <div className="h-full overflow-y-auto bg-background border border-border rounded-lg custom-scrollbar">
         <div className="space-y-3 p-3">
           {displayImages.map((imageUrl, index) => (
             <div
