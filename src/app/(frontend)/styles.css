@@ -2,6 +2,42 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Leaflet map styles */
+.leaflet-container {
+  height: 100%;
+  width: 100%;
+  z-index: 1;
+}
+
+/* Custom div icon styles */
+.custom-div-icon {
+  background: transparent !important;
+  border: none !important;
+}
+
+.user-location-icon {
+  background: transparent !important;
+  border: none !important;
+}
+
+/* Mobile-specific styles */
+@media (max-width: 768px) {
+  .leaflet-control-zoom {
+    display: none !important;
+  }
+  
+  .leaflet-control-attribution {
+    display: none !important;
+  }
+}
+
+/* Smooth transitions for mobile interactions */
+@media (prefers-reduced-motion: no-preference) {
+  .transform {
+    transition: transform 0.3s ease-in-out;
+  }
+}
+
 :root {
   --font-mono: 'Roboto Mono', monospace;
 }

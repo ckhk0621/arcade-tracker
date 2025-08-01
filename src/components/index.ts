@@ -6,3 +6,7 @@ export * from './ui'
 
 // Upload components
 export * from './upload'
+
+// Map components
+export * from './map'
+export { default as MobileStoreLocator } from './MobileStoreLocator'
