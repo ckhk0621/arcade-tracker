@@ -79,7 +79,7 @@ interface MapViewProps {
 }
 
 // Enhanced custom pin icon with improved visual design and animations
-const createCustomPinIcon = (region?: string | null, category: string = 'arcade', isSelected: boolean = false) => {
+const createCustomPinIcon = (region?: string | null, category: string = 'arcade', isSelected: boolean = false, isVisible: boolean = true, isPreviousSelected: boolean = false) => {
   // Ensure we're on the client side and Leaflet is available
   if (!isLeafletReady()) {
     return null
@@ -104,19 +104,22 @@ const createCustomPinIcon = (region?: string | null, category: string = 'arcade'
     }
   }
 
-  const pinSize = isSelected ? 44 : 36
-  const pinHeight = isSelected ? 54 : 46
-  const shadowSize = isSelected ? 28 : 22
-  const dotSize = isSelected ? 14 : 12
+  const pinSize = isSelected ? 32 : 26
+  const pinHeight = isSelected ? 40 : 34
+  const shadowSize = isSelected ? 20 : 16
+  const dotSize = isSelected ? 10 : 8
 
   return L.divIcon({
     html: `
-      <div class="pin-container ${isSelected ? 'selected-pin' : ''}" style="
+      <div class="pin-container ${isSelected ? 'selected-pin' : ''} ${isPreviousSelected ? 'pin-previous-selected' : (isVisible ? 'pin-visible' : 'pin-hidden')}" style="
         position: relative;
         width: ${pinSize + 8}px;
         height: ${pinHeight + 4}px;
         transform: translateX(-50%);
         z-index: ${isSelected ? '1000' : '100'};
+        opacity: ${isVisible ? '1' : '0'};
+        transition: opacity ${isVisible ? '0.4s ease-in' : '0.3s ease-out'};
+        pointer-events: ${isVisible ? 'auto' : 'none'};
       ">
         <!-- Enhanced pin shadow with gradient -->
         <div class="pin-shadow" style="
@@ -280,11 +283,20 @@ export default function MapView({ stores, selectedStore, onStoreSelect, userLoca
   const [bubblePosition, setBubblePosition] = useState<{ x: number; y: number } | null>(null)
   const [isCentering, setIsCentering] = useState(false)
   const [delayedBubbleShow, setDelayedBubbleShow] = useState(false)
+  const [pinsVisible, setPinsVisible] = useState(true)
+  const [previousSelectedStoreId, setPreviousSelectedStoreId] = useState<string | null>(null)
   const mapRef = useRef<L.Map | null>(null)
   
   // Default center (Hong Kong - Central area between all regions)
   const defaultCenter: [number, number] = [22.3193, 114.1694]
   const mapCenter = userLocation || defaultCenter
+
+  // Ensure pins are visible on initial load
+  useEffect(() => {
+    if (mapReady && !selectedStore) {
+      setPinsVisible(true)
+    }
+  }, [mapReady, selectedStore])
 
   // Handle map resize when store list collapses/expands
   useEffect(() => {
@@ -328,6 +340,13 @@ export default function MapView({ stores, selectedStore, onStoreSelect, userLoca
   // Handle centering completion and delayed bubble show
   const handleCenteringComplete = useCallback(() => {
     setIsCentering(false)
+    // Clear previous selection to prevent visual artifacts
+    setPreviousSelectedStoreId(null)
+    // Show pins again after centering completes with a smooth fade-in
+    setTimeout(() => {
+      setPinsVisible(true)
+    }, 100) // Small delay before showing pins for smoother transition
+    
     if (showMessageBubble) {
       // Small delay after centering completes for better UX
       setTimeout(() => {
@@ -347,12 +366,32 @@ export default function MapView({ stores, selectedStore, onStoreSelect, userLoca
     }
   }, [calculateBubblePosition, showMessageBubble, selectedStore, isCentering])
 
-  // Reset bubble visibility when selected store changes
+  // Reset bubble visibility and manage pin states when selected store changes
   useEffect(() => {
-    if (selectedStore && showMessageBubble) {
+    if (selectedStore) {
+      // Store previous selected store ID for proper pin management
+      setPreviousSelectedStoreId(selectedStore.id)
       setIsCentering(true)
       setDelayedBubbleShow(false)
       setBubblePosition(null)
+      // Hide ALL pins except the target pin during centering animation
+      setPinsVisible(false)
+      
+      // If showMessageBubble is false, still handle the centering but without bubble
+      if (!showMessageBubble) {
+        // Still need to show pins after centering completes for non-bubble centering
+        setTimeout(() => {
+          setIsCentering(false)
+          setPinsVisible(true)
+        }, 1300) // Same duration as the flyTo animation + buffer
+      }
+    } else {
+      // Clear previous selection when no store is selected
+      setPreviousSelectedStoreId(null)
+      // Ensure all pins are visible when no store is selected
+      if (!isCentering) {
+        setPinsVisible(true)
+      }
     }
   }, [selectedStore, showMessageBubble])
 
@@ -379,6 +418,17 @@ export default function MapView({ stores, selectedStore, onStoreSelect, userLoca
   }, [showMessageBubble, selectedStore, calculateBubblePosition])
 
   const handleStoreClick = (store: Store) => {
+    // Handle deselection if clicking the same store
+    if (selectedStore && selectedStore.id === store.id) {
+      setPreviousSelectedStoreId(selectedStore.id)
+      onStoreSelect(null as any) // Clear selection
+      return
+    }
+    
+    // Clear previous selection immediately when a new store is clicked
+    if (selectedStore && selectedStore.id !== store.id) {
+      setPreviousSelectedStoreId(selectedStore.id)
+    }
     onStoreSelect(store)
   }
 
@@ -417,18 +467,46 @@ export default function MapView({ stores, selectedStore, onStoreSelect, userLoca
           will-change: transform;
         }
         
+        /* Pin visibility animation for centering */
+        :global(.pin-hidden) {
+          opacity: 0 !important;
+          transition: opacity 0.2s ease-out !important;
+          pointer-events: none !important;
+          visibility: hidden !important;
+        }
+        
+        :global(.pin-visible) {
+          opacity: 1 !important;
+          transition: opacity 0.4s ease-in 0.1s !important; /* Small delay for smoother appearance */
+          pointer-events: auto !important;
+          visibility: visible !important;
+        }
+        
+        /* Ensure immediate hiding of previous selected pins */
+        :global(.pin-previous-selected) {
+          opacity: 0 !important;
+          transition: opacity 0.1s ease-out !important;
+          pointer-events: none !important;
+          visibility: hidden !important;
+        }
+        
+        /* Ensure pin transitions work well with existing animations */
+        :global(.pin-container) {
+          transition: opacity 0.3s ease-out;
+        }
+        
         :global(.custom-pin-icon:hover .pin-main) {
           transform: translateX(-50%) rotate(-45deg) scale(1.15) !important;
           box-shadow: 
-            0 12px 32px rgba(0,0,0,0.4) !important,
-            0 6px 16px rgba(0,0,0,0.2) !important;
+            0 8px 24px rgba(0,0,0,0.4) !important,
+            0 4px 12px rgba(0,0,0,0.2) !important;
           filter: brightness(1.2) saturate(1.2) !important;
         }
         
         :global(.custom-pin-icon:hover .pin-shadow) {
-          width: 32px !important;
-          height: 14px !important;
-          filter: blur(4px) !important;
+          width: 24px !important;
+          height: 12px !important;
+          filter: blur(3px) !important;
         }
         
         :global(.custom-pin-icon:hover) {
@@ -443,7 +521,7 @@ export default function MapView({ stores, selectedStore, onStoreSelect, userLoca
         /* Responsive pin scaling */
         @media (max-width: 768px) {
           :global(.custom-pin-icon .pin-container) {
-            transform: translateX(-50%) scale(0.85);
+            transform: translateX(-50%) scale(0.9);
           }
         }
         
@@ -541,7 +619,11 @@ export default function MapView({ stores, selectedStore, onStoreSelect, userLoca
             
             const [lat, lng] = coords
             const isSelected = selectedStore?.id === store.id
-            const customIcon = createCustomPinIcon(store.region, store.category || 'arcade', isSelected)
+            // Check if this pin was previously selected
+            const isPreviousSelected = isCentering && previousSelectedStoreId === store.id && !isSelected
+            // Only show the target pin during centering, hide all others
+            const pinVisible = isCentering ? isSelected : pinsVisible
+            const customIcon = createCustomPinIcon(store.region, store.category || 'arcade', isSelected, pinVisible, isPreviousSelected)
             
             // Skip marker if icon creation failed (e.g., on server side)
             if (!customIcon) return null
@@ -645,7 +727,16 @@ export default function MapView({ stores, selectedStore, onStoreSelect, userLoca
           <button
             onClick={() => {
               if (mapRef.current) {
+                // Clear any selected store and previous selection
+                onStoreSelect(null as any) // This will clear selectedStore
+                setPreviousSelectedStoreId(null)
+                // Hide pins during user location centering
+                setPinsVisible(false)
                 mapRef.current.flyTo(userLocation, 15)
+                // Show pins again after animation completes
+                setTimeout(() => {
+                  setPinsVisible(true)
+                }, 1300) // Same timing as the flyTo animation
               }
             }}
             className="w-10 h-10 bg-white/95 backdrop-blur-sm rounded-lg shadow-lg flex items-center justify-center text-gray-700 hover:bg-gray-50 active:bg-gray-100 border border-gray-200/50 transition-all duration-200 hover:shadow-xl active:scale-95"

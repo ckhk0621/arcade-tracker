@@ -216,13 +216,13 @@ export default function MessageBubble({
       
       {/* Enhanced main bubble */}
       <div className={cn(
-        "bg-white/98 backdrop-blur-xl rounded-2xl shadow-2xl border border-gray-200/60 p-5",
-        "bg-gradient-to-br from-white/100 to-white/95",
+        "bg-white/100 backdrop-blur-md rounded-2xl shadow-2xl border border-gray-200/80 p-5",
+        "bg-gradient-to-br from-white/100 to-white/98",
         isMobile ? "w-full" : "max-w-[320px] min-w-[300px]"
       )}>
         {/* Enhanced header with close button */}
         <div className="flex items-start justify-between mb-4">
-          <h3 className="font-bold text-xl text-gray-900 leading-tight pr-3 bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
+          <h3 className="font-bold text-xl text-gray-900 leading-tight pr-3">
             {dummyData.name}
           </h3>
           <button
@@ -237,32 +237,32 @@ export default function MessageBubble({
         {/* Enhanced content */}
         <div className="space-y-3">
           {/* Operating Hours */}
-          <div className="flex items-center text-sm text-gray-700 bg-gray-50/80 rounded-lg p-2.5 transition-colors hover:bg-gray-100/80">
+          <div className="flex items-center text-sm text-gray-800 bg-gray-50/95 rounded-lg p-2.5 transition-colors hover:bg-gray-100/95">
             <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mr-3">
               <Clock className="w-4 h-4 text-blue-600" />
             </div>
-            <span className="font-medium">{dummyData.operatingHours}</span>
+            <span className="font-semibold text-gray-900">{dummyData.operatingHours}</span>
           </div>
 
           {/* Rating */}
-          <div className="flex items-center text-sm text-gray-700 bg-yellow-50/80 rounded-lg p-2.5 transition-colors hover:bg-yellow-100/80">
+          <div className="flex items-center text-sm text-gray-800 bg-yellow-50/95 rounded-lg p-2.5 transition-colors hover:bg-yellow-100/95">
             <div className="w-8 h-8 bg-yellow-100 rounded-full flex items-center justify-center mr-3">
               <Star className="w-4 h-4 text-yellow-600 fill-current" />
             </div>
-            <span className="font-medium">{dummyData.rating}</span>
+            <span className="font-semibold text-gray-900">{dummyData.rating}</span>
           </div>
 
           {/* Distance */}
-          <div className="flex items-center text-sm text-gray-700 bg-green-50/80 rounded-lg p-2.5 transition-colors hover:bg-green-100/80">
+          <div className="flex items-center text-sm text-gray-800 bg-green-50/95 rounded-lg p-2.5 transition-colors hover:bg-green-100/95">
             <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center mr-3">
               <Navigation className="w-4 h-4 text-green-600" />
             </div>
-            <span className="font-medium">{dummyData.distance}</span>
+            <span className="font-semibold text-gray-900">{dummyData.distance}</span>
           </div>
 
           {/* Description */}
-          <div className="bg-gradient-to-r from-blue-50/50 to-purple-50/50 rounded-lg p-3 mt-4">
-            <p className="text-sm text-gray-700 leading-relaxed font-medium">
+          <div className="bg-gradient-to-r from-blue-50/90 to-purple-50/90 rounded-lg p-3 mt-4">
+            <p className="text-sm text-gray-800 leading-relaxed font-medium">
               {dummyData.description}
             </p>
           </div>
@@ -284,7 +284,7 @@ export default function MessageBubble({
 
       {/* Enhanced overlay to capture outside clicks on mobile */}
       <div 
-        className="fixed inset-0 z-[-1] md:hidden bg-black/10 backdrop-blur-[1px]"
+        className="fixed inset-0 z-[-1] md:hidden bg-black/15 backdrop-blur-[2px]"
         onClick={onClose}
         aria-hidden="true"
       />
