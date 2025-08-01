@@ -33,7 +33,7 @@ export default async function HomePage() {
 
   return (
     <div className="h-screen">
-      <StoreLocatorWrapper initialStores={stores} />
+      <StoreLocatorWrapper initialStores={stores as any} />
     </div>
   )
 }

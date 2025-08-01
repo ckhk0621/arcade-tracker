@@ -27,7 +27,7 @@ export async function POST(req: NextRequest) {
 
     // Verify admin access
     try {
-      const user = await payload.verifyToken(token)
+      const user = await (payload as any).verifyToken(token)
       if (!user || user.role !== 'admin') {
         return NextResponse.json(
           { error: 'Admin access required' },

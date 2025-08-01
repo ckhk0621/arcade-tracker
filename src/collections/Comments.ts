@@ -59,11 +59,23 @@ export const Comments: CollectionConfig = {
           try {
             // Update photo or machine analytics based on target type
             if (doc.targetType === 'photo' && doc.photo) {
+              // Fetch current photo to get current likes count
+              const currentPhoto = await req.payload.findByID({
+                collection: 'photos',
+                id: doc.photo
+              })
+              
+              const currentLikes = currentPhoto.metadata?.likes || 0
+              const likesToAdd = doc.rating >= 4 ? 1 : 0
+              
               await req.payload.update({
                 collection: 'photos',
                 id: doc.photo,
                 data: {
-                  'metadata.likes': { $inc: doc.rating >= 4 ? 1 : 0 }
+                  metadata: {
+                    ...currentPhoto.metadata,
+                    likes: currentLikes + likesToAdd
+                  }
                 }
               })
             } else if (doc.targetType === 'machine' && doc.machine) {
@@ -81,12 +93,21 @@ export const Comments: CollectionConfig = {
                 const totalRating = comments.docs.reduce((sum, comment) => sum + (comment.rating || 0), 0)
                 const averageRating = totalRating / comments.docs.length
                 
+                // Fetch current machine to preserve existing analytics
+                const currentMachine = await req.payload.findByID({
+                  collection: 'machines',
+                  id: doc.machine
+                })
+                
                 await req.payload.update({
                   collection: 'machines',
                   id: doc.machine,
                   data: {
-                    'analytics.averageRating': averageRating,
-                    'analytics.totalRatings': comments.docs.length
+                    analytics: {
+                      ...currentMachine.analytics,
+                      averageRating: averageRating,
+                      totalRatings: comments.docs.length
+                    }
                   }
                 })
               }

@@ -1,6 +1,7 @@
 import React from 'react'
-import './styles.css'
+import './globals.css'
 import 'leaflet/dist/leaflet.css'
+import { Toaster } from "@/components/ui/toaster"
 
 export const metadata = {
   description: 'Arcade Tracker - Find and track arcade locations with photo galleries.',
@@ -52,6 +53,7 @@ export default async function RootLayout(props: { children: React.ReactNode }) {
       </head>
       <body className="h-full antialiased">
         {children}
+        <Toaster />
       </body>
     </html>
   )

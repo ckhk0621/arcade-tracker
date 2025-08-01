@@ -5,17 +5,21 @@ import { MobileStoreLocator } from '@/components'
 interface Store {
   id: string
   name: string
-  address?: string
-  city?: string
-  state?: string
+  address?: string | null
+  city?: string | null
+  state?: string | null
   location?: {
     coordinates: [number, number]
-  }
-  category?: string
+  } | [number, number] | null
+  category?: string | null
   status: string
   analytics?: {
-    averageRating?: number
-    totalRatings?: number
+    averageRating?: number | null
+    totalRatings?: number | null
+    views?: number | null
+    photoCount?: number | null
+    checkIns?: number | null
+    machineCount?: number | null
   }
   images?: Array<{
     image: {
@@ -69,8 +73,8 @@ export default function StoreLocatorWrapper({ initialStores }: StoreLocatorWrapp
 
   return (
     <MobileStoreLocator 
-      initialStores={initialStores}
-      onRefresh={handleRefresh}
+      initialStores={initialStores as any}
+      onRefresh={handleRefresh as any}
     />
   )
 }

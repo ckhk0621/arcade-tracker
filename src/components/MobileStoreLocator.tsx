@@ -7,17 +7,21 @@ import { MapView, StoreList } from './map'
 interface Store {
   id: string
   name: string
-  address?: string
-  city?: string
-  state?: string
+  address?: string | null
+  city?: string | null
+  state?: string | null
   location?: {
     coordinates: [number, number]
-  }
-  category?: string
+  } | [number, number] | null
+  category?: string | null
   status: string
   analytics?: {
-    averageRating?: number
-    totalRatings?: number
+    averageRating?: number | null
+    totalRatings?: number | null
+    views?: number | null
+    photoCount?: number | null
+    checkIns?: number | null
+    machineCount?: number | null
   }
   images?: Array<{
     image: {

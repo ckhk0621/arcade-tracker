@@ -4,7 +4,7 @@ import React, { useState, useMemo, useCallback } from 'react'
 import { PhotoGalleryProps, PhotoItem as PhotoItemType } from './types'
 import PhotoItem from './PhotoItem'
 import Lightbox from './Lightbox'
-import SkeletonLoader from '../ui/SkeletonLoader'
+import GallerySkeleton from '../ui/gallery-skeleton'
 
 const PhotoGallery: React.FC<PhotoGalleryProps> = ({
   photos,
@@ -62,7 +62,7 @@ const PhotoGallery: React.FC<PhotoGalleryProps> = ({
   if (loading) {
     return (
       <div className={`w-full ${className}`} role="status" aria-label="Loading gallery">
-        <SkeletonLoader count={6} columns={columns} />
+        <GallerySkeleton count={6} columns={columns} />
       </div>
     )
   }

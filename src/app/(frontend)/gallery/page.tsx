@@ -135,6 +135,7 @@ const mockStore = {
   address: '123 Gaming Street, Arcade City',
   location: [-122.4194, 37.7749] as [number, number],
   category: 'arcade' as const,
+  status: 'active' as const,
   images: [],
   openingHours: {
     monday: '10:00-22:00',

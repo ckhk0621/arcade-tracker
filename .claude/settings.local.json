@@ -18,7 +18,9 @@
       "Bash(pnpm generate:types:*)",
       "Bash(kill:*)",
       "WebFetch(domain:www.jumpingym.com)",
-      "Bash(node:*)"
+      "Bash(node:*)",
+      "Bash(pnpm dlx:*)",
+      "Bash(pnpm run:*)"
     ],
     "deny": []
   }

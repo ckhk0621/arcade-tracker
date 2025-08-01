@@ -17,16 +17,21 @@ L.Icon.Default.mergeOptions({
 interface Store {
   id: string
   name: string
-  address?: string
-  city?: string
-  state?: string
+  address?: string | null
+  city?: string | null
+  state?: string | null
   location?: {
     coordinates: [number, number]
-  }
-  category?: string
+  } | [number, number] | null
+  category?: string | null
   status: string
   analytics?: {
-    averageRating?: number
+    averageRating?: number | null
+    totalRatings?: number | null
+    views?: number | null
+    photoCount?: number | null
+    checkIns?: number | null
+    machineCount?: number | null
   }
   images?: Array<{
     image: {
@@ -35,6 +40,21 @@ interface Store {
     caption?: string
     isPrimary?: boolean
   }>
+  openingHours?: {
+    monday?: string
+    tuesday?: string
+    wednesday?: string
+    thursday?: string
+    friday?: string
+    saturday?: string
+    sunday?: string
+  }
+  contact?: {
+    phone?: string
+  }
+  pricing?: {
+    priceRange?: 'budget' | 'moderate' | 'premium'
+  }
 }
 
 interface MapViewProps {
@@ -113,12 +133,21 @@ function MapController({ center, selectedStore }: { center?: [number, number], s
   const map = useMap()
 
   useEffect(() => {
-    if (selectedStore?.location?.coordinates) {
-      const [lng, lat] = selectedStore.location.coordinates
-      map.flyTo([lat, lng], 16, {
-        animate: true,
-        duration: 1.0
-      })
+    if (selectedStore?.location) {
+      let coords: [number, number] | null = null
+      
+      if (Array.isArray(selectedStore.location)) {
+        coords = [selectedStore.location[1], selectedStore.location[0]] // [lat, lng]
+      } else if (selectedStore.location.coordinates) {
+        coords = [selectedStore.location.coordinates[1], selectedStore.location.coordinates[0]] // [lat, lng]
+      }
+      
+      if (coords) {
+        map.flyTo(coords, 16, {
+          animate: true,
+          duration: 1.0
+        })
+      }
     } else if (center) {
       map.setView(center, map.getZoom())
     }
@@ -199,18 +228,28 @@ export default function MapView({ stores, selectedStore, onStoreSelect, userLoca
         {/* Store markers */}
         {stores
           .filter(store => 
-            store.location?.coordinates && 
+            store.location && 
             store.status === 'active'
           )
           .map((store) => {
-            const [lng, lat] = store.location!.coordinates
+            let coords: [number, number] | null = null
+            
+            if (Array.isArray(store.location)) {
+              coords = [store.location[1], store.location[0]] // [lat, lng]
+            } else if (store.location?.coordinates) {
+              coords = [store.location.coordinates[1], store.location.coordinates[0]] // [lat, lng]
+            }
+            
+            if (!coords) return null
+            
+            const [lat, lng] = coords
             const isSelected = selectedStore?.id === store.id
             
             return (
               <Marker
                 key={store.id}
                 position={[lat, lng]}
-                icon={createCustomIcon(store.category)}
+                icon={createCustomIcon(store.category || 'arcade')}
                 eventHandlers={{
                   click: () => handleStoreClick(store),
                 }}
@@ -233,7 +272,7 @@ export default function MapView({ stores, selectedStore, onStoreSelect, userLoca
                       </h3>
                       
                       <p className="text-sm text-gray-600 mb-2">
-                        {getCategoryLabel(store.category)}
+                        {getCategoryLabel(store.category || undefined)}
                       </p>
 
                       {formatAddress(store) && (

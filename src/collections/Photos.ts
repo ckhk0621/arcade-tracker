@@ -35,11 +35,19 @@ export const Photos: CollectionConfig = {
           const pointsToAward = doc.pointsAwarded || 10
           
           try {
+            // Fetch current user to get current points
+            const currentUser = await req.payload.findByID({
+              collection: 'users',
+              id: doc.uploadedBy
+            })
+            
+            const currentPoints = currentUser.points || 0
+            
             await req.payload.update({
               collection: 'users',
               id: doc.uploadedBy,
               data: {
-                points: { $inc: pointsToAward }
+                points: currentPoints + pointsToAward
               }
             })
           } catch (error) {
@@ -102,7 +110,7 @@ export const Photos: CollectionConfig = {
       name: 'location',
       type: 'point',
       required: false,
-      index: '2dsphere',
+      index: true,
       admin: {
         description: 'GPS coordinates where the photo was taken',
       },

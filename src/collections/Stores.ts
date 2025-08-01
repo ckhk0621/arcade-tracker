@@ -87,7 +87,7 @@ export const Stores: CollectionConfig = {
       name: 'location',
       type: 'point',
       required: false,
-      index: '2dsphere',
+      index: true,
       admin: {
         description: 'GPS coordinates for geolocation queries',
       },
