@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { Map, List, X, Menu, RefreshCw } from 'lucide-react'
+import { Map, List, RefreshCw } from 'lucide-react'
 import { MapView, StoreList } from './map'
 
 interface Store {
@@ -52,13 +52,12 @@ interface MobileStoreLocatorProps {
   onRefresh?: () => Promise<Store[]>
 }
 
-type ViewMode = 'map' | 'list' | 'split'
+type ViewMode = 'map' | 'list'
 
 export default function MobileStoreLocator({ initialStores, onRefresh }: MobileStoreLocatorProps) {
   const [stores, setStores] = useState<Store[]>(initialStores)
   const [selectedStore, setSelectedStore] = useState<Store | null>(null)
-  const [viewMode, setViewMode] = useState<ViewMode>('split')
-  const [showBottomSheet, setShowBottomSheet] = useState(false)
+  const [viewMode, setViewMode] = useState<ViewMode>('map')
   const [userLocation, setUserLocation] = useState<[number, number] | null>(null)
   const [locationError, setLocationError] = useState<string | null>(null)
   const [isRefreshing, setIsRefreshing] = useState(false)
@@ -126,54 +125,41 @@ export default function MobileStoreLocator({ initialStores, onRefresh }: MobileS
 
   const handleStoreSelect = (store: Store) => {
     setSelectedStore(store)
-    if (viewMode === 'list') {
-      setViewMode('split')
-      setShowBottomSheet(true)
-    }
   }
 
   const handleViewModeChange = (mode: ViewMode) => {
     setViewMode(mode)
-    if (mode === 'list') {
-      setShowBottomSheet(true)
-    } else if (mode === 'map') {
-      setShowBottomSheet(false)
-    }
   }
 
   // Get responsive classes based on view mode
   const getContainerClasses = () => {
-    switch (viewMode) {
-      case 'map':
-        return 'grid-rows-1'
-      case 'list':
-        return 'grid-rows-1'
-      case 'split':
-        return 'grid-rows-2 md:grid-rows-1 md:grid-cols-2'
-      default:
-        return 'grid-rows-2'
+    if (viewMode === 'map') {
+      return 'md:grid-cols-[1fr_400px] grid-rows-1'
     }
+    return 'grid-rows-1'
   }
 
   const getMapClasses = () => {
     if (viewMode === 'list') return 'hidden'
-    return 'row-span-1'
+    return 'row-span-1 relative'
   }
 
   const getListClasses = () => {
-    if (viewMode === 'map') return 'hidden'
+    if (viewMode === 'map') {
+      return 'hidden md:block md:border-l md:border-border'
+    }
     return 'row-span-1'
   }
 
   return (
-    <div className="h-screen bg-gray-100 flex flex-col">
+    <div className="h-screen bg-background flex flex-col">
       {/* Top Navigation Bar */}
-      <div className="bg-white shadow-sm border-b border-gray-200 px-4 py-3 flex items-center justify-between z-20">
-        <div className="flex items-center space-x-3">
-          <h1 className="text-xl font-bold text-gray-900">Arcade Finder</h1>
+      <div className="bg-background/95 backdrop-blur-sm border-b border-border px-4 py-2 flex items-center justify-between z-20 shadow-sm">
+        <div className="flex items-center space-x-2">
+          <h1 className="text-lg font-semibold text-foreground">Arcade Finder</h1>
           {userLocation && (
-            <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">
-              Location Active
+            <span className="text-xs bg-green-100 text-green-800 px-2 py-0.5 rounded-full font-medium">
+              📍
             </span>
           )}
         </div>
@@ -192,35 +178,24 @@ export default function MobileStoreLocator({ initialStores, onRefresh }: MobileS
           )}
 
           {/* View Mode Toggle */}
-          <div className="flex bg-gray-100 rounded-lg p-1">
+          <div className="flex bg-muted rounded-lg p-1">
             <button
               onClick={() => handleViewModeChange('map')}
-              className={`p-2 rounded-md transition-colors ${
+              className={`p-2 rounded-md transition-all duration-200 ${
                 viewMode === 'map' 
-                  ? 'bg-white text-blue-600 shadow-sm' 
-                  : 'text-gray-600 hover:text-gray-900'
+                  ? 'bg-background text-primary shadow-sm' 
+                  : 'text-muted-foreground hover:text-foreground'
               }`}
               aria-label="Map view"
             >
               <Map className="w-4 h-4" />
             </button>
             <button
-              onClick={() => handleViewModeChange('split')}
-              className={`p-2 rounded-md transition-colors ${
-                viewMode === 'split' 
-                  ? 'bg-white text-blue-600 shadow-sm' 
-                  : 'text-gray-600 hover:text-gray-900'
-              }`}
-              aria-label="Split view"
-            >
-              <Menu className="w-4 h-4" />
-            </button>
-            <button
               onClick={() => handleViewModeChange('list')}
-              className={`p-2 rounded-md transition-colors ${
+              className={`p-2 rounded-md transition-all duration-200 ${
                 viewMode === 'list' 
-                  ? 'bg-white text-blue-600 shadow-sm' 
-                  : 'text-gray-600 hover:text-gray-900'
+                  ? 'bg-background text-primary shadow-sm' 
+                  : 'text-muted-foreground hover:text-foreground'
               }`}
               aria-label="List view"
             >
@@ -259,7 +234,7 @@ export default function MobileStoreLocator({ initialStores, onRefresh }: MobileS
           />
         </div>
 
-        {/* List View */}
+        {/* List View - Sticky on desktop when in map mode */}
         <div className={getListClasses()}>
           <StoreList
             stores={stores}
@@ -269,72 +244,10 @@ export default function MobileStoreLocator({ initialStores, onRefresh }: MobileS
             onRefresh={handleRefresh}
             isRefreshing={isRefreshing}
             className="h-full"
+            compact={viewMode === 'map'}
           />
         </div>
       </div>
-
-      {/* Mobile Bottom Sheet for Split View */}
-      {viewMode === 'split' && (
-        <div className="md:hidden">
-          {/* Bottom Sheet Overlay */}
-          {showBottomSheet && (
-            <div 
-              className="fixed inset-0 bg-black bg-opacity-25 z-30"
-              onClick={() => setShowBottomSheet(false)}
-            />
-          )}
-
-          {/* Bottom Sheet */}
-          <div 
-            className={`fixed bottom-0 left-0 right-0 bg-white rounded-t-2xl shadow-2xl z-40 transform transition-transform duration-300 ${
-              showBottomSheet ? 'translate-y-0' : 'translate-y-full'
-            }`}
-            style={{ height: '60vh' }}
-          >
-            {/* Handle */}
-            <div className="flex justify-center py-2">
-              <div className="w-10 h-1 bg-gray-300 rounded-full" />
-            </div>
-
-            {/* Header */}
-            <div className="flex items-center justify-between px-4 py-2 border-b border-gray-200">
-              <h2 className="text-lg font-semibold text-gray-900">
-                {stores.filter(s => s.status === 'active').length} Locations
-              </h2>
-              <button
-                onClick={() => setShowBottomSheet(false)}
-                className="p-2 text-gray-400 hover:text-gray-600"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            {/* List Content */}
-            <div className="flex-1 overflow-hidden">
-              <StoreList
-                stores={stores}
-                selectedStore={selectedStore}
-                onStoreSelect={handleStoreSelect}
-                userLocation={userLocation}
-                onRefresh={handleRefresh}
-                isRefreshing={isRefreshing}
-                className="h-full"
-              />
-            </div>
-          </div>
-
-          {/* Bottom Sheet Trigger */}
-          {!showBottomSheet && (
-            <button
-              onClick={() => setShowBottomSheet(true)}
-              className="fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-white shadow-lg rounded-full px-6 py-3 flex items-center space-x-2 z-30 border border-gray-200"
-            >
-              <List className="w-4 h-4" />
-              <span className="font-medium">View List</span>
-            </button>
-          )}
-        </div>
-      )}
     </div>
   )
 }

@@ -59,6 +59,7 @@ interface StoreListProps {
   className?: string
   onRefresh?: () => void
   isRefreshing?: boolean
+  compact?: boolean
 }
 
 const calculateDistance = (
@@ -132,7 +133,8 @@ export default function StoreList({
   userLocation, 
   className,
   onRefresh,
-  isRefreshing 
+  isRefreshing,
+  compact = false
 }: StoreListProps) {
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedCategory, setSelectedCategory] = useState<string>('all')
@@ -240,71 +242,97 @@ export default function StoreList({
   return (
     <div className={cn("flex flex-col h-full bg-background", className)}>
       {/* Search and Filter Header */}
-      <div className="sticky top-0 z-10 bg-background border-b p-4 space-y-3">
+      <div className={cn(
+        "sticky top-0 z-10 bg-background border-b space-y-3",
+        compact ? "p-2" : "p-4"
+      )}>
         {/* Search Bar */}
         <div className="relative">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
           <Input
             type="text"
-            placeholder="Search stores..."
+            placeholder={compact ? "Search..." : "Search stores..."}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10"
+            className={cn("pl-10", compact && "h-8 text-sm")}
           />
         </div>
 
-        {/* Filter Toggle and Sort */}
-        <div className="flex justify-between items-center">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setShowFilters(!showFilters)}
-            className="flex items-center space-x-1"
-          >
-            <Filter className="w-4 h-4" />
-            <span>Filters</span>
-            <ChevronDown className={cn("w-3 h-3 transition-transform", showFilters && "rotate-180")} />
-          </Button>
+        {/* Compact mode: simplified controls */}
+        {compact ? (
+          <div className="flex justify-between items-center">
+            <Select value={sortBy} onValueChange={(value) => setSortBy(value as any)}>
+              <SelectTrigger className="w-32 h-8 text-xs">
+                <SelectValue placeholder="Sort..." />
+              </SelectTrigger>
+              <SelectContent>
+                {userLocation && (
+                  <SelectItem value="distance">Distance</SelectItem>
+                )}
+                <SelectItem value="rating">Rating</SelectItem>
+                <SelectItem value="name">Name</SelectItem>
+              </SelectContent>
+            </Select>
+            <div className="text-xs text-muted-foreground">
+              {filteredAndSortedStores.length}
+            </div>
+          </div>
+        ) : (
+          <>
+            {/* Filter Toggle and Sort */}
+            <div className="flex justify-between items-center">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setShowFilters(!showFilters)}
+                className="flex items-center space-x-1"
+              >
+                <Filter className="w-4 h-4" />
+                <span>Filters</span>
+                <ChevronDown className={cn("w-3 h-3 transition-transform", showFilters && "rotate-180")} />
+              </Button>
 
-          <Select value={sortBy} onValueChange={(value) => setSortBy(value as any)}>
-            <SelectTrigger className="w-40">
-              <SelectValue placeholder="Sort by..." />
-            </SelectTrigger>
-            <SelectContent>
-              {userLocation && (
-                <SelectItem value="distance">By Distance</SelectItem>
-              )}
-              <SelectItem value="rating">By Rating</SelectItem>
-              <SelectItem value="name">By Name</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-
-        {/* Expandable Filters */}
-        {showFilters && (
-          <div className="space-y-3 pt-2 border-t">
-            <div>
-              <label className="block text-sm font-medium mb-1">Category</label>
-              <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Select a category..." />
+              <Select value={sortBy} onValueChange={(value) => setSortBy(value as any)}>
+                <SelectTrigger className="w-40">
+                  <SelectValue placeholder="Sort by..." />
                 </SelectTrigger>
                 <SelectContent>
-                  {categories.map(category => (
-                    <SelectItem key={category.value} value={category.value}>
-                      {category.label}
-                    </SelectItem>
-                  ))}
+                  {userLocation && (
+                    <SelectItem value="distance">By Distance</SelectItem>
+                  )}
+                  <SelectItem value="rating">By Rating</SelectItem>
+                  <SelectItem value="name">By Name</SelectItem>
                 </SelectContent>
               </Select>
             </div>
-          </div>
-        )}
 
-        {/* Results Count */}
-        <div className="text-sm text-muted-foreground">
-          {filteredAndSortedStores.length} store{filteredAndSortedStores.length !== 1 ? 's' : ''} found
-        </div>
+            {/* Expandable Filters */}
+            {showFilters && (
+              <div className="space-y-3 pt-2 border-t">
+                <div>
+                  <label className="block text-sm font-medium mb-1">Category</label>
+                  <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Select a category..." />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {categories.map(category => (
+                        <SelectItem key={category.value} value={category.value}>
+                          {category.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+            )}
+
+            {/* Results Count */}
+            <div className="text-sm text-muted-foreground">
+              {filteredAndSortedStores.length} store{filteredAndSortedStores.length !== 1 ? 's' : ''} found
+            </div>
+          </>
+        )}
       </div>
 
       {/* Store List */}
@@ -326,7 +354,7 @@ export default function StoreList({
             <p className="text-sm">Try adjusting your search or filters</p>
           </div>
         ) : (
-          <div className="space-y-2 p-2">
+          <div className={cn("space-y-2", compact ? "p-1" : "p-2")}>
             {filteredAndSortedStores.map((store) => {
               const isSelected = selectedStore?.id === store.id
               let distance: number | null = null
@@ -344,31 +372,17 @@ export default function StoreList({
                   key={store.id}
                   onClick={() => onStoreSelect(store)}
                   className={cn(
-                    "cursor-pointer transition-all duration-200 hover:shadow-md",
-                    isSelected && "ring-2 ring-primary"
+                    "cursor-pointer transition-all duration-200 hover:shadow-md hover:shadow-primary/5 border-border/50 hover:border-primary/20",
+                    isSelected && "ring-2 ring-primary shadow-md shadow-primary/10",
+                    compact && "hover:bg-accent/5"
                   )}
                 >
-                  <CardContent className="p-4">
-                    <div className="flex space-x-3">
-                      {/* Store Image */}
-                      <div className="flex-shrink-0 w-16 h-16 bg-muted rounded-lg overflow-hidden">
-                        {store.images?.find(img => img.isPrimary)?.image?.url ? (
-                          <img
-                            src={store.images.find(img => img.isPrimary)!.image.url}
-                            alt={store.name}
-                            className="w-full h-full object-cover"
-                          />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center">
-                            <MapPin className="w-6 h-6 text-muted-foreground" />
-                          </div>
-                        )}
-                      </div>
-
-                      {/* Store Info */}
-                      <div className="flex-1 min-w-0">
+                  <CardContent className={cn(compact ? "p-3" : "p-4")}>
+                    {compact ? (
+                      // Compact layout - essential info only
+                      <div className="space-y-1">
                         <div className="flex items-start justify-between">
-                          <h3 className="font-semibold truncate pr-2">
+                          <h3 className="font-medium text-sm truncate pr-2 text-foreground">
                             {store.name}
                           </h3>
                           {distance !== null && (
@@ -381,57 +395,100 @@ export default function StoreList({
                             </div>
                           )}
                         </div>
-
-                        <div className="flex items-center space-x-2 mt-1">
-                          <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${getCategoryColor(store.category || undefined)}`}>
-                            {getCategoryLabel(store.category || undefined)}
-                          </span>
-                          {store.pricing?.priceRange && (
-                            <span className="text-sm text-muted-foreground">
-                              {getPriceRangeDisplay(store.pricing.priceRange)}
-                            </span>
-                          )}
-                        </div>
-
-                        {/* Rating */}
-                        {store.analytics?.averageRating && store.analytics.averageRating > 0 && (
-                          <div className="flex items-center mt-1">
-                            <div className="flex items-center">
-                              {renderStars(Math.round(store.analytics.averageRating))}
-                            </div>
-                            <span className="ml-1 text-sm text-muted-foreground">
-                              {store.analytics.averageRating.toFixed(1)} 
-                              {store.analytics.totalRatings && (
-                                <span className="text-muted-foreground/70"> ({store.analytics.totalRatings})</span>
-                              )}
-                            </span>
-                          </div>
-                        )}
-
-                        {/* Address */}
+                        
+                        {/* Address - truncated */}
                         {formatAddress(store) && (
-                          <p className="text-sm text-muted-foreground mt-1 truncate">
+                          <p className="text-xs text-muted-foreground truncate">
                             {formatAddress(store)}
                           </p>
                         )}
-
-                        {/* Hours and Phone */}
-                        <div className="flex items-center space-x-4 mt-2 text-xs text-muted-foreground">
-                          {getTodayHours(store.openingHours) && (
-                            <div className="flex items-center">
-                              <Clock className="w-3 h-3 mr-1" />
-                              {getTodayHours(store.openingHours)}
-                            </div>
-                          )}
-                          {store.contact?.phone && (
-                            <div className="flex items-center">
-                              <Phone className="w-3 h-3 mr-1" />
-                              {store.contact.phone}
+                      </div>
+                    ) : (
+                      // Full layout
+                      <div className="flex space-x-3">
+                        {/* Store Image */}
+                        <div className="flex-shrink-0 w-16 h-16 bg-muted rounded-lg overflow-hidden">
+                          {store.images?.find(img => img.isPrimary)?.image?.url ? (
+                            <img
+                              src={store.images.find(img => img.isPrimary)!.image.url}
+                              alt={store.name}
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center">
+                              <MapPin className="w-6 h-6 text-muted-foreground" />
                             </div>
                           )}
                         </div>
+
+                        {/* Store Info */}
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-start justify-between">
+                            <h3 className="font-semibold truncate pr-2">
+                              {store.name}
+                            </h3>
+                            {distance !== null && (
+                              <div className="flex items-center text-xs text-muted-foreground flex-shrink-0">
+                                <Navigation className="w-3 h-3 mr-1" />
+                                {distance < 1 
+                                  ? `${Math.round(distance * 5280)} ft`  
+                                  : `${distance.toFixed(1)} mi`
+                                }
+                              </div>
+                            )}
+                          </div>
+
+                          <div className="flex items-center space-x-2 mt-1">
+                            <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${getCategoryColor(store.category || undefined)}`}>
+                              {getCategoryLabel(store.category || undefined)}
+                            </span>
+                            {store.pricing?.priceRange && (
+                              <span className="text-sm text-muted-foreground">
+                                {getPriceRangeDisplay(store.pricing.priceRange)}
+                              </span>
+                            )}
+                          </div>
+
+                          {/* Rating */}
+                          {store.analytics?.averageRating && store.analytics.averageRating > 0 && (
+                            <div className="flex items-center mt-1">
+                              <div className="flex items-center">
+                                {renderStars(Math.round(store.analytics.averageRating))}
+                              </div>
+                              <span className="ml-1 text-sm text-muted-foreground">
+                                {store.analytics.averageRating.toFixed(1)} 
+                                {store.analytics.totalRatings && (
+                                  <span className="text-muted-foreground/70"> ({store.analytics.totalRatings})</span>
+                                )}
+                              </span>
+                            </div>
+                          )}
+
+                          {/* Address */}
+                          {formatAddress(store) && (
+                            <p className="text-sm text-muted-foreground mt-1 truncate">
+                              {formatAddress(store)}
+                            </p>
+                          )}
+
+                          {/* Hours and Phone */}
+                          <div className="flex items-center space-x-4 mt-2 text-xs text-muted-foreground">
+                            {getTodayHours(store.openingHours) && (
+                              <div className="flex items-center">
+                                <Clock className="w-3 h-3 mr-1" />
+                                {getTodayHours(store.openingHours)}
+                              </div>
+                            )}
+                            {store.contact?.phone && (
+                              <div className="flex items-center">
+                                <Phone className="w-3 h-3 mr-1" />
+                                {store.contact.phone}
+                              </div>
+                            )}
+                          </div>
+                        </div>
                       </div>
-                    </div>
+                    )}
                   </CardContent>
                 </Card>
               )
