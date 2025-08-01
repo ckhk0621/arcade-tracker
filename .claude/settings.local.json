@@ -20,7 +20,12 @@
       "WebFetch(domain:www.jumpingym.com)",
       "Bash(node:*)",
       "Bash(pnpm dlx:*)",
-      "Bash(pnpm run:*)"
+      "Bash(pnpm run:*)",
+      "Bash(npm run:*)",
+      "Bash(npx tsc:*)",
+      "Bash(grep:*)",
+      "Bash(curl:*)",
+      "Bash(rm:*)"
     ],
     "deny": []
   }

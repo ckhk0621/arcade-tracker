@@ -18,7 +18,7 @@ export const Users: CollectionConfig = {
         
         // Update last modified for real-time tracking
         if (operation === 'update') {
-          data.lastModified = new Date()
+          data.lastModified = new Date().toISOString()
         }
         
         return data
@@ -26,26 +26,47 @@ export const Users: CollectionConfig = {
     ],
     afterChange: [
       async ({ doc, operation, req }) => {
-        // Update user activity metrics on login/update
-        if (operation === 'update' && doc.activity) {
+        // Only track activity on successful user authentication/login operations
+        // This hook will run when PayloadCMS updates user records during auth
+        if (operation === 'update' && req.user?.id === doc.id && doc.id) {
           try {
-            // Track activity for real-time features
-            const now = new Date()
-            const totalSessions = (doc.activity?.totalSessions || 0) + 1
+            // Safely access nested properties with proper null checks
+            const activity = doc.activity || {}
+            const streak = activity.streak || { current: 0, longest: 0, lastStreakDate: null }
             
-            await req.payload.update({
-              collection: 'users',
-              id: doc.id,
-              data: {
-                activity: {
-                  ...doc.activity,
-                  lastActive: now,
-                  totalSessions: totalSessions
-                }
-              }
-            })
+            // Only update if this looks like a fresh login (not an admin edit)
+            // We check if lastActive is missing or old to avoid excessive updates
+            const isLoginUpdate = !activity.lastActive || 
+              (new Date().getTime() - new Date(activity.lastActive).getTime()) > 60000 // 1 minute
+            
+            if (isLoginUpdate) {
+              const now = new Date().toISOString()
+              
+              // Increment session count safely
+              const newSessionCount = (activity.totalSessions || 0) + 1
+              
+              // Update activity without triggering infinite recursion
+              await req.payload.update({
+                collection: 'users',
+                id: doc.id,
+                data: {
+                  activity: {
+                    lastActive: now,
+                    joinDate: activity.joinDate || now,
+                    totalSessions: newSessionCount,
+                    streak: {
+                      current: streak.current || 0,
+                      longest: streak.longest || 0,
+                      lastStreakDate: streak.lastStreakDate || now
+                    }
+                  }
+                },
+                depth: 0 // Prevent deep population to avoid performance issues
+              })
+            }
           } catch (error) {
-            req.payload.logger.error('Failed to update user activity:', error)
+            // Log error but never throw - this ensures login flow continues
+            console.error('User activity update failed:', error)
           }
         }
       },
@@ -234,7 +255,7 @@ export const Users: CollectionConfig = {
         {
           name: 'joinDate',
           type: 'date',
-          defaultValue: () => new Date(),
+          defaultValue: () => new Date().toISOString(),
           admin: {
             description: 'Date user joined',
           },
@@ -354,7 +375,7 @@ export const Users: CollectionConfig = {
         {
           name: 'earnedAt',
           type: 'date',
-          defaultValue: () => new Date(),
+          defaultValue: () => new Date().toISOString(),
         },
       ],
       admin: {
