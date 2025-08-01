@@ -339,6 +339,10 @@ export interface Store {
    */
   state?: string | null;
   /**
+   * Region within Hong Kong for filtering locations
+   */
+  region?: ('hong-kong-island' | 'kowloon' | 'new-territories') | null;
+  /**
    * ZIP or postal code
    */
   postalCode?: string | null;
@@ -1003,6 +1007,7 @@ export interface StoresSelect<T extends boolean = true> {
   address?: T;
   city?: T;
   state?: T;
+  region?: T;
   postalCode?: T;
   country?: T;
   location?: T;

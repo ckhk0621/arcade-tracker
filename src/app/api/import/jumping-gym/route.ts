@@ -184,8 +184,8 @@ export async function GET(req: NextRequest) {
             }
           },
           {
-            tags: {
-              contains: '{"tag":"trampoline"}'
+            name: {
+              contains: '太古城中心'
             }
           }
         ]

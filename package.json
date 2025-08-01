@@ -18,7 +18,10 @@
     "test:int": "cross-env NODE_OPTIONS=--no-deprecation vitest run --config ./vitest.config.mts",
     "import:jumping-gym": "cross-env NODE_OPTIONS=--no-deprecation node scripts/import-jumping-gym.js",
     "import:jumping-gym:status": "cross-env NODE_OPTIONS=--no-deprecation node scripts/import-jumping-gym.js status",
-    "import:jumping-gym:process": "cross-env NODE_OPTIONS=--no-deprecation node scripts/import-jumping-gym.js process"
+    "import:jumping-gym:process": "cross-env NODE_OPTIONS=--no-deprecation node scripts/import-jumping-gym.js process",
+    "setup:regions": "cross-env NODE_OPTIONS=--no-deprecation node -r dotenv/config scripts/setup-regional-stores.js",
+    "update:regions": "cross-env NODE_OPTIONS=--no-deprecation node -r dotenv/config scripts/update-store-regions.js",
+    "import:jumping-gym-stores": "cross-env NODE_OPTIONS=--no-deprecation node -r dotenv/config scripts/import-jumping-gym-stores.js"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.1",

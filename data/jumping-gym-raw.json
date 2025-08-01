@@ -3,84 +3,472 @@
     "name": "太古城中心",
     "address": "太古城中心第二期103B舖",
     "phone": "25600003",
-    "district": "太古",
-    "hours": "週一至週四: 10:30-22:00, 週五: 10:30-22:30, 週六: 10:00-22:30, 週日及公眾假期: 10:00-22:00"
+    "hours": {
+      "monday": "10:30-22:00",
+      "tuesday": "10:30-22:00",
+      "wednesday": "10:30-22:00",
+      "thursday": "10:30-22:00",
+      "friday": "10:30-22:30",
+      "saturday": "10:00-22:30",
+      "sunday": "10:00-22:00"
+    },
+    "features": [
+      "彈跳迷宮",
+      "派對"
+    ],
+    "region": "hong-kong-island"
   },
   {
     "name": "北角匯二期",
     "address": "北角匯二期1樓114-115號舖",
     "phone": "27309618",
-    "district": "北角",
-    "hours": "週一至週五: 11:00-22:00, 週六、日及公眾假期: 10:30-22:30"
+    "hours": {
+      "monday": "11:00-22:00",
+      "tuesday": "11:00-22:00",
+      "wednesday": "11:00-22:00",
+      "thursday": "11:00-22:00",
+      "friday": "11:00-22:00",
+      "saturday": "10:30-22:30",
+      "sunday": "10:30-22:30"
+    },
+    "features": [],
+    "region": "hong-kong-island"
   },
   {
-    "name": "荃灣愉景新城",
-    "address": "荃灣愉景新城1樓110-112號舖",
-    "phone": "24980238",
-    "district": "荃灣",
-    "hours": "週一至週四: 10:30-22:00, 週五: 10:30-22:30, 週六: 10:00-22:30, 週日及公眾假期: 10:00-22:00"
+    "name": "小西灣藍灣廣場",
+    "address": "小西灣藍灣廣場一樓101B號",
+    "phone": "22641433",
+    "hours": {
+      "monday": "11:00-22:00",
+      "tuesday": "11:00-22:00",
+      "wednesday": "11:00-22:00",
+      "thursday": "11:00-22:00",
+      "friday": "11:00-22:00",
+      "saturday": "10:00-22:00",
+      "sunday": "10:00-22:00"
+    },
+    "features": [],
+    "region": "hong-kong-island"
   },
   {
-    "name": "屯門市廣場二期",
-    "address": "屯門市廣場二期1樓1155-1156號舖",
-    "phone": "24411884",
-    "district": "屯門",
-    "hours": "週一至週四: 10:30-22:00, 週五: 10:30-22:30, 週六: 10:00-22:30, 週日及公眾假期: 10:00-22:00"
+    "name": "銅鑼灣利舞臺",
+    "address": "銅鑼灣波斯富街99號利舞臺4樓",
+    "phone": "26426166",
+    "hours": {
+      "monday": "11:00-22:00",
+      "tuesday": "11:00-22:00",
+      "wednesday": "11:00-22:00",
+      "thursday": "11:00-22:00",
+      "friday": "11:00-22:00",
+      "saturday": "10:30-22:00",
+      "sunday": "10:30-22:00"
+    },
+    "features": [],
+    "region": "hong-kong-island"
   },
   {
-    "name": "沙田新城市廣場三期",
-    "address": "沙田新城市廣場三期3樓301號舖",
-    "phone": "26029738",
-    "district": "沙田",
-    "hours": "週一至週四: 10:30-22:00, 週五: 10:30-22:30, 週六: 10:00-22:30, 週日及公眾假期: 10:00-22:00"
+    "name": "銅鑼灣金百利",
+    "address": "銅鑼灣記利佐治街1號金百利地庫1樓 及 2樓",
+    "phone": "35681956",
+    "hours": {
+      "monday": "12:00-23:00",
+      "tuesday": "12:00-23:00",
+      "wednesday": "12:00-23:00",
+      "thursday": "12:00-23:00",
+      "friday": "12:00-23:30",
+      "saturday": "11:30-23:30",
+      "sunday": "11:30-23:00"
+    },
+    "features": [],
+    "region": "hong-kong-island"
   },
   {
-    "name": "將軍澳東港城",
-    "address": "將軍澳東港城2樓235-236號舖",
-    "phone": "27027238",
-    "district": "將軍澳",
-    "hours": "週一至週四: 10:30-22:00, 週五: 10:30-22:30, 週六: 10:00-22:30, 週日及公眾假期: 10:00-22:00"
+    "name": "黃竹坑The Southside",
+    "address": "黃竹坑The Southside G14-G15號舖",
+    "phone": "35681987",
+    "hours": {
+      "monday": "11:00-22:00",
+      "tuesday": "11:00-22:00",
+      "wednesday": "11:00-22:00",
+      "thursday": "11:00-22:00",
+      "friday": "11:00-22:00",
+      "saturday": "10:30-22:00",
+      "sunday": "10:30-22:00"
+    },
+    "features": [],
+    "region": "hong-kong-island"
+  },
+  {
+    "name": "黃埔花園",
+    "address": "黃埔花園十一期聚寶坊地庫",
+    "phone": "23623855",
+    "hours": {
+      "monday": "11:00-22:00",
+      "tuesday": "11:00-22:00",
+      "wednesday": "11:00-22:00",
+      "thursday": "11:00-22:00",
+      "friday": "11:00-22:30",
+      "saturday": "10:00-22:30",
+      "sunday": "10:00-22:00"
+    },
+    "features": [
+      "彈跳迷宮",
+      "派對"
+    ],
+    "region": "kowloon"
+  },
+  {
+    "name": "尖沙咀海運大厦",
+    "address": "尖沙咀海運大厦地下OT G11號舖",
+    "phone": "23779551",
+    "hours": {
+      "monday": "10:00-22:00",
+      "tuesday": "10:00-22:00",
+      "wednesday": "10:00-22:00",
+      "thursday": "10:00-22:00",
+      "friday": "10:00-22:30",
+      "saturday": "10:00-22:30",
+      "sunday": "10:00-22:00"
+    },
+    "features": [],
+    "region": "kowloon"
+  },
+  {
+    "name": "旺角Start Centre",
+    "address": "旺角先達廣場地庫B01A號舖",
+    "phone": "23657633",
+    "hours": {
+      "monday": "11:00-22:00",
+      "tuesday": "11:00-22:00",
+      "wednesday": "11:00-22:00",
+      "thursday": "11:00-22:00",
+      "friday": "11:00-22:00",
+      "saturday": "10:30-22:00",
+      "sunday": "10:30-22:00"
+    },
+    "features": [],
+    "region": "kowloon"
+  },
+  {
+    "name": "旺角新世紀廣場",
+    "address": "旺角新世紀廣場地庫A22號舖",
+    "phone": "23900300",
+    "hours": {
+      "monday": "11:00-22:00",
+      "tuesday": "11:00-22:00",
+      "wednesday": "11:00-22:00",
+      "thursday": "11:00-22:00",
+      "friday": "11:00-22:00",
+      "saturday": "10:30-22:00",
+      "sunday": "10:30-22:00"
+    },
+    "features": [],
+    "region": "kowloon"
+  },
+  {
+    "name": "旺角T.O.P",
+    "address": "旺角彌敦道794-802號T.O.P購物城12樓",
+    "phone": "25520608",
+    "hours": {
+      "monday": "11:00-22:00",
+      "tuesday": "11:00-22:00",
+      "wednesday": "11:00-22:00",
+      "thursday": "11:00-22:00",
+      "friday": "11:00-22:00",
+      "saturday": "10:30-22:00",
+      "sunday": "10:30-22:00"
+    },
+    "features": [],
+    "region": "kowloon"
+  },
+  {
+    "name": "長沙灣西九龍中心",
+    "address": "長沙灣西九龍中心4樓4016-4017號舖",
+    "phone": "27292388",
+    "hours": {
+      "monday": "11:00-22:00",
+      "tuesday": "11:00-22:00",
+      "wednesday": "11:00-22:00",
+      "thursday": "11:00-22:00",
+      "friday": "11:00-22:00",
+      "saturday": "10:30-22:00",
+      "sunday": "10:30-22:00"
+    },
+    "features": [],
+    "region": "kowloon"
   },
   {
     "name": "觀塘apm",
     "address": "觀塘apm 5樓L5-01號舖",
     "phone": "23493228",
-    "district": "觀塘",
-    "hours": "週一至週日及公眾假期: 11:00-24:00"
+    "hours": {
+      "monday": "11:00-24:00",
+      "tuesday": "11:00-24:00",
+      "wednesday": "11:00-24:00",
+      "thursday": "11:00-24:00",
+      "friday": "11:00-24:00",
+      "saturday": "11:00-24:00",
+      "sunday": "11:00-24:00"
+    },
+    "features": [],
+    "region": "kowloon"
+  },
+  {
+    "name": "觀塘港貿中心",
+    "address": "觀塘成業街6號港貿中心2樓205-206號舖",
+    "phone": "27962388",
+    "hours": {
+      "monday": "11:00-22:00",
+      "tuesday": "11:00-22:00",
+      "wednesday": "11:00-22:00",
+      "thursday": "11:00-22:00",
+      "friday": "11:00-22:00",
+      "saturday": "10:30-22:00",
+      "sunday": "10:30-22:00"
+    },
+    "features": [],
+    "region": "kowloon"
   },
   {
     "name": "尖沙咀K11 MUSEA",
     "address": "尖沙咀K11 MUSEA 6樓614-615號舖",
     "phone": "27239988",
-    "district": "尖沙咀",
-    "hours": "週一至週四: 10:30-22:00, 週五: 10:30-22:30, 週六: 10:00-22:30, 週日及公眾假期: 10:00-22:00"
+    "hours": {
+      "monday": "10:30-22:00",
+      "tuesday": "10:30-22:00",
+      "wednesday": "10:30-22:00",
+      "thursday": "10:30-22:00",
+      "friday": "10:30-22:30",
+      "saturday": "10:00-22:30",
+      "sunday": "10:00-22:00"
+    },
+    "features": [],
+    "region": "kowloon"
   },
   {
     "name": "九龍灣德福廣場二期",
     "address": "九龍灣德福廣場二期6樓607-608號舖",
     "phone": "27557228",
-    "district": "九龍灣",
-    "hours": "週一至週四: 10:30-22:00, 週五: 10:30-22:30, 週六: 10:00-22:30, 週日及公眾假期: 10:00-22:00"
+    "hours": {
+      "monday": "10:30-22:00",
+      "tuesday": "10:30-22:00",
+      "wednesday": "10:30-22:00",
+      "thursday": "10:30-22:00",
+      "friday": "10:30-22:30",
+      "saturday": "10:00-22:30",
+      "sunday": "10:00-22:00"
+    },
+    "features": [],
+    "region": "kowloon"
   },
   {
     "name": "旺角朗豪坊",
     "address": "旺角朗豪坊13樓1302-1303號舖",
     "phone": "27707228",
-    "district": "旺角",
-    "hours": "週一至週四: 10:30-22:00, 週五: 10:30-22:30, 週六: 10:00-22:30, 週日及公眾假期: 10:00-22:00"
+    "hours": {
+      "monday": "10:30-22:00",
+      "tuesday": "10:30-22:00",
+      "wednesday": "10:30-22:00",
+      "thursday": "10:30-22:00",
+      "friday": "10:30-22:30",
+      "saturday": "10:00-22:30",
+      "sunday": "10:00-22:00"
+    },
+    "features": [],
+    "region": "kowloon"
+  },
+  {
+    "name": "將軍澳新都城2期",
+    "address": "將軍澳新都城2期1樓,1046-47號舖",
+    "phone": "25193266",
+    "hours": {
+      "monday": "11:00-22:00",
+      "tuesday": "11:00-22:00",
+      "wednesday": "11:00-22:00",
+      "thursday": "11:00-22:00",
+      "friday": "11:00-22:00",
+      "saturday": "10:30-22:00",
+      "sunday": "10:30-22:00"
+    },
+    "features": [],
+    "region": "new-territories"
+  },
+  {
+    "name": "將軍澳廣場",
+    "address": "將軍澳廣場1樓1-082至084 號舖",
+    "phone": "24072611",
+    "hours": {
+      "monday": "11:00-22:00",
+      "tuesday": "11:00-22:00",
+      "wednesday": "11:00-22:00",
+      "thursday": "11:00-22:00",
+      "friday": "11:00-22:00",
+      "saturday": "10:00-22:00",
+      "sunday": "10:00-22:00"
+    },
+    "features": [],
+    "region": "new-territories"
+  },
+  {
+    "name": "將軍澳東港城",
+    "address": "將軍澳東港城2樓237A & 237B",
+    "phone": "23879170",
+    "hours": {
+      "monday": "11:00-22:00",
+      "tuesday": "11:00-22:00",
+      "wednesday": "11:00-22:00",
+      "thursday": "11:00-22:00",
+      "friday": "11:00-22:00",
+      "saturday": "10:00-22:00",
+      "sunday": "10:00-22:00"
+    },
+    "features": [],
+    "region": "new-territories"
+  },
+  {
+    "name": "將軍澳翩滙坊",
+    "address": "將軍澳翩滙坊地庫Shop1&2",
+    "phone": "28241338",
+    "hours": {
+      "monday": "11:00-22:00",
+      "tuesday": "11:00-22:00",
+      "wednesday": "11:00-22:00",
+      "thursday": "11:00-22:00",
+      "friday": "11:00-22:00",
+      "saturday": "10:00-22:00",
+      "sunday": "10:00-22:00"
+    },
+    "features": [
+      "彈跳迷宮"
+    ],
+    "region": "new-territories"
+  },
+  {
+    "name": "荃灣愉景新城",
+    "address": "荃灣愉景新城1樓110-112號舖",
+    "phone": "24980238",
+    "hours": {
+      "monday": "10:30-22:00",
+      "tuesday": "10:30-22:00",
+      "wednesday": "10:30-22:00",
+      "thursday": "10:30-22:00",
+      "friday": "10:30-22:30",
+      "saturday": "10:00-22:30",
+      "sunday": "10:00-22:00"
+    },
+    "features": [],
+    "region": "new-territories"
+  },
+  {
+    "name": "屯門市廣場二期",
+    "address": "屯門市廣場二期1樓1155-1156號舖",
+    "phone": "24411884",
+    "hours": {
+      "monday": "10:30-22:00",
+      "tuesday": "10:30-22:00",
+      "wednesday": "10:30-22:00",
+      "thursday": "10:30-22:00",
+      "friday": "10:30-22:30",
+      "saturday": "10:00-22:30",
+      "sunday": "10:00-22:00"
+    },
+    "features": [],
+    "region": "new-territories"
+  },
+  {
+    "name": "沙田新城市廣場三期",
+    "address": "沙田新城市廣場三期3樓301號舖",
+    "phone": "26029738",
+    "hours": {
+      "monday": "10:30-22:00",
+      "tuesday": "10:30-22:00",
+      "wednesday": "10:30-22:00",
+      "thursday": "10:30-22:00",
+      "friday": "10:30-22:30",
+      "saturday": "10:00-22:30",
+      "sunday": "10:00-22:00"
+    },
+    "features": [],
+    "region": "new-territories"
   },
   {
     "name": "元朗廣場",
     "address": "元朗廣場1樓122號舖",
     "phone": "24433228",
-    "district": "元朗",
-    "hours": "週一至週四: 10:30-22:00, 週五: 10:30-22:30, 週六: 10:00-22:30, 週日及公眾假期: 10:00-22:00"
+    "hours": {
+      "monday": "10:30-22:00",
+      "tuesday": "10:30-22:00",
+      "wednesday": "10:30-22:00",
+      "thursday": "10:30-22:00",
+      "friday": "10:30-22:30",
+      "saturday": "10:00-22:30",
+      "sunday": "10:00-22:00"
+    },
+    "features": [],
+    "region": "new-territories"
   },
   {
     "name": "大埔超級城",
     "address": "大埔超級城C區2樓214號舖",
     "phone": "26653228",
-    "district": "大埔",
-    "hours": "週一至週四: 10:30-22:00, 週五: 10:30-22:30, 週六: 10:00-22:30, 週日及公眾假期: 10:00-22:00"
+    "hours": {
+      "monday": "10:30-22:00",
+      "tuesday": "10:30-22:00",
+      "wednesday": "10:30-22:00",
+      "thursday": "10:30-22:00",
+      "friday": "10:30-22:30",
+      "saturday": "10:00-22:30",
+      "sunday": "10:00-22:00"
+    },
+    "features": [],
+    "region": "new-territories"
+  },
+  {
+    "name": "上水廣場",
+    "address": "上水廣場2樓218-220號舖",
+    "phone": "26724338",
+    "hours": {
+      "monday": "11:00-22:00",
+      "tuesday": "11:00-22:00",
+      "wednesday": "11:00-22:00",
+      "thursday": "11:00-22:00",
+      "friday": "11:00-22:00",
+      "saturday": "10:30-22:00",
+      "sunday": "10:30-22:00"
+    },
+    "features": [],
+    "region": "new-territories"
+  },
+  {
+    "name": "粉嶺名都",
+    "address": "粉嶺名都1樓130A-B號舖",
+    "phone": "26831898",
+    "hours": {
+      "monday": "11:00-22:00",
+      "tuesday": "11:00-22:00",
+      "wednesday": "11:00-22:00",
+      "thursday": "11:00-22:00",
+      "friday": "11:00-22:00",
+      "saturday": "10:30-22:00",
+      "sunday": "10:30-22:00"
+    },
+    "features": [],
+    "region": "new-territories"
+  },
+  {
+    "name": "東涌東薈城",
+    "address": "東涌東薈城名店倉2樓247號舖",
+    "phone": "21095188",
+    "hours": {
+      "monday": "11:00-22:00",
+      "tuesday": "11:00-22:00",
+      "wednesday": "11:00-22:00",
+      "thursday": "11:00-22:00",
+      "friday": "11:00-22:00",
+      "saturday": "10:30-22:00",
+      "sunday": "10:30-22:00"
+    },
+    "features": [],
+    "region": "new-territories"
   }
 ]

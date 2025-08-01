@@ -4,8 +4,8 @@ export const Stores: CollectionConfig = {
   slug: 'stores',
   admin: {
     useAsTitle: 'name',
-    defaultColumns: ['name', 'category', 'city', 'state', 'popularity', 'status'],
-    listSearchableFields: ['name', 'address', 'city'],
+    defaultColumns: ['name', 'category', 'region', 'city', 'state', 'popularity', 'status'],
+    listSearchableFields: ['name', 'address', 'city', 'region'],
     group: 'Locations',
   },
   access: {
@@ -64,6 +64,29 @@ export const Stores: CollectionConfig = {
       index: true,
       admin: {
         description: 'State or province',
+      },
+    },
+    {
+      name: 'region',
+      type: 'select',
+      required: false,
+      index: true,
+      options: [
+        {
+          label: 'Hong Kong Island',
+          value: 'hong-kong-island',
+        },
+        {
+          label: 'Kowloon',
+          value: 'kowloon',
+        },
+        {
+          label: 'New Territories',
+          value: 'new-territories',
+        },
+      ],
+      admin: {
+        description: 'Region within Hong Kong for filtering locations',
       },
     },
     {

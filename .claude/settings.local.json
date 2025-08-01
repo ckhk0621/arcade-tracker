@@ -25,7 +25,12 @@
       "Bash(npx tsc:*)",
       "Bash(grep:*)",
       "Bash(curl:*)",
-      "Bash(rm:*)"
+      "Bash(rm:*)",
+      "Bash(npx tsx:*)",
+      "Bash(npm install:*)",
+      "Bash(cat:*)",
+      "Bash(chmod:*)",
+      "Bash(PAYLOAD_SECRET=46db8b2084f9b8803d1dce4b node scripts/import-all-jumping-gym-stores.js)"
     ],
     "deny": []
   }

@@ -113,12 +113,1760 @@
       }
     },
     "openingHours": {
+      "monday": "11:00-22:00",
+      "tuesday": "11:00-22:00",
+      "wednesday": "11:00-22:00",
+      "thursday": "11:00-22:00",
+      "friday": "11:00-22:00",
+      "saturday": "10:30-22:30",
+      "sunday": "10:30-22:30",
+      "specialHours": "Holiday hours may vary. Please call ahead to confirm."
+    },
+    "category": "family",
+    "status": "active",
+    "description": "Indoor trampoline park offering fun activities for all ages. Features jumping areas, foam pits, dodgeball courts and more.",
+    "amenities": [
+      {
+        "amenity": "parking"
+      },
+      {
+        "amenity": "parties"
+      },
+      {
+        "amenity": "groups"
+      },
+      {
+        "amenity": "restrooms"
+      },
+      {
+        "amenity": "wifi"
+      }
+    ],
+    "pricing": {
+      "acceptsCash": true,
+      "acceptsCards": true,
+      "hasPlayCards": false,
+      "hasTokens": false,
+      "priceRange": "moderate"
+    },
+    "tags": [
+      {
+        "tag": "trampoline"
+      },
+      {
+        "tag": "kids"
+      },
+      {
+        "tag": "family"
+      },
+      {
+        "tag": "indoor"
+      },
+      {
+        "tag": "exercise"
+      },
+      {
+        "tag": "birthday-parties"
+      },
+      {
+        "tag": "group-activities"
+      }
+    ],
+    "analytics": {
+      "views": 0,
+      "photoCount": 0,
+      "checkIns": 0,
+      "averageRating": 0,
+      "totalRatings": 0,
+      "machineCount": 0
+    },
+    "popularity": 0,
+    "featured": false
+  },
+  {
+    "name": "小西灣藍灣廣場",
+    "address": "小西灣藍灣廣場一樓101B號",
+    "city": "小西灣",
+    "state": "Hong Kong",
+    "country": "HK",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        114.2641,
+        22.2643
+      ]
+    },
+    "contact": {
+      "phone": "22641433",
+      "website": "https://www.jumpingym.com",
+      "socialMedia": {
+        "facebook": "jumpingym",
+        "instagram": "jumpingym"
+      }
+    },
+    "openingHours": {
+      "monday": "11:00-22:00",
+      "tuesday": "11:00-22:00",
+      "wednesday": "11:00-22:00",
+      "thursday": "11:00-22:00",
+      "friday": "11:00-22:00",
+      "saturday": "10:00-22:00",
+      "sunday": "10:00-22:00",
+      "specialHours": "Holiday hours may vary. Please call ahead to confirm."
+    },
+    "category": "family",
+    "status": "active",
+    "description": "Indoor trampoline park offering fun activities for all ages. Features jumping areas, foam pits, dodgeball courts and more.",
+    "amenities": [
+      {
+        "amenity": "parking"
+      },
+      {
+        "amenity": "parties"
+      },
+      {
+        "amenity": "groups"
+      },
+      {
+        "amenity": "restrooms"
+      },
+      {
+        "amenity": "wifi"
+      }
+    ],
+    "pricing": {
+      "acceptsCash": true,
+      "acceptsCards": true,
+      "hasPlayCards": false,
+      "hasTokens": false,
+      "priceRange": "moderate"
+    },
+    "tags": [
+      {
+        "tag": "trampoline"
+      },
+      {
+        "tag": "kids"
+      },
+      {
+        "tag": "family"
+      },
+      {
+        "tag": "indoor"
+      },
+      {
+        "tag": "exercise"
+      },
+      {
+        "tag": "birthday-parties"
+      },
+      {
+        "tag": "group-activities"
+      }
+    ],
+    "analytics": {
+      "views": 0,
+      "photoCount": 0,
+      "checkIns": 0,
+      "averageRating": 0,
+      "totalRatings": 0,
+      "machineCount": 0
+    },
+    "popularity": 0,
+    "featured": false
+  },
+  {
+    "name": "銅鑼灣利舞臺",
+    "address": "銅鑼灣波斯富街99號利舞臺4樓",
+    "city": "銅鑼灣",
+    "state": "Hong Kong",
+    "country": "HK",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        114.1846,
+        22.2793
+      ]
+    },
+    "contact": {
+      "phone": "26426166",
+      "website": "https://www.jumpingym.com",
+      "socialMedia": {
+        "facebook": "jumpingym",
+        "instagram": "jumpingym"
+      }
+    },
+    "openingHours": {
+      "monday": "11:00-22:00",
+      "tuesday": "11:00-22:00",
+      "wednesday": "11:00-22:00",
+      "thursday": "11:00-22:00",
+      "friday": "11:00-22:00",
+      "saturday": "10:30-22:00",
+      "sunday": "10:30-22:00",
+      "specialHours": "Holiday hours may vary. Please call ahead to confirm."
+    },
+    "category": "family",
+    "status": "active",
+    "description": "Indoor trampoline park offering fun activities for all ages. Features jumping areas, foam pits, dodgeball courts and more.",
+    "amenities": [
+      {
+        "amenity": "parking"
+      },
+      {
+        "amenity": "parties"
+      },
+      {
+        "amenity": "groups"
+      },
+      {
+        "amenity": "restrooms"
+      },
+      {
+        "amenity": "wifi"
+      }
+    ],
+    "pricing": {
+      "acceptsCash": true,
+      "acceptsCards": true,
+      "hasPlayCards": false,
+      "hasTokens": false,
+      "priceRange": "moderate"
+    },
+    "tags": [
+      {
+        "tag": "trampoline"
+      },
+      {
+        "tag": "kids"
+      },
+      {
+        "tag": "family"
+      },
+      {
+        "tag": "indoor"
+      },
+      {
+        "tag": "exercise"
+      },
+      {
+        "tag": "birthday-parties"
+      },
+      {
+        "tag": "group-activities"
+      }
+    ],
+    "analytics": {
+      "views": 0,
+      "photoCount": 0,
+      "checkIns": 0,
+      "averageRating": 0,
+      "totalRatings": 0,
+      "machineCount": 0
+    },
+    "popularity": 0,
+    "featured": false
+  },
+  {
+    "name": "銅鑼灣金百利",
+    "address": "銅鑼灣記利佐治街1號金百利地庫1樓 及 2樓",
+    "city": "銅鑼灣",
+    "state": "Hong Kong",
+    "country": "HK",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        114.1846,
+        22.2793
+      ]
+    },
+    "contact": {
+      "phone": "35681956",
+      "website": "https://www.jumpingym.com",
+      "socialMedia": {
+        "facebook": "jumpingym",
+        "instagram": "jumpingym"
+      }
+    },
+    "openingHours": {
+      "monday": "12:00-23:00",
+      "tuesday": "12:00-23:00",
+      "wednesday": "12:00-23:00",
+      "thursday": "12:00-23:00",
+      "friday": "12:00-23:30",
+      "saturday": "11:30-23:30",
+      "sunday": "11:30-23:00",
+      "specialHours": "Holiday hours may vary. Please call ahead to confirm."
+    },
+    "category": "family",
+    "status": "active",
+    "description": "Indoor trampoline park offering fun activities for all ages. Features jumping areas, foam pits, dodgeball courts and more.",
+    "amenities": [
+      {
+        "amenity": "parking"
+      },
+      {
+        "amenity": "parties"
+      },
+      {
+        "amenity": "groups"
+      },
+      {
+        "amenity": "restrooms"
+      },
+      {
+        "amenity": "wifi"
+      }
+    ],
+    "pricing": {
+      "acceptsCash": true,
+      "acceptsCards": true,
+      "hasPlayCards": false,
+      "hasTokens": false,
+      "priceRange": "moderate"
+    },
+    "tags": [
+      {
+        "tag": "trampoline"
+      },
+      {
+        "tag": "kids"
+      },
+      {
+        "tag": "family"
+      },
+      {
+        "tag": "indoor"
+      },
+      {
+        "tag": "exercise"
+      },
+      {
+        "tag": "birthday-parties"
+      },
+      {
+        "tag": "group-activities"
+      }
+    ],
+    "analytics": {
+      "views": 0,
+      "photoCount": 0,
+      "checkIns": 0,
+      "averageRating": 0,
+      "totalRatings": 0,
+      "machineCount": 0
+    },
+    "popularity": 0,
+    "featured": false
+  },
+  {
+    "name": "黃竹坑The Southside",
+    "address": "黃竹坑The Southside G14-G15號舖",
+    "city": "Hong Kong",
+    "state": "Hong Kong",
+    "country": "HK",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        114.1694,
+        22.3193
+      ]
+    },
+    "contact": {
+      "phone": "35681987",
+      "website": "https://www.jumpingym.com",
+      "socialMedia": {
+        "facebook": "jumpingym",
+        "instagram": "jumpingym"
+      }
+    },
+    "openingHours": {
+      "monday": "11:00-22:00",
+      "tuesday": "11:00-22:00",
+      "wednesday": "11:00-22:00",
+      "thursday": "11:00-22:00",
+      "friday": "11:00-22:00",
+      "saturday": "10:30-22:00",
+      "sunday": "10:30-22:00",
+      "specialHours": "Holiday hours may vary. Please call ahead to confirm."
+    },
+    "category": "family",
+    "status": "active",
+    "description": "Indoor trampoline park offering fun activities for all ages. Features jumping areas, foam pits, dodgeball courts and more.",
+    "amenities": [
+      {
+        "amenity": "parking"
+      },
+      {
+        "amenity": "parties"
+      },
+      {
+        "amenity": "groups"
+      },
+      {
+        "amenity": "restrooms"
+      },
+      {
+        "amenity": "wifi"
+      }
+    ],
+    "pricing": {
+      "acceptsCash": true,
+      "acceptsCards": true,
+      "hasPlayCards": false,
+      "hasTokens": false,
+      "priceRange": "moderate"
+    },
+    "tags": [
+      {
+        "tag": "trampoline"
+      },
+      {
+        "tag": "kids"
+      },
+      {
+        "tag": "family"
+      },
+      {
+        "tag": "indoor"
+      },
+      {
+        "tag": "exercise"
+      },
+      {
+        "tag": "birthday-parties"
+      },
+      {
+        "tag": "group-activities"
+      }
+    ],
+    "analytics": {
+      "views": 0,
+      "photoCount": 0,
+      "checkIns": 0,
+      "averageRating": 0,
+      "totalRatings": 0,
+      "machineCount": 0
+    },
+    "popularity": 0,
+    "featured": false
+  },
+  {
+    "name": "黃埔花園",
+    "address": "黃埔花園十一期聚寶坊地庫",
+    "city": "黃埔",
+    "state": "Hong Kong",
+    "country": "HK",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        114.1885,
+        22.3059
+      ]
+    },
+    "contact": {
+      "phone": "23623855",
+      "website": "https://www.jumpingym.com",
+      "socialMedia": {
+        "facebook": "jumpingym",
+        "instagram": "jumpingym"
+      }
+    },
+    "openingHours": {
+      "monday": "11:00-22:00",
+      "tuesday": "11:00-22:00",
+      "wednesday": "11:00-22:00",
+      "thursday": "11:00-22:00",
+      "friday": "11:00-22:30",
+      "saturday": "10:00-22:30",
+      "sunday": "10:00-22:00",
+      "specialHours": "Holiday hours may vary. Please call ahead to confirm."
+    },
+    "category": "family",
+    "status": "active",
+    "description": "Indoor trampoline park offering fun activities for all ages. Features jumping areas, foam pits, dodgeball courts and more.",
+    "amenities": [
+      {
+        "amenity": "parking"
+      },
+      {
+        "amenity": "parties"
+      },
+      {
+        "amenity": "groups"
+      },
+      {
+        "amenity": "restrooms"
+      },
+      {
+        "amenity": "wifi"
+      }
+    ],
+    "pricing": {
+      "acceptsCash": true,
+      "acceptsCards": true,
+      "hasPlayCards": false,
+      "hasTokens": false,
+      "priceRange": "moderate"
+    },
+    "tags": [
+      {
+        "tag": "trampoline"
+      },
+      {
+        "tag": "kids"
+      },
+      {
+        "tag": "family"
+      },
+      {
+        "tag": "indoor"
+      },
+      {
+        "tag": "exercise"
+      },
+      {
+        "tag": "birthday-parties"
+      },
+      {
+        "tag": "group-activities"
+      }
+    ],
+    "analytics": {
+      "views": 0,
+      "photoCount": 0,
+      "checkIns": 0,
+      "averageRating": 0,
+      "totalRatings": 0,
+      "machineCount": 0
+    },
+    "popularity": 0,
+    "featured": false
+  },
+  {
+    "name": "尖沙咀海運大厦",
+    "address": "尖沙咀海運大厦地下OT G11號舖",
+    "city": "尖沙咀",
+    "state": "Hong Kong",
+    "country": "HK",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        114.1722,
+        22.2976
+      ]
+    },
+    "contact": {
+      "phone": "23779551",
+      "website": "https://www.jumpingym.com",
+      "socialMedia": {
+        "facebook": "jumpingym",
+        "instagram": "jumpingym"
+      }
+    },
+    "openingHours": {
+      "monday": "10:00-22:00",
+      "tuesday": "10:00-22:00",
+      "wednesday": "10:00-22:00",
+      "thursday": "10:00-22:00",
+      "friday": "10:00-22:30",
+      "saturday": "10:00-22:30",
+      "sunday": "10:00-22:00",
+      "specialHours": "Holiday hours may vary. Please call ahead to confirm."
+    },
+    "category": "family",
+    "status": "active",
+    "description": "Indoor trampoline park offering fun activities for all ages. Features jumping areas, foam pits, dodgeball courts and more.",
+    "amenities": [
+      {
+        "amenity": "parking"
+      },
+      {
+        "amenity": "parties"
+      },
+      {
+        "amenity": "groups"
+      },
+      {
+        "amenity": "restrooms"
+      },
+      {
+        "amenity": "wifi"
+      }
+    ],
+    "pricing": {
+      "acceptsCash": true,
+      "acceptsCards": true,
+      "hasPlayCards": false,
+      "hasTokens": false,
+      "priceRange": "moderate"
+    },
+    "tags": [
+      {
+        "tag": "trampoline"
+      },
+      {
+        "tag": "kids"
+      },
+      {
+        "tag": "family"
+      },
+      {
+        "tag": "indoor"
+      },
+      {
+        "tag": "exercise"
+      },
+      {
+        "tag": "birthday-parties"
+      },
+      {
+        "tag": "group-activities"
+      }
+    ],
+    "analytics": {
+      "views": 0,
+      "photoCount": 0,
+      "checkIns": 0,
+      "averageRating": 0,
+      "totalRatings": 0,
+      "machineCount": 0
+    },
+    "popularity": 0,
+    "featured": false
+  },
+  {
+    "name": "旺角Start Centre",
+    "address": "旺角先達廣場地庫B01A號舖",
+    "city": "旺角",
+    "state": "Hong Kong",
+    "country": "HK",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        114.1694,
+        22.3193
+      ]
+    },
+    "contact": {
+      "phone": "23657633",
+      "website": "https://www.jumpingym.com",
+      "socialMedia": {
+        "facebook": "jumpingym",
+        "instagram": "jumpingym"
+      }
+    },
+    "openingHours": {
+      "monday": "11:00-22:00",
+      "tuesday": "11:00-22:00",
+      "wednesday": "11:00-22:00",
+      "thursday": "11:00-22:00",
+      "friday": "11:00-22:00",
+      "saturday": "10:30-22:00",
+      "sunday": "10:30-22:00",
+      "specialHours": "Holiday hours may vary. Please call ahead to confirm."
+    },
+    "category": "family",
+    "status": "active",
+    "description": "Indoor trampoline park offering fun activities for all ages. Features jumping areas, foam pits, dodgeball courts and more.",
+    "amenities": [
+      {
+        "amenity": "parking"
+      },
+      {
+        "amenity": "parties"
+      },
+      {
+        "amenity": "groups"
+      },
+      {
+        "amenity": "restrooms"
+      },
+      {
+        "amenity": "wifi"
+      }
+    ],
+    "pricing": {
+      "acceptsCash": true,
+      "acceptsCards": true,
+      "hasPlayCards": false,
+      "hasTokens": false,
+      "priceRange": "moderate"
+    },
+    "tags": [
+      {
+        "tag": "trampoline"
+      },
+      {
+        "tag": "kids"
+      },
+      {
+        "tag": "family"
+      },
+      {
+        "tag": "indoor"
+      },
+      {
+        "tag": "exercise"
+      },
+      {
+        "tag": "birthday-parties"
+      },
+      {
+        "tag": "group-activities"
+      }
+    ],
+    "analytics": {
+      "views": 0,
+      "photoCount": 0,
+      "checkIns": 0,
+      "averageRating": 0,
+      "totalRatings": 0,
+      "machineCount": 0
+    },
+    "popularity": 0,
+    "featured": false
+  },
+  {
+    "name": "旺角新世紀廣場",
+    "address": "旺角新世紀廣場地庫A22號舖",
+    "city": "旺角",
+    "state": "Hong Kong",
+    "country": "HK",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        114.1694,
+        22.3193
+      ]
+    },
+    "contact": {
+      "phone": "23900300",
+      "website": "https://www.jumpingym.com",
+      "socialMedia": {
+        "facebook": "jumpingym",
+        "instagram": "jumpingym"
+      }
+    },
+    "openingHours": {
+      "monday": "11:00-22:00",
+      "tuesday": "11:00-22:00",
+      "wednesday": "11:00-22:00",
+      "thursday": "11:00-22:00",
+      "friday": "11:00-22:00",
+      "saturday": "10:30-22:00",
+      "sunday": "10:30-22:00",
+      "specialHours": "Holiday hours may vary. Please call ahead to confirm."
+    },
+    "category": "family",
+    "status": "active",
+    "description": "Indoor trampoline park offering fun activities for all ages. Features jumping areas, foam pits, dodgeball courts and more.",
+    "amenities": [
+      {
+        "amenity": "parking"
+      },
+      {
+        "amenity": "parties"
+      },
+      {
+        "amenity": "groups"
+      },
+      {
+        "amenity": "restrooms"
+      },
+      {
+        "amenity": "wifi"
+      }
+    ],
+    "pricing": {
+      "acceptsCash": true,
+      "acceptsCards": true,
+      "hasPlayCards": false,
+      "hasTokens": false,
+      "priceRange": "moderate"
+    },
+    "tags": [
+      {
+        "tag": "trampoline"
+      },
+      {
+        "tag": "kids"
+      },
+      {
+        "tag": "family"
+      },
+      {
+        "tag": "indoor"
+      },
+      {
+        "tag": "exercise"
+      },
+      {
+        "tag": "birthday-parties"
+      },
+      {
+        "tag": "group-activities"
+      }
+    ],
+    "analytics": {
+      "views": 0,
+      "photoCount": 0,
+      "checkIns": 0,
+      "averageRating": 0,
+      "totalRatings": 0,
+      "machineCount": 0
+    },
+    "popularity": 0,
+    "featured": false
+  },
+  {
+    "name": "旺角T.O.P",
+    "address": "旺角彌敦道794-802號T.O.P購物城12樓",
+    "city": "旺角",
+    "state": "Hong Kong",
+    "country": "HK",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        114.1694,
+        22.3193
+      ]
+    },
+    "contact": {
+      "phone": "25520608",
+      "website": "https://www.jumpingym.com",
+      "socialMedia": {
+        "facebook": "jumpingym",
+        "instagram": "jumpingym"
+      }
+    },
+    "openingHours": {
+      "monday": "11:00-22:00",
+      "tuesday": "11:00-22:00",
+      "wednesday": "11:00-22:00",
+      "thursday": "11:00-22:00",
+      "friday": "11:00-22:00",
+      "saturday": "10:30-22:00",
+      "sunday": "10:30-22:00",
+      "specialHours": "Holiday hours may vary. Please call ahead to confirm."
+    },
+    "category": "family",
+    "status": "active",
+    "description": "Indoor trampoline park offering fun activities for all ages. Features jumping areas, foam pits, dodgeball courts and more.",
+    "amenities": [
+      {
+        "amenity": "parking"
+      },
+      {
+        "amenity": "parties"
+      },
+      {
+        "amenity": "groups"
+      },
+      {
+        "amenity": "restrooms"
+      },
+      {
+        "amenity": "wifi"
+      }
+    ],
+    "pricing": {
+      "acceptsCash": true,
+      "acceptsCards": true,
+      "hasPlayCards": false,
+      "hasTokens": false,
+      "priceRange": "moderate"
+    },
+    "tags": [
+      {
+        "tag": "trampoline"
+      },
+      {
+        "tag": "kids"
+      },
+      {
+        "tag": "family"
+      },
+      {
+        "tag": "indoor"
+      },
+      {
+        "tag": "exercise"
+      },
+      {
+        "tag": "birthday-parties"
+      },
+      {
+        "tag": "group-activities"
+      }
+    ],
+    "analytics": {
+      "views": 0,
+      "photoCount": 0,
+      "checkIns": 0,
+      "averageRating": 0,
+      "totalRatings": 0,
+      "machineCount": 0
+    },
+    "popularity": 0,
+    "featured": false
+  },
+  {
+    "name": "長沙灣西九龍中心",
+    "address": "長沙灣西九龍中心4樓4016-4017號舖",
+    "city": "Hong Kong",
+    "state": "Hong Kong",
+    "country": "HK",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        114.1694,
+        22.3193
+      ]
+    },
+    "contact": {
+      "phone": "27292388",
+      "website": "https://www.jumpingym.com",
+      "socialMedia": {
+        "facebook": "jumpingym",
+        "instagram": "jumpingym"
+      }
+    },
+    "openingHours": {
+      "monday": "11:00-22:00",
+      "tuesday": "11:00-22:00",
+      "wednesday": "11:00-22:00",
+      "thursday": "11:00-22:00",
+      "friday": "11:00-22:00",
+      "saturday": "10:30-22:00",
+      "sunday": "10:30-22:00",
+      "specialHours": "Holiday hours may vary. Please call ahead to confirm."
+    },
+    "category": "family",
+    "status": "active",
+    "description": "Indoor trampoline park offering fun activities for all ages. Features jumping areas, foam pits, dodgeball courts and more.",
+    "amenities": [
+      {
+        "amenity": "parking"
+      },
+      {
+        "amenity": "parties"
+      },
+      {
+        "amenity": "groups"
+      },
+      {
+        "amenity": "restrooms"
+      },
+      {
+        "amenity": "wifi"
+      }
+    ],
+    "pricing": {
+      "acceptsCash": true,
+      "acceptsCards": true,
+      "hasPlayCards": false,
+      "hasTokens": false,
+      "priceRange": "moderate"
+    },
+    "tags": [
+      {
+        "tag": "trampoline"
+      },
+      {
+        "tag": "kids"
+      },
+      {
+        "tag": "family"
+      },
+      {
+        "tag": "indoor"
+      },
+      {
+        "tag": "exercise"
+      },
+      {
+        "tag": "birthday-parties"
+      },
+      {
+        "tag": "group-activities"
+      }
+    ],
+    "analytics": {
+      "views": 0,
+      "photoCount": 0,
+      "checkIns": 0,
+      "averageRating": 0,
+      "totalRatings": 0,
+      "machineCount": 0
+    },
+    "popularity": 0,
+    "featured": false
+  },
+  {
+    "name": "觀塘apm",
+    "address": "觀塘apm 5樓L5-01號舖",
+    "city": "觀塘",
+    "state": "Hong Kong",
+    "country": "HK",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        114.2259,
+        22.312
+      ]
+    },
+    "contact": {
+      "phone": "23493228",
+      "website": "https://www.jumpingym.com",
+      "socialMedia": {
+        "facebook": "jumpingym",
+        "instagram": "jumpingym"
+      }
+    },
+    "openingHours": {
+      "monday": "11:00-24:00",
+      "tuesday": "11:00-24:00",
+      "wednesday": "11:00-24:00",
+      "thursday": "11:00-24:00",
+      "friday": "11:00-24:00",
+      "saturday": "11:00-24:00",
+      "sunday": "11:00-24:00",
+      "specialHours": "Holiday hours may vary. Please call ahead to confirm."
+    },
+    "category": "family",
+    "status": "active",
+    "description": "Indoor trampoline park offering fun activities for all ages. Features jumping areas, foam pits, dodgeball courts and more.",
+    "amenities": [
+      {
+        "amenity": "parking"
+      },
+      {
+        "amenity": "parties"
+      },
+      {
+        "amenity": "groups"
+      },
+      {
+        "amenity": "restrooms"
+      },
+      {
+        "amenity": "wifi"
+      }
+    ],
+    "pricing": {
+      "acceptsCash": true,
+      "acceptsCards": true,
+      "hasPlayCards": false,
+      "hasTokens": false,
+      "priceRange": "moderate"
+    },
+    "tags": [
+      {
+        "tag": "trampoline"
+      },
+      {
+        "tag": "kids"
+      },
+      {
+        "tag": "family"
+      },
+      {
+        "tag": "indoor"
+      },
+      {
+        "tag": "exercise"
+      },
+      {
+        "tag": "birthday-parties"
+      },
+      {
+        "tag": "group-activities"
+      }
+    ],
+    "analytics": {
+      "views": 0,
+      "photoCount": 0,
+      "checkIns": 0,
+      "averageRating": 0,
+      "totalRatings": 0,
+      "machineCount": 0
+    },
+    "popularity": 0,
+    "featured": false
+  },
+  {
+    "name": "觀塘港貿中心",
+    "address": "觀塘成業街6號港貿中心2樓205-206號舖",
+    "city": "觀塘",
+    "state": "Hong Kong",
+    "country": "HK",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        114.2259,
+        22.312
+      ]
+    },
+    "contact": {
+      "phone": "27962388",
+      "website": "https://www.jumpingym.com",
+      "socialMedia": {
+        "facebook": "jumpingym",
+        "instagram": "jumpingym"
+      }
+    },
+    "openingHours": {
+      "monday": "11:00-22:00",
+      "tuesday": "11:00-22:00",
+      "wednesday": "11:00-22:00",
+      "thursday": "11:00-22:00",
+      "friday": "11:00-22:00",
+      "saturday": "10:30-22:00",
+      "sunday": "10:30-22:00",
+      "specialHours": "Holiday hours may vary. Please call ahead to confirm."
+    },
+    "category": "family",
+    "status": "active",
+    "description": "Indoor trampoline park offering fun activities for all ages. Features jumping areas, foam pits, dodgeball courts and more.",
+    "amenities": [
+      {
+        "amenity": "parking"
+      },
+      {
+        "amenity": "parties"
+      },
+      {
+        "amenity": "groups"
+      },
+      {
+        "amenity": "restrooms"
+      },
+      {
+        "amenity": "wifi"
+      }
+    ],
+    "pricing": {
+      "acceptsCash": true,
+      "acceptsCards": true,
+      "hasPlayCards": false,
+      "hasTokens": false,
+      "priceRange": "moderate"
+    },
+    "tags": [
+      {
+        "tag": "trampoline"
+      },
+      {
+        "tag": "kids"
+      },
+      {
+        "tag": "family"
+      },
+      {
+        "tag": "indoor"
+      },
+      {
+        "tag": "exercise"
+      },
+      {
+        "tag": "birthday-parties"
+      },
+      {
+        "tag": "group-activities"
+      }
+    ],
+    "analytics": {
+      "views": 0,
+      "photoCount": 0,
+      "checkIns": 0,
+      "averageRating": 0,
+      "totalRatings": 0,
+      "machineCount": 0
+    },
+    "popularity": 0,
+    "featured": false
+  },
+  {
+    "name": "尖沙咀K11 MUSEA",
+    "address": "尖沙咀K11 MUSEA 6樓614-615號舖",
+    "city": "尖沙咀",
+    "state": "Hong Kong",
+    "country": "HK",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        114.1722,
+        22.2976
+      ]
+    },
+    "contact": {
+      "phone": "27239988",
+      "website": "https://www.jumpingym.com",
+      "socialMedia": {
+        "facebook": "jumpingym",
+        "instagram": "jumpingym"
+      }
+    },
+    "openingHours": {
       "monday": "10:30-22:00",
       "tuesday": "10:30-22:00",
       "wednesday": "10:30-22:00",
       "thursday": "10:30-22:00",
-      "friday": "11:00-22:00",
+      "friday": "10:30-22:30",
       "saturday": "10:00-22:30",
+      "sunday": "10:00-22:00",
+      "specialHours": "Holiday hours may vary. Please call ahead to confirm."
+    },
+    "category": "family",
+    "status": "active",
+    "description": "Indoor trampoline park offering fun activities for all ages. Features jumping areas, foam pits, dodgeball courts and more.",
+    "amenities": [
+      {
+        "amenity": "parking"
+      },
+      {
+        "amenity": "parties"
+      },
+      {
+        "amenity": "groups"
+      },
+      {
+        "amenity": "restrooms"
+      },
+      {
+        "amenity": "wifi"
+      }
+    ],
+    "pricing": {
+      "acceptsCash": true,
+      "acceptsCards": true,
+      "hasPlayCards": false,
+      "hasTokens": false,
+      "priceRange": "moderate"
+    },
+    "tags": [
+      {
+        "tag": "trampoline"
+      },
+      {
+        "tag": "kids"
+      },
+      {
+        "tag": "family"
+      },
+      {
+        "tag": "indoor"
+      },
+      {
+        "tag": "exercise"
+      },
+      {
+        "tag": "birthday-parties"
+      },
+      {
+        "tag": "group-activities"
+      }
+    ],
+    "analytics": {
+      "views": 0,
+      "photoCount": 0,
+      "checkIns": 0,
+      "averageRating": 0,
+      "totalRatings": 0,
+      "machineCount": 0
+    },
+    "popularity": 0,
+    "featured": false
+  },
+  {
+    "name": "九龍灣德福廣場二期",
+    "address": "九龍灣德福廣場二期6樓607-608號舖",
+    "city": "九龍灣",
+    "state": "Hong Kong",
+    "country": "HK",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        114.2112,
+        22.3236
+      ]
+    },
+    "contact": {
+      "phone": "27557228",
+      "website": "https://www.jumpingym.com",
+      "socialMedia": {
+        "facebook": "jumpingym",
+        "instagram": "jumpingym"
+      }
+    },
+    "openingHours": {
+      "monday": "10:30-22:00",
+      "tuesday": "10:30-22:00",
+      "wednesday": "10:30-22:00",
+      "thursday": "10:30-22:00",
+      "friday": "10:30-22:30",
+      "saturday": "10:00-22:30",
+      "sunday": "10:00-22:00",
+      "specialHours": "Holiday hours may vary. Please call ahead to confirm."
+    },
+    "category": "family",
+    "status": "active",
+    "description": "Indoor trampoline park offering fun activities for all ages. Features jumping areas, foam pits, dodgeball courts and more.",
+    "amenities": [
+      {
+        "amenity": "parking"
+      },
+      {
+        "amenity": "parties"
+      },
+      {
+        "amenity": "groups"
+      },
+      {
+        "amenity": "restrooms"
+      },
+      {
+        "amenity": "wifi"
+      }
+    ],
+    "pricing": {
+      "acceptsCash": true,
+      "acceptsCards": true,
+      "hasPlayCards": false,
+      "hasTokens": false,
+      "priceRange": "moderate"
+    },
+    "tags": [
+      {
+        "tag": "trampoline"
+      },
+      {
+        "tag": "kids"
+      },
+      {
+        "tag": "family"
+      },
+      {
+        "tag": "indoor"
+      },
+      {
+        "tag": "exercise"
+      },
+      {
+        "tag": "birthday-parties"
+      },
+      {
+        "tag": "group-activities"
+      }
+    ],
+    "analytics": {
+      "views": 0,
+      "photoCount": 0,
+      "checkIns": 0,
+      "averageRating": 0,
+      "totalRatings": 0,
+      "machineCount": 0
+    },
+    "popularity": 0,
+    "featured": false
+  },
+  {
+    "name": "旺角朗豪坊",
+    "address": "旺角朗豪坊13樓1302-1303號舖",
+    "city": "旺角",
+    "state": "Hong Kong",
+    "country": "HK",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        114.1694,
+        22.3193
+      ]
+    },
+    "contact": {
+      "phone": "27707228",
+      "website": "https://www.jumpingym.com",
+      "socialMedia": {
+        "facebook": "jumpingym",
+        "instagram": "jumpingym"
+      }
+    },
+    "openingHours": {
+      "monday": "10:30-22:00",
+      "tuesday": "10:30-22:00",
+      "wednesday": "10:30-22:00",
+      "thursday": "10:30-22:00",
+      "friday": "10:30-22:30",
+      "saturday": "10:00-22:30",
+      "sunday": "10:00-22:00",
+      "specialHours": "Holiday hours may vary. Please call ahead to confirm."
+    },
+    "category": "family",
+    "status": "active",
+    "description": "Indoor trampoline park offering fun activities for all ages. Features jumping areas, foam pits, dodgeball courts and more.",
+    "amenities": [
+      {
+        "amenity": "parking"
+      },
+      {
+        "amenity": "parties"
+      },
+      {
+        "amenity": "groups"
+      },
+      {
+        "amenity": "restrooms"
+      },
+      {
+        "amenity": "wifi"
+      }
+    ],
+    "pricing": {
+      "acceptsCash": true,
+      "acceptsCards": true,
+      "hasPlayCards": false,
+      "hasTokens": false,
+      "priceRange": "moderate"
+    },
+    "tags": [
+      {
+        "tag": "trampoline"
+      },
+      {
+        "tag": "kids"
+      },
+      {
+        "tag": "family"
+      },
+      {
+        "tag": "indoor"
+      },
+      {
+        "tag": "exercise"
+      },
+      {
+        "tag": "birthday-parties"
+      },
+      {
+        "tag": "group-activities"
+      }
+    ],
+    "analytics": {
+      "views": 0,
+      "photoCount": 0,
+      "checkIns": 0,
+      "averageRating": 0,
+      "totalRatings": 0,
+      "machineCount": 0
+    },
+    "popularity": 0,
+    "featured": false
+  },
+  {
+    "name": "將軍澳新都城2期",
+    "address": "將軍澳新都城2期1樓,1046-47號舖",
+    "city": "將軍澳",
+    "state": "Hong Kong",
+    "country": "HK",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        114.263,
+        22.3046
+      ]
+    },
+    "contact": {
+      "phone": "25193266",
+      "website": "https://www.jumpingym.com",
+      "socialMedia": {
+        "facebook": "jumpingym",
+        "instagram": "jumpingym"
+      }
+    },
+    "openingHours": {
+      "monday": "11:00-22:00",
+      "tuesday": "11:00-22:00",
+      "wednesday": "11:00-22:00",
+      "thursday": "11:00-22:00",
+      "friday": "11:00-22:00",
+      "saturday": "10:30-22:00",
+      "sunday": "10:30-22:00",
+      "specialHours": "Holiday hours may vary. Please call ahead to confirm."
+    },
+    "category": "family",
+    "status": "active",
+    "description": "Indoor trampoline park offering fun activities for all ages. Features jumping areas, foam pits, dodgeball courts and more.",
+    "amenities": [
+      {
+        "amenity": "parking"
+      },
+      {
+        "amenity": "parties"
+      },
+      {
+        "amenity": "groups"
+      },
+      {
+        "amenity": "restrooms"
+      },
+      {
+        "amenity": "wifi"
+      }
+    ],
+    "pricing": {
+      "acceptsCash": true,
+      "acceptsCards": true,
+      "hasPlayCards": false,
+      "hasTokens": false,
+      "priceRange": "moderate"
+    },
+    "tags": [
+      {
+        "tag": "trampoline"
+      },
+      {
+        "tag": "kids"
+      },
+      {
+        "tag": "family"
+      },
+      {
+        "tag": "indoor"
+      },
+      {
+        "tag": "exercise"
+      },
+      {
+        "tag": "birthday-parties"
+      },
+      {
+        "tag": "group-activities"
+      }
+    ],
+    "analytics": {
+      "views": 0,
+      "photoCount": 0,
+      "checkIns": 0,
+      "averageRating": 0,
+      "totalRatings": 0,
+      "machineCount": 0
+    },
+    "popularity": 0,
+    "featured": false
+  },
+  {
+    "name": "將軍澳廣場",
+    "address": "將軍澳廣場1樓1-082至084 號舖",
+    "city": "將軍澳",
+    "state": "Hong Kong",
+    "country": "HK",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        114.263,
+        22.3046
+      ]
+    },
+    "contact": {
+      "phone": "24072611",
+      "website": "https://www.jumpingym.com",
+      "socialMedia": {
+        "facebook": "jumpingym",
+        "instagram": "jumpingym"
+      }
+    },
+    "openingHours": {
+      "monday": "11:00-22:00",
+      "tuesday": "11:00-22:00",
+      "wednesday": "11:00-22:00",
+      "thursday": "11:00-22:00",
+      "friday": "11:00-22:00",
+      "saturday": "10:00-22:00",
+      "sunday": "10:00-22:00",
+      "specialHours": "Holiday hours may vary. Please call ahead to confirm."
+    },
+    "category": "family",
+    "status": "active",
+    "description": "Indoor trampoline park offering fun activities for all ages. Features jumping areas, foam pits, dodgeball courts and more.",
+    "amenities": [
+      {
+        "amenity": "parking"
+      },
+      {
+        "amenity": "parties"
+      },
+      {
+        "amenity": "groups"
+      },
+      {
+        "amenity": "restrooms"
+      },
+      {
+        "amenity": "wifi"
+      }
+    ],
+    "pricing": {
+      "acceptsCash": true,
+      "acceptsCards": true,
+      "hasPlayCards": false,
+      "hasTokens": false,
+      "priceRange": "moderate"
+    },
+    "tags": [
+      {
+        "tag": "trampoline"
+      },
+      {
+        "tag": "kids"
+      },
+      {
+        "tag": "family"
+      },
+      {
+        "tag": "indoor"
+      },
+      {
+        "tag": "exercise"
+      },
+      {
+        "tag": "birthday-parties"
+      },
+      {
+        "tag": "group-activities"
+      }
+    ],
+    "analytics": {
+      "views": 0,
+      "photoCount": 0,
+      "checkIns": 0,
+      "averageRating": 0,
+      "totalRatings": 0,
+      "machineCount": 0
+    },
+    "popularity": 0,
+    "featured": false
+  },
+  {
+    "name": "將軍澳東港城",
+    "address": "將軍澳東港城2樓237A & 237B",
+    "city": "將軍澳",
+    "state": "Hong Kong",
+    "country": "HK",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        114.263,
+        22.3046
+      ]
+    },
+    "contact": {
+      "phone": "23879170",
+      "website": "https://www.jumpingym.com",
+      "socialMedia": {
+        "facebook": "jumpingym",
+        "instagram": "jumpingym"
+      }
+    },
+    "openingHours": {
+      "monday": "11:00-22:00",
+      "tuesday": "11:00-22:00",
+      "wednesday": "11:00-22:00",
+      "thursday": "11:00-22:00",
+      "friday": "11:00-22:00",
+      "saturday": "10:00-22:00",
+      "sunday": "10:00-22:00",
+      "specialHours": "Holiday hours may vary. Please call ahead to confirm."
+    },
+    "category": "family",
+    "status": "active",
+    "description": "Indoor trampoline park offering fun activities for all ages. Features jumping areas, foam pits, dodgeball courts and more.",
+    "amenities": [
+      {
+        "amenity": "parking"
+      },
+      {
+        "amenity": "parties"
+      },
+      {
+        "amenity": "groups"
+      },
+      {
+        "amenity": "restrooms"
+      },
+      {
+        "amenity": "wifi"
+      }
+    ],
+    "pricing": {
+      "acceptsCash": true,
+      "acceptsCards": true,
+      "hasPlayCards": false,
+      "hasTokens": false,
+      "priceRange": "moderate"
+    },
+    "tags": [
+      {
+        "tag": "trampoline"
+      },
+      {
+        "tag": "kids"
+      },
+      {
+        "tag": "family"
+      },
+      {
+        "tag": "indoor"
+      },
+      {
+        "tag": "exercise"
+      },
+      {
+        "tag": "birthday-parties"
+      },
+      {
+        "tag": "group-activities"
+      }
+    ],
+    "analytics": {
+      "views": 0,
+      "photoCount": 0,
+      "checkIns": 0,
+      "averageRating": 0,
+      "totalRatings": 0,
+      "machineCount": 0
+    },
+    "popularity": 0,
+    "featured": false
+  },
+  {
+    "name": "將軍澳翩滙坊",
+    "address": "將軍澳翩滙坊地庫Shop1&2",
+    "city": "將軍澳",
+    "state": "Hong Kong",
+    "country": "HK",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        114.263,
+        22.3046
+      ]
+    },
+    "contact": {
+      "phone": "28241338",
+      "website": "https://www.jumpingym.com",
+      "socialMedia": {
+        "facebook": "jumpingym",
+        "instagram": "jumpingym"
+      }
+    },
+    "openingHours": {
+      "monday": "11:00-22:00",
+      "tuesday": "11:00-22:00",
+      "wednesday": "11:00-22:00",
+      "thursday": "11:00-22:00",
+      "friday": "11:00-22:00",
+      "saturday": "10:00-22:00",
       "sunday": "10:00-22:00",
       "specialHours": "Holiday hours may vary. Please call ahead to confirm."
     },
@@ -460,466 +2208,6 @@
     "featured": false
   },
   {
-    "name": "將軍澳東港城",
-    "address": "將軍澳東港城2樓235-236號舖",
-    "city": "將軍澳",
-    "state": "Hong Kong",
-    "country": "HK",
-    "location": {
-      "type": "Point",
-      "coordinates": [
-        114.263,
-        22.3046
-      ]
-    },
-    "contact": {
-      "phone": "27027238",
-      "website": "https://www.jumpingym.com",
-      "socialMedia": {
-        "facebook": "jumpingym",
-        "instagram": "jumpingym"
-      }
-    },
-    "openingHours": {
-      "monday": "10:30-22:00",
-      "tuesday": "10:30-22:00",
-      "wednesday": "10:30-22:00",
-      "thursday": "10:30-22:00",
-      "friday": "10:30-22:30",
-      "saturday": "10:00-22:30",
-      "sunday": "10:00-22:00",
-      "specialHours": "Holiday hours may vary. Please call ahead to confirm."
-    },
-    "category": "family",
-    "status": "active",
-    "description": "Indoor trampoline park offering fun activities for all ages. Features jumping areas, foam pits, dodgeball courts and more.",
-    "amenities": [
-      {
-        "amenity": "parking"
-      },
-      {
-        "amenity": "parties"
-      },
-      {
-        "amenity": "groups"
-      },
-      {
-        "amenity": "restrooms"
-      },
-      {
-        "amenity": "wifi"
-      }
-    ],
-    "pricing": {
-      "acceptsCash": true,
-      "acceptsCards": true,
-      "hasPlayCards": false,
-      "hasTokens": false,
-      "priceRange": "moderate"
-    },
-    "tags": [
-      {
-        "tag": "trampoline"
-      },
-      {
-        "tag": "kids"
-      },
-      {
-        "tag": "family"
-      },
-      {
-        "tag": "indoor"
-      },
-      {
-        "tag": "exercise"
-      },
-      {
-        "tag": "birthday-parties"
-      },
-      {
-        "tag": "group-activities"
-      }
-    ],
-    "analytics": {
-      "views": 0,
-      "photoCount": 0,
-      "checkIns": 0,
-      "averageRating": 0,
-      "totalRatings": 0,
-      "machineCount": 0
-    },
-    "popularity": 0,
-    "featured": false
-  },
-  {
-    "name": "觀塘apm",
-    "address": "觀塘apm 5樓L5-01號舖",
-    "city": "觀塘",
-    "state": "Hong Kong",
-    "country": "HK",
-    "location": {
-      "type": "Point",
-      "coordinates": [
-        114.2259,
-        22.312
-      ]
-    },
-    "contact": {
-      "phone": "23493228",
-      "website": "https://www.jumpingym.com",
-      "socialMedia": {
-        "facebook": "jumpingym",
-        "instagram": "jumpingym"
-      }
-    },
-    "openingHours": {
-      "monday": "11:00-24:00",
-      "tuesday": "11:00-24:00",
-      "wednesday": "11:00-24:00",
-      "thursday": "11:00-24:00",
-      "friday": "11:00-24:00",
-      "saturday": "11:00-24:00",
-      "sunday": "11:00-24:00",
-      "specialHours": "Holiday hours may vary. Please call ahead to confirm."
-    },
-    "category": "family",
-    "status": "active",
-    "description": "Indoor trampoline park offering fun activities for all ages. Features jumping areas, foam pits, dodgeball courts and more.",
-    "amenities": [
-      {
-        "amenity": "parking"
-      },
-      {
-        "amenity": "parties"
-      },
-      {
-        "amenity": "groups"
-      },
-      {
-        "amenity": "restrooms"
-      },
-      {
-        "amenity": "wifi"
-      }
-    ],
-    "pricing": {
-      "acceptsCash": true,
-      "acceptsCards": true,
-      "hasPlayCards": false,
-      "hasTokens": false,
-      "priceRange": "moderate"
-    },
-    "tags": [
-      {
-        "tag": "trampoline"
-      },
-      {
-        "tag": "kids"
-      },
-      {
-        "tag": "family"
-      },
-      {
-        "tag": "indoor"
-      },
-      {
-        "tag": "exercise"
-      },
-      {
-        "tag": "birthday-parties"
-      },
-      {
-        "tag": "group-activities"
-      }
-    ],
-    "analytics": {
-      "views": 0,
-      "photoCount": 0,
-      "checkIns": 0,
-      "averageRating": 0,
-      "totalRatings": 0,
-      "machineCount": 0
-    },
-    "popularity": 0,
-    "featured": false
-  },
-  {
-    "name": "尖沙咀K11 MUSEA",
-    "address": "尖沙咀K11 MUSEA 6樓614-615號舖",
-    "city": "尖沙咀",
-    "state": "Hong Kong",
-    "country": "HK",
-    "location": {
-      "type": "Point",
-      "coordinates": [
-        114.1722,
-        22.2976
-      ]
-    },
-    "contact": {
-      "phone": "27239988",
-      "website": "https://www.jumpingym.com",
-      "socialMedia": {
-        "facebook": "jumpingym",
-        "instagram": "jumpingym"
-      }
-    },
-    "openingHours": {
-      "monday": "10:30-22:00",
-      "tuesday": "10:30-22:00",
-      "wednesday": "10:30-22:00",
-      "thursday": "10:30-22:00",
-      "friday": "10:30-22:30",
-      "saturday": "10:00-22:30",
-      "sunday": "10:00-22:00",
-      "specialHours": "Holiday hours may vary. Please call ahead to confirm."
-    },
-    "category": "family",
-    "status": "active",
-    "description": "Indoor trampoline park offering fun activities for all ages. Features jumping areas, foam pits, dodgeball courts and more.",
-    "amenities": [
-      {
-        "amenity": "parking"
-      },
-      {
-        "amenity": "parties"
-      },
-      {
-        "amenity": "groups"
-      },
-      {
-        "amenity": "restrooms"
-      },
-      {
-        "amenity": "wifi"
-      }
-    ],
-    "pricing": {
-      "acceptsCash": true,
-      "acceptsCards": true,
-      "hasPlayCards": false,
-      "hasTokens": false,
-      "priceRange": "moderate"
-    },
-    "tags": [
-      {
-        "tag": "trampoline"
-      },
-      {
-        "tag": "kids"
-      },
-      {
-        "tag": "family"
-      },
-      {
-        "tag": "indoor"
-      },
-      {
-        "tag": "exercise"
-      },
-      {
-        "tag": "birthday-parties"
-      },
-      {
-        "tag": "group-activities"
-      }
-    ],
-    "analytics": {
-      "views": 0,
-      "photoCount": 0,
-      "checkIns": 0,
-      "averageRating": 0,
-      "totalRatings": 0,
-      "machineCount": 0
-    },
-    "popularity": 0,
-    "featured": false
-  },
-  {
-    "name": "九龍灣德福廣場二期",
-    "address": "九龍灣德福廣場二期6樓607-608號舖",
-    "city": "九龍灣",
-    "state": "Hong Kong",
-    "country": "HK",
-    "location": {
-      "type": "Point",
-      "coordinates": [
-        114.2112,
-        22.3236
-      ]
-    },
-    "contact": {
-      "phone": "27557228",
-      "website": "https://www.jumpingym.com",
-      "socialMedia": {
-        "facebook": "jumpingym",
-        "instagram": "jumpingym"
-      }
-    },
-    "openingHours": {
-      "monday": "10:30-22:00",
-      "tuesday": "10:30-22:00",
-      "wednesday": "10:30-22:00",
-      "thursday": "10:30-22:00",
-      "friday": "10:30-22:30",
-      "saturday": "10:00-22:30",
-      "sunday": "10:00-22:00",
-      "specialHours": "Holiday hours may vary. Please call ahead to confirm."
-    },
-    "category": "family",
-    "status": "active",
-    "description": "Indoor trampoline park offering fun activities for all ages. Features jumping areas, foam pits, dodgeball courts and more.",
-    "amenities": [
-      {
-        "amenity": "parking"
-      },
-      {
-        "amenity": "parties"
-      },
-      {
-        "amenity": "groups"
-      },
-      {
-        "amenity": "restrooms"
-      },
-      {
-        "amenity": "wifi"
-      }
-    ],
-    "pricing": {
-      "acceptsCash": true,
-      "acceptsCards": true,
-      "hasPlayCards": false,
-      "hasTokens": false,
-      "priceRange": "moderate"
-    },
-    "tags": [
-      {
-        "tag": "trampoline"
-      },
-      {
-        "tag": "kids"
-      },
-      {
-        "tag": "family"
-      },
-      {
-        "tag": "indoor"
-      },
-      {
-        "tag": "exercise"
-      },
-      {
-        "tag": "birthday-parties"
-      },
-      {
-        "tag": "group-activities"
-      }
-    ],
-    "analytics": {
-      "views": 0,
-      "photoCount": 0,
-      "checkIns": 0,
-      "averageRating": 0,
-      "totalRatings": 0,
-      "machineCount": 0
-    },
-    "popularity": 0,
-    "featured": false
-  },
-  {
-    "name": "旺角朗豪坊",
-    "address": "旺角朗豪坊13樓1302-1303號舖",
-    "city": "旺角",
-    "state": "Hong Kong",
-    "country": "HK",
-    "location": {
-      "type": "Point",
-      "coordinates": [
-        114.1694,
-        22.3193
-      ]
-    },
-    "contact": {
-      "phone": "27707228",
-      "website": "https://www.jumpingym.com",
-      "socialMedia": {
-        "facebook": "jumpingym",
-        "instagram": "jumpingym"
-      }
-    },
-    "openingHours": {
-      "monday": "10:30-22:00",
-      "tuesday": "10:30-22:00",
-      "wednesday": "10:30-22:00",
-      "thursday": "10:30-22:00",
-      "friday": "10:30-22:30",
-      "saturday": "10:00-22:30",
-      "sunday": "10:00-22:00",
-      "specialHours": "Holiday hours may vary. Please call ahead to confirm."
-    },
-    "category": "family",
-    "status": "active",
-    "description": "Indoor trampoline park offering fun activities for all ages. Features jumping areas, foam pits, dodgeball courts and more.",
-    "amenities": [
-      {
-        "amenity": "parking"
-      },
-      {
-        "amenity": "parties"
-      },
-      {
-        "amenity": "groups"
-      },
-      {
-        "amenity": "restrooms"
-      },
-      {
-        "amenity": "wifi"
-      }
-    ],
-    "pricing": {
-      "acceptsCash": true,
-      "acceptsCards": true,
-      "hasPlayCards": false,
-      "hasTokens": false,
-      "priceRange": "moderate"
-    },
-    "tags": [
-      {
-        "tag": "trampoline"
-      },
-      {
-        "tag": "kids"
-      },
-      {
-        "tag": "family"
-      },
-      {
-        "tag": "indoor"
-      },
-      {
-        "tag": "exercise"
-      },
-      {
-        "tag": "birthday-parties"
-      },
-      {
-        "tag": "group-activities"
-      }
-    ],
-    "analytics": {
-      "views": 0,
-      "photoCount": 0,
-      "checkIns": 0,
-      "averageRating": 0,
-      "totalRatings": 0,
-      "machineCount": 0
-    },
-    "popularity": 0,
-    "featured": false
-  },
-  {
     "name": "元朗廣場",
     "address": "元朗廣場1樓122號舖",
     "city": "元朗",
@@ -1040,6 +2328,282 @@
       "friday": "10:30-22:30",
       "saturday": "10:00-22:30",
       "sunday": "10:00-22:00",
+      "specialHours": "Holiday hours may vary. Please call ahead to confirm."
+    },
+    "category": "family",
+    "status": "active",
+    "description": "Indoor trampoline park offering fun activities for all ages. Features jumping areas, foam pits, dodgeball courts and more.",
+    "amenities": [
+      {
+        "amenity": "parking"
+      },
+      {
+        "amenity": "parties"
+      },
+      {
+        "amenity": "groups"
+      },
+      {
+        "amenity": "restrooms"
+      },
+      {
+        "amenity": "wifi"
+      }
+    ],
+    "pricing": {
+      "acceptsCash": true,
+      "acceptsCards": true,
+      "hasPlayCards": false,
+      "hasTokens": false,
+      "priceRange": "moderate"
+    },
+    "tags": [
+      {
+        "tag": "trampoline"
+      },
+      {
+        "tag": "kids"
+      },
+      {
+        "tag": "family"
+      },
+      {
+        "tag": "indoor"
+      },
+      {
+        "tag": "exercise"
+      },
+      {
+        "tag": "birthday-parties"
+      },
+      {
+        "tag": "group-activities"
+      }
+    ],
+    "analytics": {
+      "views": 0,
+      "photoCount": 0,
+      "checkIns": 0,
+      "averageRating": 0,
+      "totalRatings": 0,
+      "machineCount": 0
+    },
+    "popularity": 0,
+    "featured": false
+  },
+  {
+    "name": "上水廣場",
+    "address": "上水廣場2樓218-220號舖",
+    "city": "上水",
+    "state": "Hong Kong",
+    "country": "HK",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        114.1274,
+        22.5015
+      ]
+    },
+    "contact": {
+      "phone": "26724338",
+      "website": "https://www.jumpingym.com",
+      "socialMedia": {
+        "facebook": "jumpingym",
+        "instagram": "jumpingym"
+      }
+    },
+    "openingHours": {
+      "monday": "11:00-22:00",
+      "tuesday": "11:00-22:00",
+      "wednesday": "11:00-22:00",
+      "thursday": "11:00-22:00",
+      "friday": "11:00-22:00",
+      "saturday": "10:30-22:00",
+      "sunday": "10:30-22:00",
+      "specialHours": "Holiday hours may vary. Please call ahead to confirm."
+    },
+    "category": "family",
+    "status": "active",
+    "description": "Indoor trampoline park offering fun activities for all ages. Features jumping areas, foam pits, dodgeball courts and more.",
+    "amenities": [
+      {
+        "amenity": "parking"
+      },
+      {
+        "amenity": "parties"
+      },
+      {
+        "amenity": "groups"
+      },
+      {
+        "amenity": "restrooms"
+      },
+      {
+        "amenity": "wifi"
+      }
+    ],
+    "pricing": {
+      "acceptsCash": true,
+      "acceptsCards": true,
+      "hasPlayCards": false,
+      "hasTokens": false,
+      "priceRange": "moderate"
+    },
+    "tags": [
+      {
+        "tag": "trampoline"
+      },
+      {
+        "tag": "kids"
+      },
+      {
+        "tag": "family"
+      },
+      {
+        "tag": "indoor"
+      },
+      {
+        "tag": "exercise"
+      },
+      {
+        "tag": "birthday-parties"
+      },
+      {
+        "tag": "group-activities"
+      }
+    ],
+    "analytics": {
+      "views": 0,
+      "photoCount": 0,
+      "checkIns": 0,
+      "averageRating": 0,
+      "totalRatings": 0,
+      "machineCount": 0
+    },
+    "popularity": 0,
+    "featured": false
+  },
+  {
+    "name": "粉嶺名都",
+    "address": "粉嶺名都1樓130A-B號舖",
+    "city": "粉嶺",
+    "state": "Hong Kong",
+    "country": "HK",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        114.1396,
+        22.4926
+      ]
+    },
+    "contact": {
+      "phone": "26831898",
+      "website": "https://www.jumpingym.com",
+      "socialMedia": {
+        "facebook": "jumpingym",
+        "instagram": "jumpingym"
+      }
+    },
+    "openingHours": {
+      "monday": "11:00-22:00",
+      "tuesday": "11:00-22:00",
+      "wednesday": "11:00-22:00",
+      "thursday": "11:00-22:00",
+      "friday": "11:00-22:00",
+      "saturday": "10:30-22:00",
+      "sunday": "10:30-22:00",
+      "specialHours": "Holiday hours may vary. Please call ahead to confirm."
+    },
+    "category": "family",
+    "status": "active",
+    "description": "Indoor trampoline park offering fun activities for all ages. Features jumping areas, foam pits, dodgeball courts and more.",
+    "amenities": [
+      {
+        "amenity": "parking"
+      },
+      {
+        "amenity": "parties"
+      },
+      {
+        "amenity": "groups"
+      },
+      {
+        "amenity": "restrooms"
+      },
+      {
+        "amenity": "wifi"
+      }
+    ],
+    "pricing": {
+      "acceptsCash": true,
+      "acceptsCards": true,
+      "hasPlayCards": false,
+      "hasTokens": false,
+      "priceRange": "moderate"
+    },
+    "tags": [
+      {
+        "tag": "trampoline"
+      },
+      {
+        "tag": "kids"
+      },
+      {
+        "tag": "family"
+      },
+      {
+        "tag": "indoor"
+      },
+      {
+        "tag": "exercise"
+      },
+      {
+        "tag": "birthday-parties"
+      },
+      {
+        "tag": "group-activities"
+      }
+    ],
+    "analytics": {
+      "views": 0,
+      "photoCount": 0,
+      "checkIns": 0,
+      "averageRating": 0,
+      "totalRatings": 0,
+      "machineCount": 0
+    },
+    "popularity": 0,
+    "featured": false
+  },
+  {
+    "name": "東涌東薈城",
+    "address": "東涌東薈城名店倉2樓247號舖",
+    "city": "東涌",
+    "state": "Hong Kong",
+    "country": "HK",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        113.9428,
+        22.2889
+      ]
+    },
+    "contact": {
+      "phone": "21095188",
+      "website": "https://www.jumpingym.com",
+      "socialMedia": {
+        "facebook": "jumpingym",
+        "instagram": "jumpingym"
+      }
+    },
+    "openingHours": {
+      "monday": "11:00-22:00",
+      "tuesday": "11:00-22:00",
+      "wednesday": "11:00-22:00",
+      "thursday": "11:00-22:00",
+      "friday": "11:00-22:00",
+      "saturday": "10:30-22:00",
+      "sunday": "10:30-22:00",
       "specialHours": "Holiday hours may vary. Please call ahead to confirm."
     },
     "category": "family",
