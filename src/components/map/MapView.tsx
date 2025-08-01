@@ -1,11 +1,10 @@
 'use client'
 
 import { useEffect, useRef, useState, useCallback } from 'react'
-import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet'
+import { MapContainer, TileLayer, Marker, useMap } from 'react-leaflet'
 import L from 'leaflet'
 import { MapPin, Navigation, ChevronLeft, ChevronRight } from 'lucide-react'
 import { isLeafletReady } from '@/utils/client'
-import MessageBubble from './MessageBubble'
 import 'leaflet/dist/leaflet.css'
 
 // Fix for default markers in React Leaflet - only run on client side
@@ -74,8 +73,6 @@ interface MapViewProps {
   className?: string
   isStoreListCollapsed?: boolean
   onToggleStoreList?: () => void
-  showMessageBubble?: boolean
-  onMessageBubbleClose?: () => void
 }
 
 // Enhanced custom pin icon with improved visual design and animations
@@ -115,7 +112,7 @@ const createCustomPinIcon = (region?: string | null, category: string = 'arcade'
         position: relative;
         width: ${pinSize + 8}px;
         height: ${pinHeight + 4}px;
-        transform: translateX(-50%);
+        transform: translate(-50%, -100%);
         z-index: ${isSelected ? '1000' : '100'};
         opacity: ${isVisible ? '1' : '0'};
         transition: opacity ${isVisible ? '0.4s ease-in' : '0.3s ease-out'};
@@ -124,7 +121,7 @@ const createCustomPinIcon = (region?: string | null, category: string = 'arcade'
         <!-- Enhanced pin shadow with gradient -->
         <div class="pin-shadow" style="
           position: absolute;
-          bottom: 2px;
+          bottom: 0px;
           left: 50%;
           transform: translateX(-50%);
           width: ${shadowSize}px;
@@ -139,7 +136,7 @@ const createCustomPinIcon = (region?: string | null, category: string = 'arcade'
         ${isSelected ? `
         <div style="
           position: absolute;
-          top: 2px;
+          top: 4px;
           left: 50%;
           transform: translateX(-50%) rotate(-45deg);
           width: ${pinSize + 4}px;
@@ -155,7 +152,7 @@ const createCustomPinIcon = (region?: string | null, category: string = 'arcade'
         <!-- Main pin with enhanced styling -->
         <div class="pin-main" style="
           position: absolute;
-          top: 2px;
+          top: 4px;
           left: 50%;
           transform: translateX(-50%) rotate(-45deg);
           width: ${pinSize}px;
@@ -202,8 +199,8 @@ const createCustomPinIcon = (region?: string | null, category: string = 'arcade'
     `,
     className: `custom-pin-icon ${isSelected ? 'selected-pin' : ''}`,
     iconSize: [pinSize + 8, pinHeight + 4],
-    iconAnchor: [(pinSize + 8) / 2, pinHeight - 2],
-    popupAnchor: [0, -(pinHeight - 10)],
+    iconAnchor: [(pinSize + 8) / 2, pinHeight + 4],
+    popupAnchor: [0, -(pinHeight + 4)],
   })
 }
 
@@ -238,6 +235,27 @@ const getUserLocationIcon = () => {
   })
 }
 
+// Distance calculation function
+const calculateDistance = (
+  point1: [number, number],
+  point2: [number, number]
+): number => {
+  const [lat1, lon1] = point1
+  const [lat2, lon2] = point2
+  
+  const R = 6371 // Earth's radius in kilometers
+  const dLat = (lat2 - lat1) * Math.PI / 180
+  const dLon = (lon2 - lon1) * Math.PI / 180
+  
+  const a = 
+    Math.sin(dLat/2) * Math.sin(dLat/2) +
+    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
+    Math.sin(dLon/2) * Math.sin(dLon/2)
+  
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a))
+  return R * c
+}
+
 // Component to handle map centering with callback support
 function MapController({ center, selectedStore, onCenteringComplete }: { 
   center?: [number, number], 
@@ -257,16 +275,21 @@ function MapController({ center, selectedStore, onCenteringComplete }: {
       }
       
       if (coords) {
-        map.flyTo(coords, 16, {
-          animate: true,
-          duration: 1.2 // Slightly longer for smoother animation
-        })
+        // Use setView first to ensure immediate positioning, then flyTo for smooth animation
+        map.setView(coords, 16)
+        setTimeout(() => {
+          map.flyTo(coords, 16, {
+            animate: true,
+            duration: 1.0, // Slightly shorter for snappier response
+            easeLinearity: 0.5 // Smoother easing
+          })
+        }, 50) // Small delay to ensure proper positioning
         
         // Call completion callback after animation completes
         if (onCenteringComplete) {
           setTimeout(() => {
             onCenteringComplete()
-          }, 1300) // Wait for animation to complete + small buffer
+          }, 1150) // Adjusted timing for new animation duration
         }
       }
     } else if (center) {
@@ -277,15 +300,14 @@ function MapController({ center, selectedStore, onCenteringComplete }: {
   return null
 }
 
-export default function MapView({ stores, selectedStore, onStoreSelect, userLocation, className, isStoreListCollapsed, onToggleStoreList, showMessageBubble = false, onMessageBubbleClose }: MapViewProps) {
+export default function MapView({ stores, selectedStore, onStoreSelect, userLocation, className, isStoreListCollapsed, onToggleStoreList }: MapViewProps) {
   const [mapReady, setMapReady] = useState(false)
   const [legendExpanded, setLegendExpanded] = useState(false)
-  const [bubblePosition, setBubblePosition] = useState<{ x: number; y: number } | null>(null)
   const [isCentering, setIsCentering] = useState(false)
-  const [delayedBubbleShow, setDelayedBubbleShow] = useState(false)
   const [pinsVisible, setPinsVisible] = useState(true)
   const [previousSelectedStoreId, setPreviousSelectedStoreId] = useState<string | null>(null)
   const mapRef = useRef<L.Map | null>(null)
+  const markerRefs = useRef<{ [key: string]: L.Marker | null }>({})
   
   // Default center (Hong Kong - Central area between all regions)
   const defaultCenter: [number, number] = [22.3193, 114.1694]
@@ -310,34 +332,8 @@ export default function MapView({ stores, selectedStore, onStoreSelect, userLoca
     }
   }, [isStoreListCollapsed])
 
-  // Function to calculate bubble position
-  const calculateBubblePosition = useCallback(() => {
-    if (selectedStore && mapRef.current && showMessageBubble) {
-      // Get store coordinates
-      let coords: [number, number] | null = null
-      
-      if (Array.isArray(selectedStore.location)) {
-        coords = [selectedStore.location[1], selectedStore.location[0]] // [lat, lng]
-      } else if (selectedStore.location?.coordinates) {
-        coords = [selectedStore.location.coordinates[1], selectedStore.location.coordinates[0]] // [lat, lng]
-      }
-      
-      if (coords) {
-        const point = mapRef.current.latLngToContainerPoint(coords)
-        const mapContainer = mapRef.current.getContainer()
-        const rect = mapContainer.getBoundingClientRect()
-        
-        setBubblePosition({
-          x: rect.left + point.x,
-          y: rect.top + point.y - 10 // Offset above the pin
-        })
-      }
-    } else {
-      setBubblePosition(null)
-    }
-  }, [selectedStore, showMessageBubble])
 
-  // Handle centering completion and delayed bubble show
+  // Handle centering completion
   const handleCenteringComplete = useCallback(() => {
     setIsCentering(false)
     // Clear previous selection to prevent visual artifacts
@@ -346,45 +342,17 @@ export default function MapView({ stores, selectedStore, onStoreSelect, userLoca
     setTimeout(() => {
       setPinsVisible(true)
     }, 100) // Small delay before showing pins for smoother transition
-    
-    if (showMessageBubble) {
-      // Small delay after centering completes for better UX
-      setTimeout(() => {
-        setDelayedBubbleShow(true)
-        calculateBubblePosition()
-      }, 200)
-    }
-  }, [showMessageBubble, calculateBubblePosition])
+  }, [])
 
-  // Calculate bubble position when selected store changes or centering completes
-  useEffect(() => {
-    if (showMessageBubble && selectedStore && !isCentering) {
-      calculateBubblePosition()
-    } else {
-      setBubblePosition(null)
-      setDelayedBubbleShow(false)
-    }
-  }, [calculateBubblePosition, showMessageBubble, selectedStore, isCentering])
 
-  // Reset bubble visibility and manage pin states when selected store changes
+  // Reset pin states when selected store changes
   useEffect(() => {
     if (selectedStore) {
       // Store previous selected store ID for proper pin management
       setPreviousSelectedStoreId(selectedStore.id)
       setIsCentering(true)
-      setDelayedBubbleShow(false)
-      setBubblePosition(null)
       // Hide ALL pins except the target pin during centering animation
       setPinsVisible(false)
-      
-      // If showMessageBubble is false, still handle the centering but without bubble
-      if (!showMessageBubble) {
-        // Still need to show pins after centering completes for non-bubble centering
-        setTimeout(() => {
-          setIsCentering(false)
-          setPinsVisible(true)
-        }, 1300) // Same duration as the flyTo animation + buffer
-      }
     } else {
       // Clear previous selection when no store is selected
       setPreviousSelectedStoreId(null)
@@ -393,29 +361,8 @@ export default function MapView({ stores, selectedStore, onStoreSelect, userLoca
         setPinsVisible(true)
       }
     }
-  }, [selectedStore, showMessageBubble])
+  }, [selectedStore])
 
-  // Update bubble position on map events
-  useEffect(() => {
-    if (mapRef.current && showMessageBubble && selectedStore) {
-      const map = mapRef.current
-      
-      const handleMapEvent = () => {
-        // Small delay to ensure the map has finished updating
-        setTimeout(calculateBubblePosition, 10)
-      }
-      
-      map.on('zoom', handleMapEvent)
-      map.on('move', handleMapEvent)
-      map.on('resize', handleMapEvent)
-      
-      return () => {
-        map.off('zoom', handleMapEvent)
-        map.off('move', handleMapEvent)
-        map.off('resize', handleMapEvent)
-      }
-    }
-  }, [showMessageBubble, selectedStore, calculateBubblePosition])
 
   const handleStoreClick = (store: Store) => {
     // Handle deselection if clicking the same store
@@ -458,9 +405,10 @@ export default function MapView({ stores, selectedStore, onStoreSelect, userLoca
     ))
   }
 
+
   return (
     <div className={`relative w-full h-full ${className}`}>
-      {/* Enhanced custom styles for pin interactions and animations */}
+      {/* Enhanced custom styles for pin interactions, animations, and popup styling */}
       <style jsx>{`
         :global(.custom-pin-icon) {
           transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -561,6 +509,7 @@ export default function MapView({ stores, selectedStore, onStoreSelect, userLoca
         :global(.custom-pin-icon:active .pin-main) {
           transform: translateX(-50%) rotate(-45deg) scale(0.95) !important;
         }
+        
       `}</style>
       
       <MapContainer
@@ -591,12 +540,6 @@ export default function MapView({ stores, selectedStore, onStoreSelect, userLoca
         {/* User location marker */}
         {userLocation && getUserLocationIcon() && (
           <Marker position={userLocation} icon={getUserLocationIcon()!}>
-            <Popup>
-              <div className="text-center">
-                <Navigation className="w-4 h-4 inline mr-1" />
-                您的位置
-              </div>
-            </Popup>
           </Marker>
         )}
 
@@ -633,57 +576,15 @@ export default function MapView({ stores, selectedStore, onStoreSelect, userLoca
                 key={store.id}
                 position={[lat, lng]}
                 icon={customIcon}
+                ref={(el) => {
+                  if (el) {
+                    markerRefs.current[store.id] = el
+                  }
+                }}
                 eventHandlers={{
                   click: () => handleStoreClick(store),
                 }}
               >
-                <Popup>
-                  <div className="min-w-[200px] max-w-[280px]">
-                    {/* Store image */}
-                    {store.images?.find(img => img.isPrimary)?.image?.url && (
-                      <img
-                        src={store.images.find(img => img.isPrimary)!.image.url}
-                        alt={store.name}
-                        className="w-full h-32 object-cover rounded-t-lg mb-2"
-                      />
-                    )}
-                    
-                    {/* Store info */}
-                    <div className="p-1">
-                      <h3 className="font-semibold text-lg text-gray-900 mb-1">
-                        {store.name}
-                      </h3>
-                      
-                      <p className="text-sm text-gray-600 mb-2">
-                        {getCategoryLabel(store.category || undefined)}
-                      </p>
-
-                      {formatAddress(store) && (
-                        <p className="text-sm text-gray-700 mb-2 flex items-start">
-                          <MapPin className="w-3 h-3 mt-0.5 mr-1 flex-shrink-0" />
-                          {formatAddress(store)}
-                        </p>
-                      )}
-
-                      {/* Rating */}
-                      {store.analytics?.averageRating && store.analytics.averageRating > 0 && (
-                        <div className="flex items-center text-sm mb-2">
-                          {renderStars(Math.round(store.analytics.averageRating))}
-                          <span className="ml-1 text-gray-600">
-                            ({store.analytics.averageRating.toFixed(1)})
-                          </span>
-                        </div>
-                      )}
-
-                      <button
-                        onClick={() => handleStoreClick(store)}
-                        className="w-full mt-2 px-3 py-1.5 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700 transition-colors"
-                      >
-                        查看詳情
-                      </button>
-                    </div>
-                  </div>
-                </Popup>
               </Marker>
             )
           })}
@@ -732,11 +633,14 @@ export default function MapView({ stores, selectedStore, onStoreSelect, userLoca
                 setPreviousSelectedStoreId(null)
                 // Hide pins during user location centering
                 setPinsVisible(false)
-                mapRef.current.flyTo(userLocation, 15)
+                mapRef.current.flyTo(userLocation, 15, {
+                  duration: 1.0,
+                  easeLinearity: 0.5
+                })
                 // Show pins again after animation completes
                 setTimeout(() => {
                   setPinsVisible(true)
-                }, 1300) // Same timing as the flyTo animation
+                }, 1150) // Adjusted timing to match new flyTo animation
               }
             }}
             className="w-10 h-10 bg-white/95 backdrop-blur-sm rounded-lg shadow-lg flex items-center justify-center text-gray-700 hover:bg-gray-50 active:bg-gray-100 border border-gray-200/50 transition-all duration-200 hover:shadow-xl active:scale-95"
@@ -804,16 +708,6 @@ export default function MapView({ stores, selectedStore, onStoreSelect, userLoca
       </div>
 
 
-      {/* Message Bubble - Only show after centering is complete */}
-      {selectedStore && bubblePosition && delayedBubbleShow && showMessageBubble && onMessageBubbleClose && (
-        <MessageBubble
-          store={selectedStore}
-          position={bubblePosition}
-          isVisible={delayedBubbleShow}
-          onClose={onMessageBubbleClose}
-          userLocation={userLocation}
-        />
-      )}
 
       {/* Centering indicator */}
       {isCentering && selectedStore && (

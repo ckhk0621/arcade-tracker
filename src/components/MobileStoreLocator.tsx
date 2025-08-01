@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { MapView, StoreList } from './map'
+import { MapView, StoreList, LocationDetail } from './map'
 import { useClientStorage } from '@/hooks/useIsClient'
 
 interface Store {
@@ -61,8 +61,8 @@ export default function MobileStoreLocator({ initialStores, onRefresh }: MobileS
   const [isRefreshing, setIsRefreshing] = useState(false)
   const [isLoadingLocation, setIsLoadingLocation] = useState(false)
   const [isStoreListCollapsed, setIsStoreListCollapsed] = useClientStorage('storeListCollapsed', false, 'session')
-  const [showMessageBubble, setShowMessageBubble] = useState(false)
   const [_lastSelectedFromList, setLastSelectedFromList] = useState<string | null>(null)
+  const [showLocationDetail, setShowLocationDetail] = useState(false)
 
   // Request user location
   const requestLocation = useCallback(() => {
@@ -129,35 +129,37 @@ export default function MobileStoreLocator({ initialStores, onRefresh }: MobileS
   const handleStoreSelect = (store: Store, fromList: boolean = false) => {
     setSelectedStore(store)
     
-    if (fromList) {
-      // When selected from list, center first then show message bubble
-      setLastSelectedFromList(store.id)
-      setShowMessageBubble(true)
+    if (store) {
+      // Show location detail panel when a store is selected
+      setShowLocationDetail(true)
       
-      // Auto-collapse store list on mobile for better map visibility
-      if (typeof window !== 'undefined' && window.innerWidth <= 768) {
-        setTimeout(() => {
-          setIsStoreListCollapsed(true)
-        }, 800) // After centering animation
+      // Trigger map resize after the panel animation completes
+      setTimeout(() => {
+        if (typeof window !== 'undefined') {
+          window.dispatchEvent(new Event('resize'))
+        }
+      }, 350) // After 300ms transition completes
+      
+      if (fromList) {
+        // When selected from list, center and show detail panel
+        setLastSelectedFromList(store.id)
+        
+        // Auto-collapse store list on mobile for better map visibility
+        if (typeof window !== 'undefined' && window.innerWidth <= 768) {
+          setTimeout(() => {
+            setIsStoreListCollapsed(true)
+          }, 800) // After centering animation
+        }
+      } else {
+        // When selected from map
+        setLastSelectedFromList(null)
       }
     } else {
-      // When selected from map, don't show bubble (regular popup will show)
-      setLastSelectedFromList(null)
-      setShowMessageBubble(false)
+      // Hide location detail panel when no store is selected
+      setShowLocationDetail(false)
     }
   }
 
-  const handleMessageBubbleClose = () => {
-    setShowMessageBubble(false)
-    setLastSelectedFromList(null)
-    
-    // On mobile, restore store list visibility after bubble closes
-    if (typeof window !== 'undefined' && window.innerWidth <= 768 && isStoreListCollapsed) {
-      setTimeout(() => {
-        setIsStoreListCollapsed(false)
-      }, 300)
-    }
-  }
 
   const toggleStoreListCollapse = () => {
     const newCollapsed = !isStoreListCollapsed
@@ -169,6 +171,18 @@ export default function MobileStoreLocator({ initialStores, onRefresh }: MobileS
         window.dispatchEvent(new Event('resize'))
       }
     }, 350) // Slightly after the 300ms transition
+  }
+
+  const handleCloseLocationDetail = () => {
+    setShowLocationDetail(false)
+    setSelectedStore(null)
+    
+    // Trigger map resize after the panel animation completes
+    setTimeout(() => {
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new Event('resize'))
+      }
+    }, 350) // After 300ms transition completes
   }
 
   return (
@@ -191,8 +205,8 @@ export default function MobileStoreLocator({ initialStores, onRefresh }: MobileS
         </div>
       )}
 
-      {/* Left Column - Fixed Map */}
-      <div className="flex-1 relative map-container">
+      {/* Left Column - Map with dynamic width based on detail panel visibility */}
+      <div className={`relative map-container transition-all duration-300 ${showLocationDetail ? 'flex-1' : 'flex-1'}`}>
         <MapView
           stores={stores}
           selectedStore={selectedStore}
@@ -201,11 +215,26 @@ export default function MobileStoreLocator({ initialStores, onRefresh }: MobileS
           className="h-full"
           isStoreListCollapsed={isStoreListCollapsed}
           onToggleStoreList={toggleStoreListCollapse}
-          showMessageBubble={showMessageBubble}
-          onMessageBubbleClose={handleMessageBubbleClose}
         />
       </div>
 
+      {/* Middle Column - Location Detail Panel (slides in from right) */}
+      <div 
+        className={`location-detail-container transition-all duration-300 ease-out overflow-hidden ${
+          showLocationDetail 
+            ? 'w-96 opacity-100' 
+            : 'w-0 opacity-0'
+        }`}
+      >
+        {showLocationDetail && (
+          <LocationDetail
+            store={selectedStore}
+            userLocation={userLocation}
+            isVisible={showLocationDetail}
+            onClose={handleCloseLocationDetail}
+          />
+        )}
+      </div>
 
       {/* Right Column - Scrollable Store List - Responsive width with collapse animation */}
       <div 

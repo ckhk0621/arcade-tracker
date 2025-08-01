@@ -38,6 +38,45 @@
   }
 }
 
+/* Three-panel layout styles */
+.map-container {
+  transition: all 0.3s ease-out;
+}
+
+.location-detail-container {
+  transition: all 0.3s ease-out;
+  border-left: 1px solid hsl(var(--border));
+  background: hsl(var(--background));
+  box-shadow: -4px 0 24px -4px rgba(0, 0, 0, 0.1);
+}
+
+.store-list-container {
+  transition: all 0.3s ease-out;
+}
+
+/* Ensure panels don't interfere with each other */
+.location-detail-container.w-0 {
+  border-left: none;
+  box-shadow: none;
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 768px) {
+  .location-detail-container {
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 100vh;
+    z-index: 50;
+    width: 100vw !important;
+    max-width: 24rem;
+  }
+  
+  .location-detail-container.w-0 {
+    width: 0 !important;
+  }
+}
+
 :root {
   --font-mono: 'Roboto Mono', monospace;
 }
