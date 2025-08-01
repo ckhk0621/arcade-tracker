@@ -1,8 +1,6 @@
 'use client'
 
-import { useState } from 'react'
-import { Clock, ChevronLeft } from 'lucide-react'
-import { Card, CardContent } from '@/components/ui/card'
+import { ChevronLeft } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import HorizontalImageList from '@/components/ui/HorizontalImageList'
@@ -52,32 +50,15 @@ const formatAddress = (store: Store) => {
   return parts.join(', ')
 }
 
-const getDayName = (day: string) => {
-  const days: Record<string, string> = {
-    monday: '星期一',
-    tuesday: '星期二',
-    wednesday: '星期三',
-    thursday: '星期四',
-    friday: '星期五',
-    saturday: '星期六',
-    sunday: '星期日',
-  }
-  return days[day] || day
-}
 
 export default function MobileLocationDetail({
   store,
   onBackToList,
   className,
 }: MobileLocationDetailProps) {
-  const [showAllHours, setShowAllHours] = useState(false)
-
   if (!store) {
     return null
   }
-
-  const openingHours = store.openingHours
-  const hasOpeningHours = openingHours && Object.values(openingHours).some(Boolean)
 
   return (
     <div className={cn('flex flex-col h-full bg-background', className)}>

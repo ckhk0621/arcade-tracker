@@ -73,6 +73,7 @@ interface MapViewProps {
   className?: string
   isStoreListCollapsed?: boolean
   onToggleStoreList?: () => void
+  isDisabled?: boolean
 }
 
 // Enhanced custom pin icon with improved visual design and animations
@@ -300,7 +301,7 @@ function MapController({ center, selectedStore, onCenteringComplete }: {
   return null
 }
 
-export default function MapView({ stores, selectedStore, onStoreSelect, userLocation, className, isStoreListCollapsed, onToggleStoreList }: MapViewProps) {
+export default function MapView({ stores, selectedStore, onStoreSelect, userLocation, className, isStoreListCollapsed, onToggleStoreList, isDisabled = false }: MapViewProps) {
   const [mapReady, setMapReady] = useState(false)
   const [legendExpanded, setLegendExpanded] = useState(false)
   const [isCentering, setIsCentering] = useState(false)
@@ -331,6 +332,32 @@ export default function MapView({ stores, selectedStore, onStoreSelect, userLoca
       return () => clearTimeout(timer)
     }
   }, [isStoreListCollapsed])
+
+  // Disable/enable map dragging based on isDisabled prop
+  useEffect(() => {
+    if (mapRef.current && mapReady) {
+      const map = mapRef.current
+      if (isDisabled) {
+        // Disable all map interactions
+        map.dragging.disable()
+        map.touchZoom.disable()
+        map.doubleClickZoom.disable()
+        map.scrollWheelZoom.disable()
+        map.boxZoom.disable()
+        map.keyboard.disable()
+        if (map.tap) map.tap.disable()
+      } else {
+        // Re-enable all map interactions
+        map.dragging.enable()
+        map.touchZoom.enable()
+        map.doubleClickZoom.enable()
+        map.scrollWheelZoom.enable()
+        map.boxZoom.enable()
+        map.keyboard.enable()
+        if (map.tap) map.tap.enable()
+      }
+    }
+  }, [isDisabled, mapReady])
 
 
   // Handle centering completion

@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile Drag Test</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #f5f5f5;
+        }
+        
+        .test-container {
+            max-width: 400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .drag-handle {
+            width: 100%;
+            height: 60px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: grab;
+            touch-action: none;
+            user-select: none;
+        }
+        
+        .drag-handle:active {
+            cursor: grabbing;
+            background: #e9ecef;
+        }
+        
+        .drag-indicator {
+            width: 40px;
+            height: 4px;
+            background: #6c757d;
+            border-radius: 2px;
+        }
+        
+        .scrollable-content {
+            height: 300px;
+            overflow-y: auto;
+            padding: 20px;
+            touch-action: pan-y;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        .content-item {
+            padding: 15px;
+            margin-bottom: 10px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+        }
+        
+        .test-results {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            background: #fff;
+            border: 2px solid #28a745;
+            border-radius: 8px;
+            padding: 10px;
+            font-size: 12px;
+            z-index: 1000;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .success { color: #28a745; }
+        .info { color: #17a2b8; }
+        .warning { color: #ffc107; }
+    </style>
+</head>
+<body>
+    <div class="test-results" id="results">
+        <div class="success">✅ Test Environment Ready</div>
+        <div class="info">📱 Touch events will be logged here</div>
+    </div>
+
+    <div class="test-container">
+        <div class="drag-handle" id="dragHandle">
+            <div class="drag-indicator"></div>
+        </div>
+        
+        <div class="scrollable-content" id="scrollableContent">
+            <div class="content-item">
+                <h4>Store 1: Game Center Alpha</h4>
+                <p>123 Main Street, Hong Kong</p>
+                <p>Rating: ⭐⭐⭐⭐⭐ (4.8/5)</p>
+            </div>
+            <div class="content-item">
+                <h4>Store 2: Arcade Zone Beta</h4>
+                <p>456 Central Road, Kowloon</p>
+                <p>Rating: ⭐⭐⭐⭐ (4.2/5)</p>
+            </div>
+            <div class="content-item">
+                <h4>Store 3: Gaming Hub Gamma</h4>
+                <p>789 New Territories Ave</p>
+                <p>Rating: ⭐⭐⭐⭐⭐ (4.9/5)</p>
+            </div>
+            <div class="content-item">
+                <h4>Store 4: Fun Palace Delta</h4>
+                <p>321 Island Boulevard</p>
+                <p>Rating: ⭐⭐⭐⭐ (4.1/5)</p>
+            </div>
+            <div class="content-item">
+                <h4>Store 5: Retro Games Epsilon</h4>
+                <p>654 Temple Street</p>
+                <p>Rating: ⭐⭐⭐⭐⭐ (4.7/5)</p>
+            </div>
+            <div class="content-item">
+                <h4>Store 6: Digital Dreams</h4>
+                <p>987 Nathan Road</p>
+                <p>Rating: ⭐⭐⭐⭐ (4.3/5)</p>
+            </div>
+            <div class="content-item">
+                <h4>Store 7: Virtual Realm</h4>
+                <p>147 Queen's Road</p>
+                <p>Rating: ⭐⭐⭐⭐⭐ (4.6/5)</p>
+            </div>
+            <div class="content-item">
+                <h4>Store 8: Pixel Paradise</h4>
+                <p>258 Canton Road</p>
+                <p>Rating: ⭐⭐⭐⭐ (4.4/5)</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Test results logging
+        const results = document.getElementById('results');
+        function log(message, type = 'info') {
+            const div = document.createElement('div');
+            div.className = type;
+            div.textContent = `${new Date().toLocaleTimeString()}: ${message}`;
+            results.appendChild(div);
+            results.scrollTop = results.scrollHeight;
+        }
+
+        // Test drag handle behavior
+        const dragHandle = document.getElementById('dragHandle');
+        const scrollableContent = document.getElementById('scrollableContent');
+
+        // Track touch events on drag handle
+        dragHandle.addEventListener('touchstart', (e) => {
+            log('🎯 Drag handle touched - should prevent scrolling', 'success');
+            log(`Touch point: ${e.touches[0].clientX}, ${e.touches[0].clientY}`, 'info');
+        }, { passive: false });
+
+        dragHandle.addEventListener('touchmove', (e) => {
+            log('↕️ Drag handle moved - sheet should resize', 'success');
+        }, { passive: false });
+
+        dragHandle.addEventListener('touchend', (e) => {
+            log('✋ Drag handle released', 'success');
+        });
+
+        // Track touch events on scrollable content
+        scrollableContent.addEventListener('touchstart', (e) => {
+            log('📜 Content touched - should allow scrolling', 'info');
+            log(`Scroll position: ${scrollableContent.scrollTop}px`, 'info');
+        });
+
+        scrollableContent.addEventListener('touchmove', (e) => {
+            log('📜 Content scrolling...', 'info');
+        }, { passive: true });
+
+        scrollableContent.addEventListener('scroll', (e) => {
+            log(`📜 Scrolled to: ${scrollableContent.scrollTop}px`, 'success');
+        });
+
+        // Test scroll boundary detection
+        scrollableContent.addEventListener('touchstart', (e) => {
+            const scrollTop = scrollableContent.scrollTop;
+            const scrollHeight = scrollableContent.scrollHeight;
+            const clientHeight = scrollableContent.clientHeight;
+            const isAtTop = scrollTop <= 5;
+            const isAtBottom = scrollTop + clientHeight >= scrollHeight - 5;
+            
+            if (isAtTop) log('🔝 At top boundary', 'warning');
+            if (isAtBottom) log('🔻 At bottom boundary', 'warning');
+            if (!isAtTop && !isAtBottom) log('🔄 In middle - should scroll freely', 'success');
+        });
+
+        log('🚀 Mobile drag test initialized');
+        log('💡 Try dragging the gray bar vs scrolling the content');
+    </script>
+</body>
+</html>

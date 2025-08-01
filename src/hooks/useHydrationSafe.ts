@@ -40,8 +40,8 @@ export function HydrationSafe({ children, fallback = null }: HydrationSafeProps)
   }, [])
 
   if (!isHydrated) {
-    return <>{fallback}</>
+    return fallback as React.ReactElement
   }
 
-  return <>{children}</>
+  return children as React.ReactElement
 }

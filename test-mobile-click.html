@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile Bottom Sheet Click Test</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #f5f5f5;
+            height: 100vh;
+            overflow: hidden;
+        }
+        
+        .map-area {
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(45deg, #4f46e5, #06b6d4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        
+        .floating-button {
+            position: fixed;
+            bottom: 16px;
+            left: 16px;
+            right: 16px;
+            z-index: 50;
+            background: #3b82f6;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 16px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            min-height: 56px;
+            cursor: pointer;
+        }
+        
+        .floating-button:hover {
+            background: #2563eb;
+            transform: translateY(-1px);
+        }
+        
+        .floating-button:active {
+            transform: scale(0.98);
+        }
+        
+        .peek-sheet {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 50;
+            background: white;
+            border-top: 1px solid #e5e7eb;
+            border-top-left-radius: 12px;
+            border-top-right-radius: 12px;
+            height: 200px;
+            transition: all 0.3s ease;
+            box-shadow: 0 -10px 25px rgba(0,0,0,0.1);
+        }
+        
+        .peek-header {
+            padding: 16px;
+            border-bottom: 1px solid #f3f4f6;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+        }
+        
+        .peek-header:hover {
+            background: #f9fafb;
+        }
+        
+        .peek-content {
+            padding: 16px;
+            color: #6b7280;
+        }
+        
+        .full-sheet {
+            position: fixed;
+            inset: 0;
+            z-index: 50;
+            background: white;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+        }
+        
+        .full-header {
+            padding: 16px;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(8px);
+        }
+        
+        .full-content {
+            flex: 1;
+            padding: 16px;
+            overflow-y: auto;
+        }
+        
+        .close-button {
+            background: none;
+            border: none;
+            padding: 8px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 44px;
+            min-height: 44px;
+        }
+        
+        .close-button:hover {
+            background: #f3f4f6;
+        }
+        
+        .backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 40;
+            transition: opacity 0.3s ease;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .icon {
+            width: 20px;
+            height: 20px;
+        }
+        
+        .store-item {
+            padding: 12px;
+            border-bottom: 1px solid #f3f4f6;
+            cursor: pointer;
+        }
+        
+        .store-item:hover {
+            background: #f9fafb;
+        }
+        
+        .store-name {
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+        
+        .store-address {
+            font-size: 14px;
+            color: #6b7280;
+        }
+    </style>
+</head>
+<body>
+    <!-- Map Area -->
+    <div class="map-area">
+        🗺️ Interactive Map Area<br>
+        <small style="font-size: 16px; opacity: 0.8; margin-top: 8px; display: block;">
+            Click the button below to view stores
+        </small>
+    </div>
+    
+    <!-- Backdrop (hidden by default) -->
+    <div id="backdrop" class="backdrop hidden"></div>
+    
+    <!-- Floating Toggle Button -->
+    <button id="floatingButton" class="floating-button">
+        <div>
+            <div style="font-weight: 600;">遊戲機中心</div>
+            <div style="font-size: 12px; opacity: 0.9;">15 個店舖</div>
+        </div>
+        <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path>
+        </svg>
+    </button>
+    
+    <!-- Peek Mode Sheet -->
+    <div id="peekSheet" class="peek-sheet hidden">
+        <div class="peek-header" onclick="showFull()">
+            <div>
+                <div style="font-weight: 500; font-size: 14px;">附近店舖</div>
+                <div style="font-size: 12px; color: #6b7280;">15 個店舖</div>
+            </div>
+            <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path>
+            </svg>
+        </div>
+        <div class="peek-content">
+            <div class="store-item">
+                <div class="store-name">Game Zone Central</div>
+                <div class="store-address">中環德輔道中12號</div>
+            </div>
+            <div class="store-item">
+                <div class="store-name">Arcade Plus Causeway Bay</div>
+                <div class="store-address">銅鑼灣軒尼詩道500號</div>
+            </div>
+            <div style="text-align: center; padding: 12px;">
+                <div style="display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px; background: #f3f4f6; border-radius: 20px;">
+                    <span style="font-size: 12px; color: #6b7280; font-weight: 500;">點擊查看全部 15 個店舖</span>
+                    <svg style="width: 12px; height: 12px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Full Mode Sheet -->
+    <div id="fullSheet" class="full-sheet hidden">
+        <div class="full-header">
+            <div>
+                <div style="font-size: 18px; font-weight: 600;">遊戲機中心</div>
+                <div style="font-size: 14px; color: #6b7280;">15 個店舖</div>
+            </div>
+            <button class="close-button" onclick="hide()">
+                <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+        </div>
+        <div class="full-content">
+            <div style="margin-bottom: 16px;">
+                <input type="text" placeholder="搜尋店舖..." style="width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 16px;">
+            </div>
+            
+            <div class="store-item">
+                <div class="store-name">Game Zone Central</div>
+                <div class="store-address">中環德輔道中12號</div>
+            </div>
+            <div class="store-item">
+                <div class="store-name">Arcade Plus Causeway Bay</div>
+                <div class="store-address">銅鑼灣軒尼詩道500號</div>
+            </div>
+            <div class="store-item">
+                <div class="store-name">Fun Land Mong Kok</div>
+                <div class="store-address">旺角彌敦道688號</div>
+            </div>
+            <div class="store-item">
+                <div class="store-name">Pixel Paradise TST</div>
+                <div class="store-address">尖沙咀廣東道100號</div>
+            </div>
+            <div class="store-item">
+                <div class="store-name">Retro Games Wan Chai</div>
+                <div class="store-address">灣仔軒尼詩道123號</div>
+            </div>
+            <div class="store-item">
+                <div class="store-name">Super Arcade Admiralty</div>
+                <div class="store-address">金鐘夏慤道18號</div>
+            </div>
+            <div class="store-item">
+                <div class="store-name">Game World North Point</div>
+                <div class="store-address">北角英皇道500號</div>
+            </div>
+            <div class="store-item">
+                <div class="store-name">Neon Games Tsim Sha Tsui</div>
+                <div class="store-address">尖沙咀麼地道75號</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentState = 'hidden'; // hidden, peek, full
+        
+        const floatingButton = document.getElementById('floatingButton');
+        const peekSheet = document.getElementById('peekSheet');
+        const fullSheet = document.getElementById('fullSheet');
+        const backdrop = document.getElementById('backdrop');
+        
+        floatingButton.addEventListener('click', showPeek);
+        backdrop.addEventListener('click', hide);
+        
+        function showPeek() {
+            if (currentState === 'hidden') {
+                currentState = 'peek';
+                floatingButton.style.opacity = '0';
+                floatingButton.style.pointerEvents = 'none';
+                peekSheet.classList.remove('hidden');
+                console.log('Showing peek mode');
+            } else if (currentState === 'peek') {
+                showFull();
+            }
+        }
+        
+        function showFull() {
+            currentState = 'full';
+            peekSheet.classList.add('hidden');
+            fullSheet.classList.remove('hidden');
+            backdrop.classList.remove('hidden');
+            console.log('Showing full mode');
+        }
+        
+        function hide() {
+            currentState = 'hidden';
+            floatingButton.style.opacity = '1';
+            floatingButton.style.pointerEvents = 'auto';
+            peekSheet.classList.add('hidden');
+            fullSheet.classList.add('hidden');
+            backdrop.classList.add('hidden');
+            console.log('Hidden mode');
+        }
+        
+        // Add touch event handling for better mobile experience
+        document.addEventListener('touchstart', function(e) {
+            // Prevent default behavior for better touch handling
+            if (e.target.closest('.floating-button, .peek-header, .close-button')) {
+                // Allow default for buttons
+                return;
+            }
+        }, { passive: true });
+        
+        console.log('Mobile bottom sheet click-to-toggle test loaded');
+        console.log('Current state:', currentState);
+    </script>
+</body>
+</html>

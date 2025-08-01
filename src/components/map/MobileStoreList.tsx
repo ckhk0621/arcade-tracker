@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useMemo } from 'react'
-import { MapPin, Star, Navigation, MessageSquare, ChevronDown, Search } from 'lucide-react'
+import { MapPin, Star, Navigation, MessageSquare, Search } from 'lucide-react'
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -48,7 +48,7 @@ interface MobileStoreListProps {
   isRefreshing?: boolean
   isLoading?: boolean
   compact?: boolean
-  sheetState?: 'peek' | 'half' | 'full'
+  sheetState?: 'hidden' | 'full'
 }
 
 const calculateDistance = (
@@ -106,7 +106,7 @@ export default function MobileStoreList({
   onRefresh,
   isRefreshing,
   isLoading = false,
-  sheetState = 'peek'
+  sheetState = 'hidden'
 }: MobileStoreListProps) {
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedRegion, setSelectedRegion] = useState<string>('all')
@@ -169,12 +169,10 @@ export default function MobileStoreList({
     return parts.join(', ')
   }
 
-  // Show limited items in peek mode
-  const displayStores = sheetState === 'peek' 
-    ? filteredAndSortedStores.slice(0, 3)
-    : filteredAndSortedStores
+  // Show all items in full mode, none in hidden mode
+  const displayStores = sheetState === 'full' ? filteredAndSortedStores : []
 
-  const showFilters = sheetState !== 'peek'
+  const showFilters = sheetState === 'full'
 
   return (
     <div className={cn("flex flex-col h-full bg-background", className)}>
@@ -199,7 +197,7 @@ export default function MobileStoreList({
               <button
                 onClick={() => setSelectedRegion('all')}
                 className={cn(
-                  "px-2.5 py-1 text-xs font-medium rounded-full transition-all duration-200",
+                  "px-2.5 py-1 text-xs font-medium rounded-full transition-all duration-200 clickable touchable",
                   selectedRegion === 'all'
                     ? "bg-primary text-primary-foreground shadow-sm"
                     : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
@@ -210,7 +208,7 @@ export default function MobileStoreList({
               <button
                 onClick={() => setSelectedRegion('hong-kong-island')}
                 className={cn(
-                  "px-2.5 py-1 text-xs font-medium rounded-full transition-all duration-200",
+                  "px-2.5 py-1 text-xs font-medium rounded-full transition-all duration-200 clickable touchable",
                   selectedRegion === 'hong-kong-island'
                     ? "bg-rose-500 text-white shadow-sm"
                     : "bg-rose-50 text-rose-700 hover:bg-rose-100 border border-rose-200"
@@ -221,7 +219,7 @@ export default function MobileStoreList({
               <button
                 onClick={() => setSelectedRegion('kowloon')}
                 className={cn(
-                  "px-2.5 py-1 text-xs font-medium rounded-full transition-all duration-200",
+                  "px-2.5 py-1 text-xs font-medium rounded-full transition-all duration-200 clickable touchable",
                   selectedRegion === 'kowloon'
                     ? "bg-blue-500 text-white shadow-sm"
                     : "bg-blue-50 text-blue-700 hover:bg-blue-100 border border-blue-200"
@@ -232,7 +230,7 @@ export default function MobileStoreList({
               <button
                 onClick={() => setSelectedRegion('new-territories')}
                 className={cn(
-                  "px-2.5 py-1 text-xs font-medium rounded-full transition-all duration-200",
+                  "px-2.5 py-1 text-xs font-medium rounded-full transition-all duration-200 clickable touchable",
                   selectedRegion === 'new-territories'
                     ? "bg-emerald-500 text-white shadow-sm"
                     : "bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200"
@@ -274,7 +272,14 @@ export default function MobileStoreList({
       </div>
 
       {/* Store List */}
-      <div className="flex-1 overflow-y-auto">
+      <div 
+        className="flex-1 overflow-y-auto overscroll-y-contain scroll-smooth store-list-scrollable" 
+        style={{ 
+          WebkitOverflowScrolling: 'touch',
+          touchAction: 'pan-y',
+          overscrollBehavior: 'contain'
+        }}
+      >
         {/* Pull to refresh indicator */}
         {isRefreshing && (
           <div className="flex justify-center py-4">
@@ -284,7 +289,7 @@ export default function MobileStoreList({
 
         {isLoading ? (
           // Loading skeleton
-          <div className="space-y-1 p-2">
+          <div className="space-y-1 p-2 min-h-full">
             {Array.from({ length: 6 }, (_, i) => (
               <Card key={i} className="border-border/30">
                 <CardContent className="p-2.5">
@@ -310,7 +315,7 @@ export default function MobileStoreList({
             <p className="text-sm">請嘗試調整搜索條件或篩選器</p>
           </div>
         ) : (
-          <div className="space-y-1 p-2">
+          <div className="space-y-1 p-2 min-h-full">
             {displayStores.map((store) => {
               const isSelected = selectedStore?.id === store.id
               let distance: number | null = null
@@ -328,7 +333,7 @@ export default function MobileStoreList({
                   key={store.id}
                   onClick={() => onStoreSelect(store)}
                   className={cn(
-                    "cursor-pointer transition-all duration-200 hover:shadow-md hover:bg-accent/50 border-border/30 hover:border-border/50 group",
+                    "cursor-pointer transition-all duration-200 hover:shadow-md hover:bg-accent/50 border-border/30 hover:border-border/50 group clickable touchable",
                     "min-h-[56px] active:scale-[0.98] active:shadow-sm transform mobile-touch-feedback", // Touch-friendly minimum height with press animation
                     isSelected && "ring-1 ring-primary bg-accent/30 border-primary/30 shadow-sm scale-[1.02]"
                   )}
@@ -381,7 +386,7 @@ export default function MobileStoreList({
                         {store.category && (
                           store.category === 'family' ? (
                             <div 
-                              className="p-1 rounded-md hover:bg-muted/80 transition-colors cursor-pointer group-hover:bg-muted" 
+                              className="p-1 rounded-md hover:bg-muted/80 transition-colors cursor-pointer group-hover:bg-muted clickable touchable" 
                               onClick={(e) => {
                                 e.stopPropagation()
                                 onStoreSelect(store)
@@ -401,18 +406,6 @@ export default function MobileStoreList({
                 </Card>
               )
             })}
-            
-            {/* Show more indicator in peek mode */}
-            {sheetState === 'peek' && filteredAndSortedStores.length > 3 && (
-              <div className="text-center py-4">
-                <div className="inline-flex items-center gap-2 px-4 py-2 bg-muted/30 rounded-full">
-                  <p className="text-sm text-muted-foreground font-medium">
-                    還有 {filteredAndSortedStores.length - 3} 個店舖
-                  </p>
-                  <ChevronDown className="w-4 h-4 text-muted-foreground animate-bounce" />
-                </div>
-              </div>
-            )}
           </div>
         )}
       </div>

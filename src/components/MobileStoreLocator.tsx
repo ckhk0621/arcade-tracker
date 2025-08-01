@@ -70,7 +70,7 @@ export default function MobileStoreLocator({ initialStores, onRefresh }: MobileS
   // Mobile-specific state
   const { isMobile, isTablet, isDesktop } = useResponsive()
   const isClient = useIsClient()
-  const [mobileSheetState, setMobileSheetState] = useState<BottomSheetState>('collapsed')
+  const [mobileSheetState, setMobileSheetState] = useState<BottomSheetState>('hidden')
   const [showMobileDetail, setShowMobileDetail] = useState(false)
 
   // Request user location
@@ -181,11 +181,11 @@ export default function MobileStoreLocator({ initialStores, onRefresh }: MobileS
 
   const toggleStoreListCollapse = () => {
     if (isClient && isMobile) {
-      // Mobile behavior - toggle bottom sheet
-      if (mobileSheetState === 'collapsed') {
-        setMobileSheetState('peek')
+      // Mobile behavior - toggle bottom sheet between hidden and full
+      if (mobileSheetState === 'hidden') {
+        setMobileSheetState('full')
       } else {
-        setMobileSheetState('collapsed')
+        setMobileSheetState('hidden')
         setShowMobileDetail(false)
         setSelectedStore(null)
       }
@@ -229,7 +229,7 @@ export default function MobileStoreLocator({ initialStores, onRefresh }: MobileS
   // Mobile-specific handlers
   const handleMobileSheetStateChange = (state: BottomSheetState) => {
     setMobileSheetState(state)
-    if (state === 'collapsed') {
+    if (state === 'hidden') {
       setShowMobileDetail(false)
       setSelectedStore(null)
     }
@@ -237,14 +237,14 @@ export default function MobileStoreLocator({ initialStores, onRefresh }: MobileS
 
   const handleBackToMobileList = () => {
     setShowMobileDetail(false)
-    setMobileSheetState('half')
+    setMobileSheetState('full')
   }
 
   // Initialize mobile sheet on first load
   useEffect(() => {
     if (isClient && isMobile && stores.length > 0) {
-      // Start with peek mode to show some stores
-      setMobileSheetState('peek')
+      // Start with hidden mode - user will tap to show stores
+      setMobileSheetState('hidden')
     }
   }, [isClient, isMobile, stores.length])
 
@@ -294,11 +294,8 @@ export default function MobileStoreLocator({ initialStores, onRefresh }: MobileS
         <MobileBottomSheet
           state={mobileSheetState}
           onStateChange={handleMobileSheetStateChange}
-          snapPoints={{
-            peek: 200,
-            half: 50,
-            full: 90
-          }}
+          storeCount={stores.filter(s => s.status === 'active').length}
+          title="遊戲機中心"
         >
           {showMobileDetail ? (
             <MobileLocationDetail
@@ -306,7 +303,7 @@ export default function MobileStoreLocator({ initialStores, onRefresh }: MobileS
               userLocation={userLocation}
               onClose={() => {
                 setShowMobileDetail(false)
-                setMobileSheetState('collapsed')
+                setMobileSheetState('hidden')
                 setSelectedStore(null)
               }}
               onBackToList={handleBackToMobileList}

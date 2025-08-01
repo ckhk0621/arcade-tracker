@@ -138,15 +138,49 @@
 .mobile-bottom-sheet {
   transform: translate3d(0, 0, 0);
   -webkit-transform: translate3d(0, 0, 0);
+  touch-action: pan-y;
+  overscroll-behavior: contain;
+  -webkit-overscroll-behavior: contain;
+  /* Ensure sheet is above map but below touch blocker */
+  position: relative;
+  z-index: 50;
 }
 
 .mobile-bottom-sheet .drag-handle {
   touch-action: none;
   cursor: grab;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+  /* Prevent any pointer events from passing through */
+  position: relative;
+  z-index: 1;
+  /* Ensure complete isolation of touch events */
+  isolation: isolate;
 }
 
 .mobile-bottom-sheet .drag-handle:active {
   cursor: grabbing;
+  /* Stronger touch blocking during active drag */
+  touch-action: none !important;
+}
+
+/* Ensure drag handle completely blocks touch events during interaction */
+.mobile-bottom-sheet .drag-handle * {
+  pointer-events: none;
+  touch-action: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Better touch handling for scrollable content inside sheet */
+.mobile-bottom-sheet .overflow-y-auto,
+.mobile-bottom-sheet .overflow-scroll {
+  touch-action: pan-y;
+  overscroll-behavior: contain;
 }
 
 /* Horizontal scrolling controls */
@@ -590,6 +624,85 @@ svg {
 
 .dark .custom-scrollbar::-webkit-scrollbar-thumb:active {
   background: hsl(var(--muted-foreground) / 0.8);
+}
+
+/* AGGRESSIVE MOBILE DRAG FIX - Complete map isolation during dragging */
+.mobile-drag-active {
+  /* Block ALL map interactions */
+  pointer-events: none !important;
+  touch-action: none !important;
+  -webkit-touch-callout: none !important;
+  -webkit-user-select: none !important;
+  user-select: none !important;
+}
+
+.mobile-drag-active .leaflet-container,
+.mobile-drag-active .leaflet-container * {
+  pointer-events: none !important;
+  touch-action: none !important;
+  -webkit-touch-callout: none !important;
+  -webkit-user-select: none !important;
+  user-select: none !important;
+}
+
+/* Enhanced sheet content touch handling - allow content interactions */
+.mobile-bottom-sheet.dragging {
+  /* Keep sheet interactive during drag */
+  isolation: isolate;
+  z-index: 9999;
+}
+
+/* Allow all sheet content to remain interactive */
+.mobile-bottom-sheet * {
+  pointer-events: auto;
+  touch-action: auto;
+}
+
+.mobile-bottom-sheet .drag-handle {
+  /* Drag handle optimized for touch */
+  touch-action: none !important;
+  pointer-events: auto;
+}
+
+/* Store list enhanced touch handling */
+.store-list-scrollable.drag-active {
+  /* Disable scrolling during sheet drag */
+  overflow: hidden !important;
+  touch-action: none !important;
+  overscroll-behavior: none !important;
+}
+
+/* Leaflet specific fixes */
+.leaflet-container.drag-blocked {
+  pointer-events: none !important;
+  touch-action: none !important;
+}
+
+.leaflet-container.drag-blocked .leaflet-interactive {
+  pointer-events: none !important;
+  touch-action: none !important;
+}
+
+/* Minimal touch blocking during mobile drag - only block map */
+body.mobile-dragging {
+  /* Don't block body interactions */
+  overscroll-behavior: contain;
+}
+
+/* Allow normal touch interactions everywhere except map */
+body.mobile-dragging .mobile-bottom-sheet {
+  touch-action: auto !important;
+  pointer-events: auto !important;
+}
+
+body.mobile-dragging .mobile-bottom-sheet * {
+  touch-action: auto !important;
+  pointer-events: auto !important;
+}
+
+body.mobile-dragging .mobile-bottom-sheet .drag-handle {
+  touch-action: none !important;
+  pointer-events: auto !important;
 }
 
 /* Reduce motion for accessibility */
