@@ -69,6 +69,10 @@ export interface Config {
   collections: {
     users: User;
     media: Media;
+    stores: Store;
+    photos: Photo;
+    machines: Machine;
+    comments: Comment;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
@@ -77,6 +81,10 @@ export interface Config {
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
+    stores: StoresSelect<false> | StoresSelect<true>;
+    photos: PhotosSelect<false> | PhotosSelect<true>;
+    machines: MachinesSelect<false> | MachinesSelect<true>;
+    comments: CommentsSelect<false> | CommentsSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -119,6 +127,145 @@ export interface UserAuthOperations {
  */
 export interface User {
   id: string;
+  /**
+   * Public display name (falls back to email if not set)
+   */
+  displayName?: string | null;
+  role: 'admin' | 'moderator' | 'user' | 'banned';
+  /**
+   * Total points earned from photo uploads and activities
+   */
+  points: number;
+  /**
+   * User level (calculated from points)
+   */
+  level?: number | null;
+  /**
+   * Profile picture
+   */
+  avatar?: (string | null) | Media;
+  /**
+   * Extended profile information
+   */
+  profile?: {
+    /**
+     * User biography (max 500 characters)
+     */
+    bio?: string | null;
+    /**
+     * User location (city, state)
+     */
+    location?: string | null;
+    /**
+     * User's favorite arcade location
+     */
+    favoriteStore?: (string | null) | Store;
+    /**
+     * List of favorite arcade games
+     */
+    preferredGames?:
+      | {
+          game: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  /**
+   * User engagement statistics
+   */
+  statistics?: {
+    /**
+     * Total number of photos uploaded
+     */
+    photosUploaded?: number | null;
+    /**
+     * Number of photos that were verified
+     */
+    photosVerified?: number | null;
+    /**
+     * Total number of comments posted
+     */
+    commentsPosted?: number | null;
+    /**
+     * Total likes received on photos/comments
+     */
+    likesReceived?: number | null;
+    /**
+     * Number of unique stores visited
+     */
+    storesVisited?: number | null;
+  };
+  /**
+   * User activity tracking
+   */
+  activity?: {
+    /**
+     * Last time user was active
+     */
+    lastActive?: string | null;
+    /**
+     * Date user joined
+     */
+    joinDate?: string | null;
+    /**
+     * Total number of login sessions
+     */
+    totalSessions?: number | null;
+    streak?: {
+      /**
+       * Current consecutive days active
+       */
+      current?: number | null;
+      /**
+       * Longest streak achieved
+       */
+      longest?: number | null;
+      /**
+       * Last date that counted toward streak
+       */
+      lastStreakDate?: string | null;
+    };
+  };
+  /**
+   * User preferences and settings
+   */
+  preferences?: {
+    /**
+     * Receive email notifications
+     */
+    emailNotifications?: boolean | null;
+    /**
+     * Make profile visible to other users
+     */
+    publicProfile?: boolean | null;
+    /**
+     * Share location in photos (GPS data)
+     */
+    shareLocation?: boolean | null;
+    /**
+     * Preferred UI theme
+     */
+    theme?: ('auto' | 'light' | 'dark') | null;
+  };
+  /**
+   * Achievement badges earned by user
+   */
+  badges?:
+    | {
+        name: string;
+        description: string;
+        /**
+         * Icon identifier or emoji
+         */
+        icon?: string | null;
+        earnedAt?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Last profile modification timestamp
+   */
+  lastModified?: string | null;
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -144,6 +291,19 @@ export interface User {
 export interface Media {
   id: string;
   alt: string;
+  /**
+   * Cloudinary public ID for this image
+   */
+  cloudinary_public_id?: string | null;
+  /**
+   * Tags associated with this image
+   */
+  tags?:
+    | {
+        tag?: string | null;
+        id?: string | null;
+      }[]
+    | null;
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -155,6 +315,505 @@ export interface Media {
   height?: number | null;
   focalX?: number | null;
   focalY?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "stores".
+ */
+export interface Store {
+  id: string;
+  /**
+   * Name of the arcade or entertainment venue
+   */
+  name: string;
+  /**
+   * Street address
+   */
+  address?: string | null;
+  /**
+   * City
+   */
+  city?: string | null;
+  /**
+   * State or province
+   */
+  state?: string | null;
+  /**
+   * ZIP or postal code
+   */
+  postalCode?: string | null;
+  /**
+   * Country code (default: US)
+   */
+  country?: string | null;
+  /**
+   * GPS coordinates for geolocation queries
+   *
+   * @minItems 2
+   * @maxItems 2
+   */
+  location?: [number, number] | null;
+  /**
+   * Description of the venue and its offerings
+   */
+  description?: string | null;
+  /**
+   * Store images and photos
+   */
+  images?:
+    | {
+        image: string | Media;
+        caption?: string | null;
+        isPrimary?: boolean | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Type of venue
+   */
+  category?: ('arcade' | 'restaurant' | 'entertainment' | 'bowling' | 'family' | 'bar' | 'mall') | null;
+  /**
+   * Current operational status
+   */
+  status: 'active' | 'temp_closed' | 'closed' | 'coming_soon';
+  /**
+   * Contact information
+   */
+  contact?: {
+    /**
+     * Phone number
+     */
+    phone?: string | null;
+    /**
+     * Contact email
+     */
+    email?: string | null;
+    /**
+     * Website URL
+     */
+    website?: string | null;
+    socialMedia?: {
+      facebook?: string | null;
+      instagram?: string | null;
+      twitter?: string | null;
+    };
+  };
+  /**
+   * Operating hours by day of week
+   */
+  openingHours?: {
+    /**
+     * e.g., "9:00-22:00" or "Closed"
+     */
+    monday?: string | null;
+    /**
+     * e.g., "9:00-22:00" or "Closed"
+     */
+    tuesday?: string | null;
+    /**
+     * e.g., "9:00-22:00" or "Closed"
+     */
+    wednesday?: string | null;
+    /**
+     * e.g., "9:00-22:00" or "Closed"
+     */
+    thursday?: string | null;
+    /**
+     * e.g., "9:00-24:00" or "Closed"
+     */
+    friday?: string | null;
+    /**
+     * e.g., "9:00-24:00" or "Closed"
+     */
+    saturday?: string | null;
+    /**
+     * e.g., "12:00-20:00" or "Closed"
+     */
+    sunday?: string | null;
+    /**
+     * Holiday hours or special notes
+     */
+    specialHours?: string | null;
+  };
+  /**
+   * Available amenities and services
+   */
+  amenities?:
+    | {
+        amenity:
+          | 'food'
+          | 'parking'
+          | 'wifi'
+          | 'parties'
+          | 'tournaments'
+          | 'redemption'
+          | 'atm'
+          | 'restrooms'
+          | 'accessible'
+          | 'groups';
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Payment methods and pricing info
+   */
+  pricing?: {
+    acceptsCash?: boolean | null;
+    acceptsCards?: boolean | null;
+    /**
+     * Uses physical tokens
+     */
+    hasTokens?: boolean | null;
+    /**
+     * Uses rechargeable play cards
+     */
+    hasPlayCards?: boolean | null;
+    priceRange?: ('budget' | 'moderate' | 'premium') | null;
+  };
+  /**
+   * Analytics and engagement metrics
+   */
+  analytics?: {
+    /**
+     * Number of times store page was viewed
+     */
+    views?: number | null;
+    /**
+     * Number of photos uploaded at this store
+     */
+    photoCount?: number | null;
+    /**
+     * Number of user check-ins
+     */
+    checkIns?: number | null;
+    /**
+     * Average user rating (0-5 stars)
+     */
+    averageRating?: number | null;
+    /**
+     * Total number of ratings received
+     */
+    totalRatings?: number | null;
+    /**
+     * Number of machines at this location
+     */
+    machineCount?: number | null;
+  };
+  /**
+   * Calculated popularity score (auto-generated)
+   */
+  popularity?: number | null;
+  /**
+   * Mark as featured store
+   */
+  featured?: boolean | null;
+  /**
+   * Tags for categorizing and searching stores
+   */
+  tags?:
+    | {
+        tag: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Last modification timestamp for real-time updates
+   */
+  lastModified?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "photos".
+ */
+export interface Photo {
+  id: string;
+  /**
+   * Description of the photo for accessibility and search
+   */
+  alt: string;
+  /**
+   * User who uploaded this photo
+   */
+  uploadedBy: string | User;
+  /**
+   * Store where this photo was taken
+   */
+  store: string | Store;
+  /**
+   * Specific machine featured in the photo (optional)
+   */
+  machine?: (string | null) | Machine;
+  /**
+   * The uploaded photo file
+   */
+  media: string | Media;
+  /**
+   * GPS coordinates where the photo was taken
+   *
+   * @minItems 2
+   * @maxItems 2
+   */
+  location?: [number, number] | null;
+  /**
+   * Moderation status of the photo
+   */
+  verificationStatus: 'pending' | 'verified' | 'rejected' | 'flagged';
+  /**
+   * Points awarded for this photo (default: 10)
+   */
+  pointsAwarded?: number | null;
+  /**
+   * Tags for categorizing and searching photos
+   */
+  tags?:
+    | {
+        tag: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Additional metadata for analytics and features
+   */
+  metadata?: {
+    /**
+     * Number of likes received
+     */
+    likes?: number | null;
+    /**
+     * Number of times photo was viewed
+     */
+    views?: number | null;
+    /**
+     * Mark as featured photo
+     */
+    featured?: boolean | null;
+    deviceInfo?: {
+      /**
+       * Device/browser information
+       */
+      userAgent?: string | null;
+      /**
+       * Photo resolution (e.g., 1920x1080)
+       */
+      resolution?: string | null;
+    };
+  };
+  /**
+   * Internal moderation notes (admin only)
+   */
+  moderationNotes?: string | null;
+  /**
+   * Last modification timestamp for real-time updates
+   */
+  lastModified?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "machines".
+ */
+export interface Machine {
+  id: string;
+  /**
+   * Name of the arcade machine or game
+   */
+  name: string;
+  /**
+   * Category of arcade machine
+   */
+  type: 'cabinet' | 'pinball' | 'redemption' | 'skill' | 'rhythm' | 'shooting' | 'racing' | 'prize' | 'other';
+  /**
+   * Store location where this machine is found
+   */
+  store: string | Store;
+  /**
+   * Difficulty level of the machine/game
+   */
+  difficulty?: ('beginner' | 'easy' | 'medium' | 'hard' | 'expert') | null;
+  /**
+   * Manufacturer of the machine (e.g., Stern, Raw Thrills)
+   */
+  manufacturer?: string | null;
+  /**
+   * Year the machine was manufactured
+   */
+  year?: number | null;
+  /**
+   * Current operational status
+   */
+  status: 'operational' | 'broken' | 'maintenance' | 'removed';
+  /**
+   * Description of the machine and gameplay
+   */
+  description?: string | null;
+  /**
+   * Official images of the machine
+   */
+  images?:
+    | {
+        image: string | Media;
+        caption?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Pricing and payment information
+   */
+  pricing?: {
+    /**
+     * Cost per play in cents (e.g., 50 = $0.50)
+     */
+    costPerPlay?: number | null;
+    /**
+     * Whether machine accepts arcade tokens
+     */
+    acceptsTokens?: boolean | null;
+    /**
+     * Whether machine accepts arcade cards/tap to play
+     */
+    acceptsCards?: boolean | null;
+  };
+  /**
+   * Analytics and engagement metrics
+   */
+  analytics?: {
+    /**
+     * Number of times machine details were viewed
+     */
+    views?: number | null;
+    /**
+     * Number of photos uploaded for this machine
+     */
+    photoCount?: number | null;
+    /**
+     * Average user rating (0-5 stars)
+     */
+    averageRating?: number | null;
+    /**
+     * Total number of ratings received
+     */
+    totalRatings?: number | null;
+  };
+  /**
+   * Calculated popularity score (auto-generated)
+   */
+  popularity?: number | null;
+  /**
+   * Tags for categorizing and searching machines
+   */
+  tags?:
+    | {
+        tag: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Technical specifications
+   */
+  specifications?: {
+    /**
+     * Maximum number of simultaneous players
+     */
+    players?: ('1' | '2' | '4' | '6+') | null;
+    dimensions?: {
+      /**
+       * Width in inches
+       */
+      width?: number | null;
+      /**
+       * Depth in inches
+       */
+      depth?: number | null;
+      /**
+       * Height in inches
+       */
+      height?: number | null;
+    };
+  };
+  /**
+   * Last modification timestamp for real-time updates
+   */
+  lastModified?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "comments".
+ */
+export interface Comment {
+  id: string;
+  /**
+   * Comment content (max 1000 characters)
+   */
+  content: string;
+  /**
+   * User who wrote this comment
+   */
+  author: string | User;
+  /**
+   * What this comment is about
+   */
+  targetType: 'photo' | 'machine' | 'store';
+  /**
+   * Photo being commented on
+   */
+  photo?: (string | null) | Photo;
+  /**
+   * Machine being commented on
+   */
+  machine?: (string | null) | Machine;
+  /**
+   * Store being commented on
+   */
+  store?: (string | null) | Store;
+  /**
+   * Optional rating (1-5 stars)
+   */
+  rating?: number | null;
+  /**
+   * Moderation status
+   */
+  moderationStatus: 'pending' | 'approved' | 'rejected' | 'flagged';
+  /**
+   * Parent comment if this is a reply
+   */
+  parentComment?: (string | null) | Comment;
+  /**
+   * Number of likes this comment received
+   */
+  likes?: number | null;
+  /**
+   * Number of times this comment was reported
+   */
+  reportCount?: number | null;
+  /**
+   * Whether this comment has been edited
+   */
+  isEdited?: boolean | null;
+  /**
+   * History of edits (admin only)
+   */
+  editHistory?:
+    | {
+        editedAt: string;
+        previousContent: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Internal moderation notes (admin only)
+   */
+  moderationNotes?: string | null;
+  /**
+   * Last modification timestamp
+   */
+  lastModified?: string | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -170,6 +829,22 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'media';
         value: string | Media;
+      } | null)
+    | ({
+        relationTo: 'stores';
+        value: string | Store;
+      } | null)
+    | ({
+        relationTo: 'photos';
+        value: string | Photo;
+      } | null)
+    | ({
+        relationTo: 'machines';
+        value: string | Machine;
+      } | null)
+    | ({
+        relationTo: 'comments';
+        value: string | Comment;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -218,6 +893,65 @@ export interface PayloadMigration {
  * via the `definition` "users_select".
  */
 export interface UsersSelect<T extends boolean = true> {
+  displayName?: T;
+  role?: T;
+  points?: T;
+  level?: T;
+  avatar?: T;
+  profile?:
+    | T
+    | {
+        bio?: T;
+        location?: T;
+        favoriteStore?: T;
+        preferredGames?:
+          | T
+          | {
+              game?: T;
+              id?: T;
+            };
+      };
+  statistics?:
+    | T
+    | {
+        photosUploaded?: T;
+        photosVerified?: T;
+        commentsPosted?: T;
+        likesReceived?: T;
+        storesVisited?: T;
+      };
+  activity?:
+    | T
+    | {
+        lastActive?: T;
+        joinDate?: T;
+        totalSessions?: T;
+        streak?:
+          | T
+          | {
+              current?: T;
+              longest?: T;
+              lastStreakDate?: T;
+            };
+      };
+  preferences?:
+    | T
+    | {
+        emailNotifications?: T;
+        publicProfile?: T;
+        shareLocation?: T;
+        theme?: T;
+      };
+  badges?:
+    | T
+    | {
+        name?: T;
+        description?: T;
+        icon?: T;
+        earnedAt?: T;
+        id?: T;
+      };
+  lastModified?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;
@@ -241,6 +975,13 @@ export interface UsersSelect<T extends boolean = true> {
  */
 export interface MediaSelect<T extends boolean = true> {
   alt?: T;
+  cloudinary_public_id?: T;
+  tags?:
+    | T
+    | {
+        tag?: T;
+        id?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
   url?: T;
@@ -252,6 +993,216 @@ export interface MediaSelect<T extends boolean = true> {
   height?: T;
   focalX?: T;
   focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "stores_select".
+ */
+export interface StoresSelect<T extends boolean = true> {
+  name?: T;
+  address?: T;
+  city?: T;
+  state?: T;
+  postalCode?: T;
+  country?: T;
+  location?: T;
+  description?: T;
+  images?:
+    | T
+    | {
+        image?: T;
+        caption?: T;
+        isPrimary?: T;
+        id?: T;
+      };
+  category?: T;
+  status?: T;
+  contact?:
+    | T
+    | {
+        phone?: T;
+        email?: T;
+        website?: T;
+        socialMedia?:
+          | T
+          | {
+              facebook?: T;
+              instagram?: T;
+              twitter?: T;
+            };
+      };
+  openingHours?:
+    | T
+    | {
+        monday?: T;
+        tuesday?: T;
+        wednesday?: T;
+        thursday?: T;
+        friday?: T;
+        saturday?: T;
+        sunday?: T;
+        specialHours?: T;
+      };
+  amenities?:
+    | T
+    | {
+        amenity?: T;
+        id?: T;
+      };
+  pricing?:
+    | T
+    | {
+        acceptsCash?: T;
+        acceptsCards?: T;
+        hasTokens?: T;
+        hasPlayCards?: T;
+        priceRange?: T;
+      };
+  analytics?:
+    | T
+    | {
+        views?: T;
+        photoCount?: T;
+        checkIns?: T;
+        averageRating?: T;
+        totalRatings?: T;
+        machineCount?: T;
+      };
+  popularity?: T;
+  featured?: T;
+  tags?:
+    | T
+    | {
+        tag?: T;
+        id?: T;
+      };
+  lastModified?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "photos_select".
+ */
+export interface PhotosSelect<T extends boolean = true> {
+  alt?: T;
+  uploadedBy?: T;
+  store?: T;
+  machine?: T;
+  media?: T;
+  location?: T;
+  verificationStatus?: T;
+  pointsAwarded?: T;
+  tags?:
+    | T
+    | {
+        tag?: T;
+        id?: T;
+      };
+  metadata?:
+    | T
+    | {
+        likes?: T;
+        views?: T;
+        featured?: T;
+        deviceInfo?:
+          | T
+          | {
+              userAgent?: T;
+              resolution?: T;
+            };
+      };
+  moderationNotes?: T;
+  lastModified?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "machines_select".
+ */
+export interface MachinesSelect<T extends boolean = true> {
+  name?: T;
+  type?: T;
+  store?: T;
+  difficulty?: T;
+  manufacturer?: T;
+  year?: T;
+  status?: T;
+  description?: T;
+  images?:
+    | T
+    | {
+        image?: T;
+        caption?: T;
+        id?: T;
+      };
+  pricing?:
+    | T
+    | {
+        costPerPlay?: T;
+        acceptsTokens?: T;
+        acceptsCards?: T;
+      };
+  analytics?:
+    | T
+    | {
+        views?: T;
+        photoCount?: T;
+        averageRating?: T;
+        totalRatings?: T;
+      };
+  popularity?: T;
+  tags?:
+    | T
+    | {
+        tag?: T;
+        id?: T;
+      };
+  specifications?:
+    | T
+    | {
+        players?: T;
+        dimensions?:
+          | T
+          | {
+              width?: T;
+              depth?: T;
+              height?: T;
+            };
+      };
+  lastModified?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "comments_select".
+ */
+export interface CommentsSelect<T extends boolean = true> {
+  content?: T;
+  author?: T;
+  targetType?: T;
+  photo?: T;
+  machine?: T;
+  store?: T;
+  rating?: T;
+  moderationStatus?: T;
+  parentComment?: T;
+  likes?: T;
+  reportCount?: T;
+  isEdited?: T;
+  editHistory?:
+    | T
+    | {
+        editedAt?: T;
+        previousContent?: T;
+        id?: T;
+      };
+  moderationNotes?: T;
+  lastModified?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

@@ -1,0 +1,224 @@
+'use client'
+
+import React, { useEffect, useCallback, useState } from 'react'
+import Image from 'next/image'
+import { LightboxProps } from './types'
+
+const Lightbox: React.FC<LightboxProps> = ({
+  photos,
+  currentIndex,
+  isOpen,
+  onClose,
+  onNext,
+  onPrevious,
+  className = '',
+}) => {
+  const [imageLoaded, setImageLoaded] = useState(false)
+  const [touchStart, setTouchStart] = useState<number | null>(null)
+  const [touchEnd, setTouchEnd] = useState<number | null>(null)
+
+  const currentPhoto = photos[currentIndex]
+  const isFirstPhoto = currentIndex === 0
+  const isLastPhoto = currentIndex === photos.length - 1
+
+  // Reset image loaded state when photo changes
+  useEffect(() => {
+    setImageLoaded(false)
+  }, [currentIndex])
+
+  // Handle keyboard navigation
+  const handleKeyDown = useCallback(
+    (event: KeyboardEvent) => {
+      if (!isOpen) return
+
+      switch (event.key) {
+        case 'Escape':
+          onClose()
+          break
+        case 'ArrowLeft':
+          if (!isFirstPhoto) onPrevious()
+          break
+        case 'ArrowRight':
+          if (!isLastPhoto) onNext()
+          break
+        default:
+          break
+      }
+    },
+    [isOpen, isFirstPhoto, isLastPhoto, onClose, onNext, onPrevious]
+  )
+
+  // Handle touch gestures for mobile
+  const handleTouchStart = (event: React.TouchEvent) => {
+    setTouchEnd(null)
+    setTouchStart(event.targetTouches[0].clientX)
+  }
+
+  const handleTouchMove = (event: React.TouchEvent) => {
+    setTouchEnd(event.targetTouches[0].clientX)
+  }
+
+  const handleTouchEnd = () => {
+    if (!touchStart || !touchEnd) return
+
+    const distance = touchStart - touchEnd
+    const minSwipeDistance = 50
+
+    if (distance > minSwipeDistance && !isLastPhoto) {
+      onNext()
+    } else if (distance < -minSwipeDistance && !isFirstPhoto) {
+      onPrevious()
+    }
+  }
+
+  // Add/remove event listeners
+  useEffect(() => {
+    if (isOpen) {
+      document.addEventListener('keydown', handleKeyDown)
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = 'unset'
+    }
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown)
+      document.body.style.overflow = 'unset'
+    }
+  }, [isOpen, handleKeyDown])
+
+  if (!isOpen || !currentPhoto) return null
+
+  const imageUrl = typeof currentPhoto.image === 'string' ? currentPhoto.image : currentPhoto.image.url
+  const imageAlt = currentPhoto.alt || (typeof currentPhoto.image === 'object' ? currentPhoto.image.alt : `Photo ${currentIndex + 1}`)
+  const imageWidth = typeof currentPhoto.image === 'object' ? currentPhoto.image.width : 1200
+  const imageHeight = typeof currentPhoto.image === 'object' ? currentPhoto.image.height : 800
+
+  return (
+    <div
+      className={`fixed inset-0 z-50 bg-black bg-opacity-90 flex items-center justify-center p-4 animate-fade-in ${className}`}
+      onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-label="Image lightbox"
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+    >
+      {/* Close button */}
+      <button
+        className="absolute top-4 right-4 z-10 p-2 bg-black bg-opacity-50 rounded-full text-white hover:bg-opacity-70 transition-all duration-200 focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-black"
+        onClick={onClose}
+        aria-label="Close lightbox"
+      >
+        <svg
+          className="w-6 h-6"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+          aria-hidden="true"
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+
+      {/* Previous button */}
+      {!isFirstPhoto && (
+        <button
+          className="absolute left-4 top-1/2 transform -translate-y-1/2 z-10 p-3 bg-black bg-opacity-50 rounded-full text-white hover:bg-opacity-70 transition-all duration-200 focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-black md:left-8"
+          onClick={(e) => {
+            e.stopPropagation()
+            onPrevious()
+          }}
+          aria-label="Previous image"
+        >
+          <svg
+            className="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
+      )}
+
+      {/* Next button */}
+      {!isLastPhoto && (
+        <button
+          className="absolute right-4 top-1/2 transform -translate-y-1/2 z-10 p-3 bg-black bg-opacity-50 rounded-full text-white hover:bg-opacity-70 transition-all duration-200 focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-black md:right-8"
+          onClick={(e) => {
+            e.stopPropagation()
+            onNext()
+          }}
+          aria-label="Next image"
+        >
+          <svg
+            className="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
+      )}
+
+      {/* Image container */}
+      <div
+        className="relative max-w-full max-h-full flex items-center justify-center"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Loading indicator */}
+        {!imageLoaded && (
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div>
+          </div>
+        )}
+
+        {/* Main image */}
+        <Image
+          src={imageUrl || ''}
+          alt={imageAlt}
+          width={imageWidth || 1200}
+          height={imageHeight || 800}
+          className={`max-w-full max-h-full object-contain transition-opacity duration-300 ${
+            imageLoaded ? 'opacity-100' : 'opacity-0'
+          }`}
+          onLoad={() => setImageLoaded(true)}
+          priority
+          quality={95}
+          sizes="100vw"
+        />
+
+        {/* Image counter and caption */}
+        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black via-black/50 to-transparent p-4 text-white">
+          <div className="flex justify-between items-end">
+            <div className="flex-1">
+              {currentPhoto.caption && (
+                <p className="text-lg font-medium mb-2 leading-relaxed">
+                  {currentPhoto.caption}
+                </p>
+              )}
+              <p className="text-sm opacity-75">
+                {imageAlt}
+              </p>
+            </div>
+            <div className="text-sm opacity-75 ml-4">
+              {currentIndex + 1} of {photos.length}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Keyboard instructions (hidden but available for screen readers) */}
+      <div className="sr-only">
+        Use arrow keys to navigate between images, or press Escape to close the lightbox.
+        Swipe left or right on mobile devices to navigate.
+      </div>
+    </div>
+  )
+}
+
+export default Lightbox

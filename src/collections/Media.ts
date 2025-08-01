@@ -11,6 +11,26 @@ export const Media: CollectionConfig = {
       type: 'text',
       required: true,
     },
+    {
+      name: 'cloudinary_public_id',
+      type: 'text',
+      admin: {
+        description: 'Cloudinary public ID for this image',
+      },
+    },
+    {
+      name: 'tags',
+      type: 'array',
+      fields: [
+        {
+          name: 'tag',
+          type: 'text',
+        },
+      ],
+      admin: {
+        description: 'Tags associated with this image',
+      },
+    },
   ],
   upload: true,
 }
