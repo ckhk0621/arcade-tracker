@@ -14,9 +14,12 @@ interface Store {
   city?: string | null
   state?: string | null
   region?: 'hong-kong-island' | 'kowloon' | 'new-territories' | null
-  location?: {
-    coordinates: [number, number]
-  } | [number, number] | null
+  location?:
+    | {
+        coordinates: [number, number]
+      }
+    | [number, number]
+    | null
   category?: string | null
   status: string
   analytics?: {
@@ -63,10 +66,14 @@ export default function MobileStoreLocator({ initialStores, onRefresh }: MobileS
   const [locationError, setLocationError] = useState<string | null>(null)
   const [isRefreshing, setIsRefreshing] = useState(false)
   const [isLoadingLocation, setIsLoadingLocation] = useState(false)
-  const [isStoreListCollapsed, setIsStoreListCollapsed] = useClientStorage('storeListCollapsed', false, 'session')
+  const [isStoreListCollapsed, setIsStoreListCollapsed] = useClientStorage(
+    'storeListCollapsed',
+    false,
+    'session',
+  )
   const [_lastSelectedFromList, setLastSelectedFromList] = useState<string | null>(null)
   const [showLocationDetail, setShowLocationDetail] = useState(false)
-  
+
   // Mobile-specific state
   const { isMobile, isTablet, isDesktop } = useResponsive()
   const isClient = useIsClient()
@@ -108,8 +115,8 @@ export default function MobileStoreLocator({ initialStores, onRefresh }: MobileS
       {
         enableHighAccuracy: true,
         timeout: 10000,
-        maximumAge: 300000 // 5 minutes
-      }
+        maximumAge: 300000, // 5 minutes
+      },
     )
   }, [])
 
@@ -123,7 +130,7 @@ export default function MobileStoreLocator({ initialStores, onRefresh }: MobileS
   // Handle store refresh
   const handleRefresh = useCallback(async () => {
     if (!onRefresh || isRefreshing) return
-    
+
     setIsRefreshing(true)
     try {
       const updatedStores = await onRefresh()
@@ -137,7 +144,7 @@ export default function MobileStoreLocator({ initialStores, onRefresh }: MobileS
 
   const handleStoreSelect = (store: Store, fromList: boolean = false) => {
     setSelectedStore(store)
-    
+
     if (store) {
       if (isClient && isMobile) {
         // Mobile behavior - show detail in bottom sheet
@@ -146,20 +153,24 @@ export default function MobileStoreLocator({ initialStores, onRefresh }: MobileS
       } else {
         // Desktop behavior - show location detail panel when a store is selected AND store list is visible
         setShowLocationDetail(!isStoreListCollapsed)
-        
+
         // Trigger map resize after the panel animation completes
         setTimeout(() => {
           if (typeof window !== 'undefined') {
             window.dispatchEvent(new Event('resize'))
           }
         }, 350) // After 300ms transition completes
-        
+
         if (fromList) {
           // When selected from list, center and show detail panel
           setLastSelectedFromList(store.id)
-          
+
           // Auto-collapse store list on tablet for better map visibility
-          if (typeof window !== 'undefined' && window.innerWidth <= 1024 && window.innerWidth > 640) {
+          if (
+            typeof window !== 'undefined' &&
+            window.innerWidth <= 1024 &&
+            window.innerWidth > 640
+          ) {
             setTimeout(() => {
               setIsStoreListCollapsed(true)
               // Also hide the detail panel when auto-collapsing on tablet
@@ -178,7 +189,6 @@ export default function MobileStoreLocator({ initialStores, onRefresh }: MobileS
     }
   }
 
-
   const toggleStoreListCollapse = () => {
     if (isClient && isMobile) {
       // Mobile behavior - toggle bottom sheet between hidden and full
@@ -191,11 +201,11 @@ export default function MobileStoreLocator({ initialStores, onRefresh }: MobileS
       }
       return
     }
-    
+
     // Desktop behavior
     const newCollapsed = !isStoreListCollapsed
     setIsStoreListCollapsed(newCollapsed)
-    
+
     // When collapsing the store list, also clear the selected store and hide the detail panel
     if (newCollapsed) {
       setSelectedStore(null)
@@ -205,7 +215,7 @@ export default function MobileStoreLocator({ initialStores, onRefresh }: MobileS
       // When expanding the store list, keep detail panel hidden until a new location is selected
       setShowLocationDetail(false)
     }
-    
+
     // Trigger map resize after animation completes to ensure proper rendering
     setTimeout(() => {
       if (typeof window !== 'undefined') {
@@ -217,7 +227,7 @@ export default function MobileStoreLocator({ initialStores, onRefresh }: MobileS
   const handleCloseLocationDetail = () => {
     setShowLocationDetail(false)
     setSelectedStore(null)
-    
+
     // Trigger map resize after the panel animation completes
     setTimeout(() => {
       if (typeof window !== 'undefined') {
@@ -294,8 +304,8 @@ export default function MobileStoreLocator({ initialStores, onRefresh }: MobileS
         <MobileBottomSheet
           state={mobileSheetState}
           onStateChange={handleMobileSheetStateChange}
-          storeCount={stores.filter(s => s.status === 'active').length}
-          title="遊戲機中心"
+          storeCount={stores.filter((s) => s.status === 'active').length}
+          title="冒險樂園"
         >
           {showMobileDetail ? (
             <MobileLocationDetail
@@ -359,11 +369,9 @@ export default function MobileStoreLocator({ initialStores, onRefresh }: MobileS
       </div>
 
       {/* Middle Column - Location Detail Panel (slides in from right) */}
-      <div 
+      <div
         className={`location-detail-container transition-all duration-300 ease-out overflow-hidden ${
-          showLocationDetail && !isStoreListCollapsed
-            ? 'w-96 opacity-100' 
-            : 'w-0 opacity-0'
+          showLocationDetail && !isStoreListCollapsed ? 'w-96 opacity-100' : 'w-0 opacity-0'
         }`}
       >
         {showLocationDetail && !isStoreListCollapsed && (
@@ -377,18 +385,20 @@ export default function MobileStoreLocator({ initialStores, onRefresh }: MobileS
       </div>
 
       {/* Right Column - Scrollable Store List - Responsive width with collapse animation */}
-      <div 
+      <div
         className={`store-list-container ${
-          isStoreListCollapsed 
-            ? 'w-0 opacity-0 pointer-events-none overflow-hidden store-list-collapsed' 
+          isStoreListCollapsed
+            ? 'w-0 opacity-0 pointer-events-none overflow-hidden store-list-collapsed'
             : 'w-80 lg:w-80 md:w-72 sm:w-60 xs:w-56 opacity-100'
         }`}
       >
-        <div className={`h-full store-list-inner ${
-          isStoreListCollapsed 
-            ? 'opacity-0 scale-95 store-list-collapsed' 
-            : 'opacity-100 scale-100 border-l border-border/50 bg-background shadow-lg store-list-backdrop'
-        }`}>
+        <div
+          className={`h-full store-list-inner ${
+            isStoreListCollapsed
+              ? 'opacity-0 scale-95 store-list-collapsed'
+              : 'opacity-100 scale-100 border-l border-border/50 bg-background shadow-lg store-list-backdrop'
+          }`}
+        >
           <StoreList
             stores={stores}
             selectedStore={selectedStore}
