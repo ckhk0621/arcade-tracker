@@ -73,15 +73,15 @@ export const Stores: CollectionConfig = {
       index: true,
       options: [
         {
-          label: 'Hong Kong Island',
+          label: '香港島',
           value: 'hong-kong-island',
         },
         {
-          label: 'Kowloon',
+          label: '九龍',
           value: 'kowloon',
         },
         {
-          label: 'New Territories',
+          label: '新界',
           value: 'new-territories',
         },
       ],
@@ -172,7 +172,7 @@ export const Stores: CollectionConfig = {
           value: 'bowling',
         },
         {
-          label: 'Family Fun Center',
+          label: '親子遊樂場',
           value: 'family',
         },
         {

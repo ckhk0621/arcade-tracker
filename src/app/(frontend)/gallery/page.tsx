@@ -164,10 +164,10 @@ export default async function GalleryPage() {
             <div className="flex justify-between items-center py-4">
               <div>
                 <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
-                  Arcade Tracker
+                  遊戲機中心搜尋器
                 </h1>
                 <p className="text-sm text-gray-600 dark:text-gray-400">
-                  Photo Gallery Demo
+                  照片圖庫展示
                 </p>
               </div>
               <ThemeToggle />
@@ -194,7 +194,7 @@ export default async function GalleryPage() {
           {/* Feature Overview */}
           <section className="mt-16 bg-gray-50 dark:bg-gray-800 rounded-xl p-8">
             <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-6 text-center">
-              Gallery Features
+              圖庫功能
             </h2>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
               <div className="text-center">
@@ -289,7 +289,7 @@ export default async function GalleryPage() {
         <footer className="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 mt-16">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <div className="text-center text-gray-600 dark:text-gray-400">
-              <p>&copy; 2024 Arcade Tracker. Responsive Photo Gallery Demo.</p>
+              <p>&copy; 2024 遊戲機中心搜尋器。響應式照片圖庫展示。</p>
             </div>
           </div>
         </footer>

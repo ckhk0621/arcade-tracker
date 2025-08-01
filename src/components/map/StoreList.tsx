@@ -1,11 +1,12 @@
 'use client'
 
 import { useState, useMemo } from 'react'
-import { Search, MapPin, Star, Clock, Phone, Filter, ChevronDown, Navigation } from 'lucide-react'
+import { Search, MapPin, Star, Navigation } from 'lucide-react'
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Badge } from "@/components/ui/badge"
+import { Skeleton } from "@/components/ui/skeleton"
 import { cn } from "@/lib/utils"
 
 interface Store {
@@ -14,6 +15,7 @@ interface Store {
   address?: string | null
   city?: string | null
   state?: string | null
+  region?: 'hong-kong-island' | 'kowloon' | 'new-territories' | null
   location?: {
     coordinates: [number, number]
   } | [number, number] | null
@@ -59,6 +61,7 @@ interface StoreListProps {
   className?: string
   onRefresh?: () => void
   isRefreshing?: boolean
+  isLoading?: boolean
   compact?: boolean
 }
 
@@ -69,7 +72,7 @@ const calculateDistance = (
   const [lat1, lon1] = point1
   const [lat2, lon2] = point2
   
-  const R = 3959 // Earth's radius in miles
+  const R = 6371 // Earth's radius in kilometers
   const dLat = (lat2 - lat1) * Math.PI / 180
   const dLon = (lon2 - lon1) * Math.PI / 180
   
@@ -84,47 +87,30 @@ const calculateDistance = (
 
 const getCategoryLabel = (category?: string) => {
   const labels: Record<string, string> = {
-    arcade: 'Arcade',
-    restaurant: 'Restaurant',
-    entertainment: 'Entertainment Center',
-    bowling: 'Bowling Alley',
-    family: 'Family Fun Center',
-    bar: 'Bar/Barcade',
-    mall: 'Mall Arcade',
+    arcade: '遊戲機中心',
+    restaurant: '餐廳',
+    entertainment: '娛樂中心',
+    bowling: '保齡球館',
+    family: '親子遊樂場',
+    bar: '酒廊/遊戲酒吧',
+    mall: '商場遊戲區',
   }
-  return labels[category || 'arcade'] || 'Arcade'
+  return labels[category || 'arcade'] || '遊戲機中心'
 }
 
-const getCategoryColor = (category?: string) => {
-  const colors: Record<string, string> = {
-    arcade: 'bg-blue-100 text-blue-800',
-    restaurant: 'bg-amber-100 text-amber-800',
-    entertainment: 'bg-emerald-100 text-emerald-800',
-    bowling: 'bg-purple-100 text-purple-800',
-    family: 'bg-pink-100 text-pink-800',
-    bar: 'bg-red-100 text-red-800',
-    mall: 'bg-gray-100 text-gray-800',
+const getCategoryVariant = (category?: string): "arcade" | "restaurant" | "entertainment" | "bowling" | "family" | "bar" | "mall" => {
+  const variants: Record<string, "arcade" | "restaurant" | "entertainment" | "bowling" | "family" | "bar" | "mall"> = {
+    arcade: 'arcade',
+    restaurant: 'restaurant',
+    entertainment: 'entertainment',
+    bowling: 'bowling',
+    family: 'family',
+    bar: 'bar',
+    mall: 'mall',
   }
-  return colors[category || 'arcade'] || 'bg-gray-100 text-gray-800'
+  return variants[category || 'arcade'] || 'arcade'
 }
 
-const getPriceRangeDisplay = (priceRange?: string) => {
-  const ranges: Record<string, string> = {
-    budget: '$',
-    moderate: '$$',
-    premium: '$$$',
-  }
-  return ranges[priceRange || 'moderate'] || '$$'
-}
-
-const getTodayHours = (openingHours?: Store['openingHours']) => {
-  if (!openingHours) return null
-  
-  const days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday']
-  const today = days[new Date().getDay()]
-  
-  return openingHours[today as keyof typeof openingHours] || null
-}
 
 export default function StoreList({ 
   stores, 
@@ -134,28 +120,16 @@ export default function StoreList({
   className,
   onRefresh,
   isRefreshing,
-  compact = false
+  isLoading = false
 }: StoreListProps) {
   const [searchQuery, setSearchQuery] = useState('')
-  const [selectedCategory, setSelectedCategory] = useState<string>('all')
+  const [selectedRegion, setSelectedRegion] = useState<string>('all')
   const [sortBy, setSortBy] = useState<'distance' | 'rating' | 'name'>('distance')
-  const [showFilters, setShowFilters] = useState(false)
-
-  const categories = [
-    { value: 'all', label: 'All Categories' },
-    { value: 'arcade', label: 'Arcade' },
-    { value: 'restaurant', label: 'Restaurant' },
-    { value: 'entertainment', label: 'Entertainment Center' },
-    { value: 'bowling', label: 'Bowling Alley' },
-    { value: 'family', label: 'Family Fun Center' },
-    { value: 'bar', label: 'Bar/Barcade' },
-    { value: 'mall', label: 'Mall Arcade' },
-  ]
 
   const filteredAndSortedStores = useMemo(() => {
     let filtered = stores.filter(store => 
       store.status === 'active' &&
-      (selectedCategory === 'all' || store.category === selectedCategory) &&
+      (selectedRegion === 'all' || store.region === selectedRegion) &&
       (searchQuery === '' || 
         store.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         store.address?.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -174,10 +148,11 @@ export default function StoreList({
           storeCoords = [store.location.coordinates[1], store.location.coordinates[0]]
         }
         
-        return {
+        const storeWithDistance = {
           ...store,
           distance: storeCoords ? calculateDistance(userLocation, storeCoords) : Infinity
         }
+        return storeWithDistance as Store & { distance: number }
       })
     }
 
@@ -186,7 +161,9 @@ export default function StoreList({
       switch (sortBy) {
         case 'distance':
           if (!userLocation) return a.name.localeCompare(b.name)
-          return ((a as any).distance || Infinity) - ((b as any).distance || Infinity)
+          const aDistance = (a as Store & { distance?: number }).distance || Infinity
+          const bDistance = (b as Store & { distance?: number }).distance || Infinity
+          return aDistance - bDistance
         case 'rating':
           const ratingA = a.analytics?.averageRating || 0
           const ratingB = b.analytics?.averageRating || 0
@@ -199,21 +176,13 @@ export default function StoreList({
     })
 
     return filtered
-  }, [stores, searchQuery, selectedCategory, sortBy, userLocation])
+  }, [stores, searchQuery, selectedRegion, sortBy, userLocation])
 
   const formatAddress = (store: Store) => {
     const parts = [store.address, store.city, store.state].filter(Boolean)
     return parts.join(', ')
   }
 
-  const renderStars = (rating: number) => {
-    return Array.from({ length: 5 }, (_, i) => (
-      <Star 
-        key={i} 
-        className={`w-3 h-3 ${i < rating ? 'text-yellow-400 fill-current' : 'text-gray-300'}`}
-      />
-    ))
-  }
 
   const handlePullToRefresh = (e: React.TouchEvent) => {
     // Simple pull-to-refresh implementation
@@ -241,98 +210,89 @@ export default function StoreList({
 
   return (
     <div className={cn("flex flex-col h-full bg-background", className)}>
-      {/* Search and Filter Header */}
-      <div className={cn(
-        "sticky top-0 z-10 bg-background border-b space-y-3",
-        compact ? "p-2" : "p-4"
-      )}>
-        {/* Search Bar */}
+      {/* Compact Header */}
+      <div className="sticky top-0 z-10 bg-background/95 backdrop-blur-sm border-b border-border/50 p-3 space-y-3">
+        {/* Title */}
+        <h2 className="text-sm font-medium text-foreground">遊戲機中心搜尋</h2>
+        
+        {/* Hong Kong Regions - Compact Pills */}
+        <div className="flex flex-wrap gap-1.5">
+          <button
+            onClick={() => setSelectedRegion('all')}
+            className={cn(
+              "px-2.5 py-1 text-xs font-medium rounded-full transition-all duration-200",
+              selectedRegion === 'all'
+                ? "bg-primary text-primary-foreground shadow-sm"
+                : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
+            )}
+          >
+            全部
+          </button>
+          <button
+            onClick={() => setSelectedRegion('hong-kong-island')}
+            className={cn(
+              "px-2.5 py-1 text-xs font-medium rounded-full transition-all duration-200",
+              selectedRegion === 'hong-kong-island'
+                ? "bg-rose-500 text-white shadow-sm"
+                : "bg-rose-50 text-rose-700 hover:bg-rose-100 border border-rose-200"
+            )}
+          >
+            香港島
+          </button>
+          <button
+            onClick={() => setSelectedRegion('kowloon')}
+            className={cn(
+              "px-2.5 py-1 text-xs font-medium rounded-full transition-all duration-200",
+              selectedRegion === 'kowloon'
+                ? "bg-blue-500 text-white shadow-sm"
+                : "bg-blue-50 text-blue-700 hover:bg-blue-100 border border-blue-200"
+            )}
+          >
+            九龍
+          </button>
+          <button
+            onClick={() => setSelectedRegion('new-territories')}
+            className={cn(
+              "px-2.5 py-1 text-xs font-medium rounded-full transition-all duration-200",
+              selectedRegion === 'new-territories'
+                ? "bg-emerald-500 text-white shadow-sm"
+                : "bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200"
+            )}
+          >
+            新界
+          </button>
+        </div>
+
+        {/* Search Bar - Compact */}
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+          <Search className="absolute left-2.5 top-1/2 transform -translate-y-1/2 text-muted-foreground w-3.5 h-3.5" />
           <Input
             type="text"
-            placeholder={compact ? "Search..." : "Search stores..."}
+            placeholder="搜尋店舖..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className={cn("pl-10", compact && "h-8 text-sm")}
+            className="pl-8 h-8 text-sm bg-muted/30 border-muted-foreground/20 focus:bg-background"
           />
         </div>
 
-        {/* Compact mode: simplified controls */}
-        {compact ? (
-          <div className="flex justify-between items-center">
-            <Select value={sortBy} onValueChange={(value) => setSortBy(value as any)}>
-              <SelectTrigger className="w-32 h-8 text-xs">
-                <SelectValue placeholder="Sort..." />
-              </SelectTrigger>
-              <SelectContent>
-                {userLocation && (
-                  <SelectItem value="distance">Distance</SelectItem>
-                )}
-                <SelectItem value="rating">Rating</SelectItem>
-                <SelectItem value="name">Name</SelectItem>
-              </SelectContent>
-            </Select>
-            <div className="text-xs text-muted-foreground">
-              {filteredAndSortedStores.length}
-            </div>
-          </div>
-        ) : (
-          <>
-            {/* Filter Toggle and Sort */}
-            <div className="flex justify-between items-center">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setShowFilters(!showFilters)}
-                className="flex items-center space-x-1"
-              >
-                <Filter className="w-4 h-4" />
-                <span>Filters</span>
-                <ChevronDown className={cn("w-3 h-3 transition-transform", showFilters && "rotate-180")} />
-              </Button>
-
-              <Select value={sortBy} onValueChange={(value) => setSortBy(value as any)}>
-                <SelectTrigger className="w-40">
-                  <SelectValue placeholder="Sort by..." />
-                </SelectTrigger>
-                <SelectContent>
-                  {userLocation && (
-                    <SelectItem value="distance">By Distance</SelectItem>
-                  )}
-                  <SelectItem value="rating">By Rating</SelectItem>
-                  <SelectItem value="name">By Name</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            {/* Expandable Filters */}
-            {showFilters && (
-              <div className="space-y-3 pt-2 border-t">
-                <div>
-                  <label className="block text-sm font-medium mb-1">Category</label>
-                  <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-                    <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Select a category..." />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {categories.map(category => (
-                        <SelectItem key={category.value} value={category.value}>
-                          {category.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-            )}
-
-            {/* Results Count */}
-            <div className="text-sm text-muted-foreground">
-              {filteredAndSortedStores.length} store{filteredAndSortedStores.length !== 1 ? 's' : ''} found
-            </div>
-          </>
-        )}
+        {/* Results Count & Sort - Inline */}
+        <div className="flex items-center justify-between">
+          <span className="text-xs text-muted-foreground">
+            {filteredAndSortedStores.length} 個店舖
+          </span>
+          <Select value={sortBy} onValueChange={(value: 'distance' | 'rating' | 'name') => setSortBy(value)}>
+            <SelectTrigger className="w-24 h-7 text-xs border-muted-foreground/20">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {userLocation && (
+                <SelectItem value="distance">距離</SelectItem>
+              )}
+              <SelectItem value="rating">評分</SelectItem>
+              <SelectItem value="name">名稱</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
       </div>
 
       {/* Store List */}
@@ -347,14 +307,35 @@ export default function StoreList({
           </div>
         )}
 
-        {filteredAndSortedStores.length === 0 ? (
+        {isLoading ? (
+          // Loading skeleton
+          <div className="space-y-1 p-2">
+            {Array.from({ length: 6 }, (_, i) => (
+              <Card key={i} className="border-border/30">
+                <CardContent className="p-2.5">
+                  <div className="space-y-1">
+                    <div className="flex items-start justify-between gap-2">
+                      <Skeleton className="h-4 w-32" />
+                      <Skeleton className="h-3 w-12" />
+                    </div>
+                    <Skeleton className="h-3 w-full" />
+                    <div className="flex items-center justify-between">
+                      <Skeleton className="h-3 w-16" />
+                      <Skeleton className="h-4 w-12" />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        ) : filteredAndSortedStores.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-12 text-muted-foreground">
             <MapPin className="w-12 h-12 mb-4 opacity-50" />
-            <p className="text-lg font-medium">No stores found</p>
-            <p className="text-sm">Try adjusting your search or filters</p>
+            <p className="text-lg font-medium">沒有找到店舖</p>
+            <p className="text-sm">請嘗試調整搜索條件或篩選器</p>
           </div>
         ) : (
-          <div className={cn("space-y-2", compact ? "p-1" : "p-2")}>
+          <div className="space-y-1 p-2">
             {filteredAndSortedStores.map((store) => {
               const isSelected = selectedStore?.id === store.id
               let distance: number | null = null
@@ -372,123 +353,62 @@ export default function StoreList({
                   key={store.id}
                   onClick={() => onStoreSelect(store)}
                   className={cn(
-                    "cursor-pointer transition-all duration-200 hover:shadow-md hover:shadow-primary/5 border-border/50 hover:border-primary/20",
-                    isSelected && "ring-2 ring-primary shadow-md shadow-primary/10",
-                    compact && "hover:bg-accent/5"
+                    "cursor-pointer transition-all duration-200 hover:shadow-md hover:bg-accent/50 border-border/30 hover:border-border/50 group",
+                    isSelected && "ring-1 ring-primary bg-accent/30 border-primary/30 shadow-sm"
                   )}
                 >
-                  <CardContent className={cn(compact ? "p-3" : "p-4")}>
-                    {compact ? (
-                      // Compact layout - essential info only
-                      <div className="space-y-1">
-                        <div className="flex items-start justify-between">
-                          <h3 className="font-medium text-sm truncate pr-2 text-foreground">
-                            {store.name}
-                          </h3>
-                          {distance !== null && (
-                            <div className="flex items-center text-xs text-muted-foreground flex-shrink-0">
-                              <Navigation className="w-3 h-3 mr-1" />
+                  <CardContent className="p-2.5">
+                    <div className="space-y-1">
+                      {/* Header Row */}
+                      <div className="flex items-start justify-between gap-2">
+                        <h3 className="font-medium text-sm leading-tight truncate flex-1 text-foreground">
+                          {store.name}
+                        </h3>
+                        {distance !== null && (
+                          <div className="flex items-center text-xs text-muted-foreground flex-shrink-0">
+                            <Navigation className="w-3 h-3 mr-0.5" />
+                            <span className="font-medium">
                               {distance < 1 
-                                ? `${Math.round(distance * 5280)} ft`  
-                                : `${distance.toFixed(1)} mi`
+                                ? `${Math.round(distance * 1000)}m`  
+                                : `${distance.toFixed(1)}km`
                               }
-                            </div>
-                          )}
-                        </div>
-                        
-                        {/* Address - truncated */}
-                        {formatAddress(store) && (
-                          <p className="text-xs text-muted-foreground truncate">
-                            {formatAddress(store)}
-                          </p>
+                            </span>
+                          </div>
                         )}
                       </div>
-                    ) : (
-                      // Full layout
-                      <div className="flex space-x-3">
-                        {/* Store Image */}
-                        <div className="flex-shrink-0 w-16 h-16 bg-muted rounded-lg overflow-hidden">
-                          {store.images?.find(img => img.isPrimary)?.image?.url ? (
-                            <img
-                              src={store.images.find(img => img.isPrimary)!.image.url}
-                              alt={store.name}
-                              className="w-full h-full object-cover"
-                            />
-                          ) : (
-                            <div className="w-full h-full flex items-center justify-center">
-                              <MapPin className="w-6 h-6 text-muted-foreground" />
-                            </div>
-                          )}
-                        </div>
+                      
+                      {/* Address Row */}
+                      {formatAddress(store) && (
+                        <p className="text-xs text-muted-foreground truncate leading-tight">
+                          {formatAddress(store)}
+                        </p>
+                      )}
 
-                        {/* Store Info */}
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-start justify-between">
-                            <h3 className="font-semibold truncate pr-2">
-                              {store.name}
-                            </h3>
-                            {distance !== null && (
-                              <div className="flex items-center text-xs text-muted-foreground flex-shrink-0">
-                                <Navigation className="w-3 h-3 mr-1" />
-                                {distance < 1 
-                                  ? `${Math.round(distance * 5280)} ft`  
-                                  : `${distance.toFixed(1)} mi`
-                                }
-                              </div>
-                            )}
-                          </div>
-
-                          <div className="flex items-center space-x-2 mt-1">
-                            <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${getCategoryColor(store.category || undefined)}`}>
-                              {getCategoryLabel(store.category || undefined)}
+                      {/* Rating & Category Row */}
+                      <div className="flex items-center justify-between">
+                        {store.analytics?.averageRating && store.analytics.averageRating > 0 ? (
+                          <div className="flex items-center gap-1">
+                            <Star className="w-3 h-3 text-yellow-400 fill-current" />
+                            <span className="text-xs font-medium text-foreground">
+                              {store.analytics.averageRating.toFixed(1)}
                             </span>
-                            {store.pricing?.priceRange && (
-                              <span className="text-sm text-muted-foreground">
-                                {getPriceRangeDisplay(store.pricing.priceRange)}
+                            {store.analytics.totalRatings && (
+                              <span className="text-xs text-muted-foreground">
+                                ({store.analytics.totalRatings})
                               </span>
                             )}
                           </div>
-
-                          {/* Rating */}
-                          {store.analytics?.averageRating && store.analytics.averageRating > 0 && (
-                            <div className="flex items-center mt-1">
-                              <div className="flex items-center">
-                                {renderStars(Math.round(store.analytics.averageRating))}
-                              </div>
-                              <span className="ml-1 text-sm text-muted-foreground">
-                                {store.analytics.averageRating.toFixed(1)} 
-                                {store.analytics.totalRatings && (
-                                  <span className="text-muted-foreground/70"> ({store.analytics.totalRatings})</span>
-                                )}
-                              </span>
-                            </div>
-                          )}
-
-                          {/* Address */}
-                          {formatAddress(store) && (
-                            <p className="text-sm text-muted-foreground mt-1 truncate">
-                              {formatAddress(store)}
-                            </p>
-                          )}
-
-                          {/* Hours and Phone */}
-                          <div className="flex items-center space-x-4 mt-2 text-xs text-muted-foreground">
-                            {getTodayHours(store.openingHours) && (
-                              <div className="flex items-center">
-                                <Clock className="w-3 h-3 mr-1" />
-                                {getTodayHours(store.openingHours)}
-                              </div>
-                            )}
-                            {store.contact?.phone && (
-                              <div className="flex items-center">
-                                <Phone className="w-3 h-3 mr-1" />
-                                {store.contact.phone}
-                              </div>
-                            )}
-                          </div>
-                        </div>
+                        ) : (
+                          <div className="text-xs text-muted-foreground">沒有評分</div>
+                        )}
+                        
+                        {store.category && (
+                          <Badge variant={getCategoryVariant(store.category)} className="text-xs">
+                            {getCategoryLabel(store.category)}
+                          </Badge>
+                        )}
                       </div>
-                    )}
+                    </div>
                   </CardContent>
                 </Card>
               )

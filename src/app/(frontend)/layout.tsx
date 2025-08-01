@@ -4,50 +4,50 @@ import 'leaflet/dist/leaflet.css'
 import { Toaster } from "@/components/ui/toaster"
 
 export const metadata = {
-  description: 'Arcade Tracker - Find and track arcade locations with photo galleries.',
-  title: 'Arcade Tracker',
+  description: '遊戲機中心搜尋器 - 尋找及追蹤遊戲機中心位置，並提供照片集。',
+  title: '遊戲機中心搜尋器',
   manifest: '/manifest.json',
-  keywords: ['arcade', 'games', 'entertainment', 'gaming', 'locations', 'finder'],
-  authors: [{ name: 'Arcade Tracker' }],
-  creator: 'Arcade Tracker',
-  publisher: 'Arcade Tracker',
+  keywords: ['遊戲機', '電動', '娛樂', '遊戲', '位置', '搜尋器'],
+  authors: [{ name: '遊戲機中心搜尋器' }],
+  creator: '遊戲機中心搜尋器',
+  publisher: '遊戲機中心搜尋器',
   robots: 'index, follow',
   openGraph: {
-    title: 'Arcade Tracker',
-    description: 'Find and track arcade locations with photo galleries.',
+    title: '遊戲機中心搜尋器',
+    description: '尋找及追蹤遊戲機中心位置，並提供照片集。',
     type: 'website',
-    locale: 'en_US',
+    locale: 'zh_HK',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Arcade Tracker',
-    description: 'Find and track arcade locations with photo galleries.',
-  },
-  viewport: {
-    width: 'device-width',
-    initialScale: 1,
-    maximumScale: 1,
-    userScalable: false,
-    viewportFit: 'cover',
+    title: '遊戲機中心搜尋器',
+    description: '尋找及追蹤遊戲機中心位置，並提供照片集。',
   },
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',
-    title: 'Arcade Tracker',
+    title: '遊戲機中心搜尋器',
   },
+}
+
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  viewportFit: 'cover',
 }
 
 export default async function RootLayout(props: { children: React.ReactNode }) {
   const { children } = props
 
   return (
-    <html lang="en" className="h-full">
+    <html lang="zh-HK" className="h-full">
       <head>
         <meta name="theme-color" content="#3B82F6" />
-        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-        <meta name="apple-mobile-web-app-title" content="Arcade Tracker" />
+        <meta name="apple-mobile-web-app-title" content="遊戲機中心搜尋器" />
         <link rel="manifest" href="/manifest.json" />
         <link rel="apple-touch-icon" href="/icon-192.png" />
       </head>

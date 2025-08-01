@@ -65,10 +65,10 @@ export function PhotoUpload({
   // Validate file
   const validateFile = useCallback((file: File): string | null => {
     if (!acceptedFileTypes.includes(file.type)) {
-      return `Invalid file type. Accepted types: ${acceptedFileTypes.join(', ')}`
+      return `無效的檔案類型。接受的類型： ${acceptedFileTypes.join(', ')}`
     }
     if (file.size > maxFileSize) {
-      return `File too large. Maximum size: ${(maxFileSize / (1024 * 1024)).toFixed(1)}MB`
+      return `檔案過大。最大大小： ${(maxFileSize / (1024 * 1024)).toFixed(1)}MB`
     }
     return null
   }, [acceptedFileTypes, maxFileSize])
@@ -79,12 +79,12 @@ export function PhotoUpload({
     
     // Check total file count
     if (files.length + selectedFiles.length > maxFiles) {
-      const errorMsg = `Too many files. Maximum allowed: ${maxFiles}`
+      const errorMsg = `檔案數量過多。最大允許： ${maxFiles} 個`
       setError(errorMsg)
       onUploadError?.(errorMsg)
       toast({
         variant: "destructive",
-        title: "Upload Error",
+        title: "上傳錯誤",
         description: errorMsg,
       })
       return
@@ -112,7 +112,7 @@ export function PhotoUpload({
       onUploadError?.(errorMsg)
       toast({
         variant: "destructive",
-        title: "File Validation Error",
+        title: "檔案驗證錯誤",
         description: errorMsg,
       })
     }
@@ -221,8 +221,8 @@ export function PhotoUpload({
       onUploadComplete?.(result.files as PayloadMediaDocument[])
       
       toast({
-        title: "Upload Successful",
-        description: `Successfully uploaded ${files.length} photo${files.length > 1 ? 's' : ''}`,
+        title: "上傳成功",
+        description: `成功上傳 ${files.length} 張照片`,
       })
     } catch (uploadError) {
       const errorMessage = uploadError instanceof Error ? uploadError.message : 'Upload failed'
@@ -231,7 +231,7 @@ export function PhotoUpload({
       
       toast({
         variant: "destructive",
-        title: "Upload Failed",
+        title: "上傳失敗",
         description: errorMessage,
       })
 
@@ -312,7 +312,7 @@ export function PhotoUpload({
                 }}
                 disabled={disabled || isUploading}
                 className="p-3 h-auto w-auto rounded-full"
-                title="Take photo with camera"
+                title="使用相機拍照"
               >
                 <Camera className="w-8 h-8" />
               </Button>
@@ -321,13 +321,13 @@ export function PhotoUpload({
           
           <div>
             <p className="text-lg font-medium">
-              {isDragActive ? 'Drop photos here...' : 'Drag & drop photos here'}
+              {isDragActive ? '將照片放置於此...' : '拖放照片到此處'}
             </p>
             <p className="text-sm text-muted-foreground mt-1">
-              or click to select files {enableCamera && '• use camera button to take photos'}
+              或點擊選擇檔案 {enableCamera && '• 使用相機按鈕拍照'}
             </p>
             <p className="text-xs text-muted-foreground mt-2">
-              Max {maxFiles} files • {(maxFileSize / (1024 * 1024)).toFixed(1)}MB per file
+              最多 {maxFiles} 個檔案 • 單檔 {(maxFileSize / (1024 * 1024)).toFixed(1)}MB
             </p>
           </div>
         </CardContent>
@@ -338,7 +338,7 @@ export function PhotoUpload({
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <h3 className="text-lg font-medium">
-              Selected Photos ({files.length})
+已選擇照片 ({files.length})
             </h3>
             <Button
               variant="ghost"
@@ -347,7 +347,7 @@ export function PhotoUpload({
               disabled={isUploading}
               className="text-muted-foreground hover:text-foreground"
             >
-              Clear all
+              清除全部
             </Button>
           </div>
           
@@ -373,7 +373,7 @@ export function PhotoUpload({
         <Card>
           <CardContent className="space-y-3 p-4">
             <h4 className="text-sm font-medium">
-              Upload Progress
+              上傳進度
             </h4>
             {uploadProgress.map((progress) => (
               <ProgressBar key={progress.id} progress={progress} />
@@ -386,7 +386,7 @@ export function PhotoUpload({
       {files.length > 0 && (
         <div className="flex items-center justify-between pt-4 border-t">
           <span className="text-sm text-muted-foreground">
-            {files.length} file{files.length !== 1 ? 's' : ''} ready to upload
+            {files.length} 個檔案準備上傳
           </span>
           
           <Button
@@ -397,12 +397,12 @@ export function PhotoUpload({
             {isUploading ? (
               <>
                 <Loader2 className="w-4 h-4 animate-spin" />
-                Uploading...
+                上傳中...
               </>
             ) : (
               <>
                 <Upload className="w-4 h-4" />
-                Upload Photos
+                上傳照片
               </>
             )}
           </Button>

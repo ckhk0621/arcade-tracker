@@ -1,7 +1,7 @@
 {
-  "name": "Arcade Tracker",
-  "short_name": "Arcade Tracker",
-  "description": "Find and track arcade locations with photo galleries",
+  "name": "遊戲機中心搜尋器",
+  "short_name": "遊戲機搜尋",
+  "description": "尋找及追蹤遊戲機中心位置，並提供照片集",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
@@ -24,9 +24,9 @@
   ],
   "shortcuts": [
     {
-      "name": "Find Nearby Arcades",
-      "short_name": "Find Arcades",
-      "description": "Locate arcades near your current location",
+      "name": "尋找附近遊戲機中心",
+      "short_name": "尋找遊戲機",
+      "description": "找到您現在位置附近的遊戲機中心",
       "url": "/?view=map",
       "icons": [
         {

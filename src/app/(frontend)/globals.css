@@ -73,6 +73,8 @@
   height: 100%;
   width: 100%;
   z-index: 1;
+  transition: all 0.3s ease-in-out;
+  background: transparent;
 }
 
 /* Custom div icon styles */
@@ -102,6 +104,57 @@
   .transform {
     transition: transform 0.3s ease-in-out;
   }
+}
+
+/* Store locator layout transitions */
+.store-list-container {
+  transition: width 0.3s ease-in-out, opacity 0.3s ease-in-out;
+  will-change: width, opacity;
+}
+
+.store-list-inner {
+  transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+  will-change: opacity, transform;
+}
+
+/* Prevent gray flashing during collapse/expand */
+.store-list-collapsed {
+  background: transparent !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* Ensure map fills space smoothly */
+.map-container {
+  transition: all 0.3s ease-in-out;
+  will-change: auto;
+}
+
+/* Improved backdrop blur for better performance */
+.store-list-backdrop {
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+/* Force hardware acceleration for smooth transitions */
+.store-list-container,
+.store-list-inner,
+.map-container {
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+}
+
+/* Prevent content shifting during animation */
+.store-list-container {
+  flex-shrink: 0;
+}
+
+/* Ensure no background color leaks through during animation */
+.store-list-container.store-list-collapsed::before,
+.store-list-container.store-list-collapsed::after {
+  display: none;
 }
 
 /* Legacy styles - preserve existing functionality */

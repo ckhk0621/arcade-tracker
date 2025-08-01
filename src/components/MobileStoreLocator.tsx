@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { Map, List, RefreshCw } from 'lucide-react'
 import { MapView, StoreList } from './map'
 
 interface Store {
@@ -10,6 +9,7 @@ interface Store {
   address?: string | null
   city?: string | null
   state?: string | null
+  region?: 'hong-kong-island' | 'kowloon' | 'new-territories' | null
   location?: {
     coordinates: [number, number]
   } | [number, number] | null
@@ -52,21 +52,26 @@ interface MobileStoreLocatorProps {
   onRefresh?: () => Promise<Store[]>
 }
 
-type ViewMode = 'map' | 'list'
-
 export default function MobileStoreLocator({ initialStores, onRefresh }: MobileStoreLocatorProps) {
   const [stores, setStores] = useState<Store[]>(initialStores)
   const [selectedStore, setSelectedStore] = useState<Store | null>(null)
-  const [viewMode, setViewMode] = useState<ViewMode>('map')
   const [userLocation, setUserLocation] = useState<[number, number] | null>(null)
   const [locationError, setLocationError] = useState<string | null>(null)
   const [isRefreshing, setIsRefreshing] = useState(false)
   const [isLoadingLocation, setIsLoadingLocation] = useState(false)
+  const [isStoreListCollapsed, setIsStoreListCollapsed] = useState(() => {
+    // Restore collapse state from session storage
+    if (typeof window !== 'undefined') {
+      const saved = sessionStorage.getItem('storeListCollapsed')
+      return saved === 'true'
+    }
+    return false
+  })
 
   // Request user location
   const requestLocation = useCallback(() => {
     if (!navigator.geolocation) {
-      setLocationError('Geolocation is not supported by this browser')
+      setLocationError('此瀏覽器不支援地理位置功能')
       return
     }
 
@@ -80,16 +85,16 @@ export default function MobileStoreLocator({ initialStores, onRefresh }: MobileS
         setIsLoadingLocation(false)
       },
       (error) => {
-        let errorMessage = 'Unable to get your location'
+        let errorMessage = '無法獲取您的位置'
         switch (error.code) {
           case error.PERMISSION_DENIED:
-            errorMessage = 'Location access denied'
+            errorMessage = '位置存取被拒絕'
             break
           case error.POSITION_UNAVAILABLE:
-            errorMessage = 'Location information unavailable'
+            errorMessage = '位置資訊不可用'
             break
           case error.TIMEOUT:
-            errorMessage = 'Location request timed out'
+            errorMessage = '位置請求超時'
             break
         }
         setLocationError(errorMessage)
@@ -127,87 +132,27 @@ export default function MobileStoreLocator({ initialStores, onRefresh }: MobileS
     setSelectedStore(store)
   }
 
-  const handleViewModeChange = (mode: ViewMode) => {
-    setViewMode(mode)
-  }
-
-  // Get responsive classes based on view mode
-  const getContainerClasses = () => {
-    if (viewMode === 'map') {
-      return 'md:grid-cols-[1fr_400px] grid-rows-1'
+  const toggleStoreListCollapse = () => {
+    const newCollapsed = !isStoreListCollapsed
+    setIsStoreListCollapsed(newCollapsed)
+    // Persist collapse state to session storage
+    if (typeof window !== 'undefined') {
+      sessionStorage.setItem('storeListCollapsed', newCollapsed.toString())
     }
-    return 'grid-rows-1'
-  }
-
-  const getMapClasses = () => {
-    if (viewMode === 'list') return 'hidden'
-    return 'row-span-1 relative'
-  }
-
-  const getListClasses = () => {
-    if (viewMode === 'map') {
-      return 'hidden md:block md:border-l md:border-border'
-    }
-    return 'row-span-1'
+    
+    // Trigger map resize after animation completes to ensure proper rendering
+    setTimeout(() => {
+      window.dispatchEvent(new Event('resize'))
+    }, 350) // Slightly after the 300ms transition
   }
 
   return (
-    <div className="h-screen bg-background flex flex-col">
-      {/* Top Navigation Bar */}
-      <div className="bg-background/95 backdrop-blur-sm border-b border-border px-4 py-2 flex items-center justify-between z-20 shadow-sm">
-        <div className="flex items-center space-x-2">
-          <h1 className="text-lg font-semibold text-foreground">Arcade Finder</h1>
-          {userLocation && (
-            <span className="text-xs bg-green-100 text-green-800 px-2 py-0.5 rounded-full font-medium">
-              📍
-            </span>
-          )}
-        </div>
-
-        <div className="flex items-center space-x-2">
-          {/* Refresh Button */}
-          {onRefresh && (
-            <button
-              onClick={handleRefresh}
-              disabled={isRefreshing}
-              className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors disabled:opacity-50"
-              aria-label="Refresh stores"
-            >
-              <RefreshCw className={`w-5 h-5 ${isRefreshing ? 'animate-spin' : ''}`} />
-            </button>
-          )}
-
-          {/* View Mode Toggle */}
-          <div className="flex bg-muted rounded-lg p-1">
-            <button
-              onClick={() => handleViewModeChange('map')}
-              className={`p-2 rounded-md transition-all duration-200 ${
-                viewMode === 'map' 
-                  ? 'bg-background text-primary shadow-sm' 
-                  : 'text-muted-foreground hover:text-foreground'
-              }`}
-              aria-label="Map view"
-            >
-              <Map className="w-4 h-4" />
-            </button>
-            <button
-              onClick={() => handleViewModeChange('list')}
-              className={`p-2 rounded-md transition-all duration-200 ${
-                viewMode === 'list' 
-                  ? 'bg-background text-primary shadow-sm' 
-                  : 'text-muted-foreground hover:text-foreground'
-              }`}
-              aria-label="List view"
-            >
-              <List className="w-4 h-4" />
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Location Error Banner */}
+    <div className="h-screen bg-background flex relative overflow-hidden">
+      {/* Ensure full background coverage during transitions */}
+      <div className="absolute inset-0 bg-background -z-10" />
+      {/* Location Error Banner - Fixed position */}
       {locationError && (
-        <div className="bg-amber-50 border-b border-amber-200 px-4 py-2 flex items-center justify-between">
+        <div className="fixed top-0 left-0 right-0 z-50 bg-amber-50 border-b border-amber-200 px-4 py-2 flex items-center justify-between shadow-sm">
           <div className="flex items-center">
             <span className="text-sm text-amber-800">{locationError}</span>
           </div>
@@ -216,26 +161,38 @@ export default function MobileStoreLocator({ initialStores, onRefresh }: MobileS
             className="text-sm text-amber-600 hover:text-amber-800 font-medium"
             disabled={isLoadingLocation}
           >
-            {isLoadingLocation ? 'Requesting...' : 'Retry'}
+            {isLoadingLocation ? '請求中...' : '重試'}
           </button>
         </div>
       )}
 
-      {/* Main Content */}
-      <div className={`flex-1 grid ${getContainerClasses()}`}>
-        {/* Map View */}
-        <div className={getMapClasses()}>
-          <MapView
-            stores={stores}
-            selectedStore={selectedStore}
-            onStoreSelect={handleStoreSelect}
-            userLocation={userLocation}
-            className="h-full"
-          />
-        </div>
+      {/* Left Column - Fixed Map */}
+      <div className="flex-1 relative map-container">
+        <MapView
+          stores={stores}
+          selectedStore={selectedStore}
+          onStoreSelect={handleStoreSelect}
+          userLocation={userLocation}
+          className="h-full"
+          isStoreListCollapsed={isStoreListCollapsed}
+          onToggleStoreList={toggleStoreListCollapse}
+        />
+      </div>
 
-        {/* List View - Sticky on desktop when in map mode */}
-        <div className={getListClasses()}>
+
+      {/* Right Column - Scrollable Store List - Responsive width with collapse animation */}
+      <div 
+        className={`store-list-container ${
+          isStoreListCollapsed 
+            ? 'w-0 opacity-0 pointer-events-none overflow-hidden store-list-collapsed' 
+            : 'w-80 lg:w-80 md:w-72 sm:w-60 xs:w-56 opacity-100'
+        }`}
+      >
+        <div className={`h-full store-list-inner ${
+          isStoreListCollapsed 
+            ? 'opacity-0 scale-95 store-list-collapsed' 
+            : 'opacity-100 scale-100 border-l border-border/50 bg-background shadow-lg store-list-backdrop'
+        }`}>
           <StoreList
             stores={stores}
             selectedStore={selectedStore}
@@ -244,7 +201,7 @@ export default function MobileStoreLocator({ initialStores, onRefresh }: MobileS
             onRefresh={handleRefresh}
             isRefreshing={isRefreshing}
             className="h-full"
-            compact={viewMode === 'map'}
+            compact={true}
           />
         </div>
       </div>

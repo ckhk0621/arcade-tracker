@@ -65,7 +65,7 @@ export function CameraCapture({ onCapture, onClose }: CameraCaptureProps) {
           }
           setFacingMode('user')
         } catch (fallbackErr) {
-          setError('Unable to access camera. Please check permissions.')
+          setError('無法存取相機，請檢查權限設定')
         }
       } else {
         setError('Unable to access camera. Please check permissions.')
@@ -78,7 +78,7 @@ export function CameraCapture({ onCapture, onClose }: CameraCaptureProps) {
   // Initialize camera on mount
   useEffect(() => {
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-      setError('Camera not supported in this browser')
+      setError('此瀏覽器不支援相機功能')
       setIsLoading(false)
       return
     }
@@ -147,7 +147,7 @@ export function CameraCapture({ onCapture, onClose }: CameraCaptureProps) {
       onCapture(file)
     } catch (err) {
       console.error('Photo capture error:', err)
-      setError('Failed to capture photo')
+      setError('拍照失敗')
     } finally {
       setIsCapturing(false)
     }
@@ -165,7 +165,7 @@ export function CameraCapture({ onCapture, onClose }: CameraCaptureProps) {
     <div className="fixed inset-0 z-50 bg-black flex flex-col">
       {/* Header */}
       <div className="flex items-center justify-between p-4 bg-black/50 text-white">
-        <h2 className="text-lg font-semibold">Take Photo</h2>
+        <h2 className="text-lg font-semibold">拍照</h2>
         <button
           onClick={handleClose}
           className="p-2 hover:bg-white/20 rounded-full transition-colors"

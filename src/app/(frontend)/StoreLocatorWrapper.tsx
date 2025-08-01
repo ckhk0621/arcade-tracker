@@ -8,6 +8,7 @@ interface Store {
   address?: string | null
   city?: string | null
   state?: string | null
+  region?: 'hong-kong-island' | 'kowloon' | 'new-territories' | null
   location?: {
     coordinates: [number, number]
   } | [number, number] | null

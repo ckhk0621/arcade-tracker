@@ -30,7 +30,9 @@
       "Bash(npm install:*)",
       "Bash(cat:*)",
       "Bash(chmod:*)",
-      "Bash(PAYLOAD_SECRET=46db8b2084f9b8803d1dce4b node scripts/import-all-jumping-gym-stores.js)"
+      "Bash(PAYLOAD_SECRET=46db8b2084f9b8803d1dce4b node scripts/import-all-jumping-gym-stores.js)",
+      "Bash(timeout 30s npm run dev:*)",
+      "mcp__ide__getDiagnostics"
     ],
     "deny": []
   }
